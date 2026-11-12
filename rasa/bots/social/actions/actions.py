@@ -6,8 +6,6 @@ from rasa_sdk.events import SlotSet, AllSlotsReset, FollowupAction
 from rasa_sdk.executor import CollectingDispatcher
 import logging
 from .pluralize import pluralize
-import asyncio
-from .runner import Runner
 import sys
 import os
 import re 
@@ -18,14 +16,14 @@ logger = logging.getLogger(__name__)
 # debugpy.wait_for_client()
 
 # from .wiki import Encyclopedia
-from .chat_gpt import ChatGpt, DEBUG, FILE_SEARCH_ENABLED
+from . import llm_client
 import os
 
 from .text_manager import TextManagerSocial
 from .events import NLPEvent
 #enc = Encyclopedia()
-gpt=ChatGpt()
-#gpt.generate_answer("Is this a fake question?") #this API call is because the first call is the slowest
+# the answers come from the LLM server (llm_client.py): model, RAG and history are configured there
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 KNOWLEDGE_GRAPH_RUNNING = True if os.environ.get('KNOWLEDGE_GRAPH_RUNNING') == "True" else False 
 class ActionGreet(Action):
@@ -81,17 +79,8 @@ class ActionGreet(Action):
 
 class ActionSocial(Action):
 
-    class SocialRunner(Runner):
-        def __init__(self, chat_gpt_instance: ChatGpt):
-            super().__init__()
-            self._chat_gpt_instance = chat_gpt_instance
-
-        def add_task(self, *args, **kwargs):
-            return asyncio.run_coroutine_threadsafe(self._chat_gpt_instance.chat_gpt(*args, **kwargs), self.loop)
-
     def __init__(self):
         super(ActionSocial, self).__init__()
-        self._runner = self.SocialRunner(gpt)
         self.language = "Italian"
         self.TextManager = TextManagerSocial()
 
@@ -106,16 +95,8 @@ class ActionSocial(Action):
         if DEBUG:
             with open("prompt.txt", "w") as f:
                 f.write(usr_message)
-        self._runner._chat_gpt_instance.set_prompt(self.TextManager.get_prompt("Medical Prompt"))
-
-        # medical questions: the model also searches the diabetology/cardiology vector store (OPENAI_FILE_SEARCH)
-        fut = self._runner.add_task(usr_message, file_search=FILE_SEARCH_ENABLED)
-        try:
-            definition = fut.result(gpt.TIMEOUT_RESPONSE)
-        except Exception as e:
-            logger.error(e)
-            fut.cancel()
-            definition = "" #f"GPT exception: {e}"
+        # medical questions: RAG on the diabetology/cardiology documents as llm.rag of the LLM server says
+        definition = llm_client.chat(tracker.sender_id, usr_message, system=self.TextManager.get_prompt("Medical Prompt"))
 
         try:
             if definition != "":
@@ -145,7 +126,8 @@ class ActionGPT_4o(Action):
         image_base64 = tracker.get_slot("image_slot")
         try:
             if image_base64 is not None:
-                response = gpt.gpt_4o(usr_message, image_base64)
+                # question about the scene: default system prompt of the LLM server, no documents
+                response = llm_client.chat(tracker.sender_id, usr_message, rag=False, image_base64=image_base64)
             else: 
                 logging.error("image slot is empty")
                 raise Exception
@@ -400,17 +382,8 @@ class ActionObjects(Action):
 
 class ActionAddInfoKG(Action):
 
-    class SocialRunner(Runner):
-        def __init__(self, chat_gpt_instance: ChatGpt):
-            super().__init__()
-            self._chat_gpt_instance = chat_gpt_instance
-        
-        def add_task(self, *args, **kwargs):
-            return asyncio.run_coroutine_threadsafe(self._chat_gpt_instance.chat_gpt(*args, **kwargs), self.loop)
-
     def __init__(self):
         super(ActionAddInfoKG, self).__init__()
-        self._runner = self.SocialRunner(gpt)
         self.language = "Italian"
         self.TextManager = TextManagerSocial()
 
@@ -430,14 +403,8 @@ class ActionAddInfoKG(Action):
             with open("prompt_personal_request.txt", "w") as f:
                 f.write(usr_message)
 
-        self._runner._chat_gpt_instance.set_prompt(self.TextManager.get_phrase("KG_Prompt"))    
-        fut = self._runner.add_task(usr_message)
-        try:
-            definition = fut.result(gpt.TIMEOUT_RESPONSE)
-        except Exception as e:
-            logger.error(e)
-            fut.cancel()
-            definition = "" #f"GPT exception: {e}"
+        definition = llm_client.chat(tracker.sender_id, usr_message, system=self.TextManager.get_phrase("KG_Prompt"),
+                                     rag=False)
 
         try:
             if definition != "":

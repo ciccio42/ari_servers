@@ -28,9 +28,7 @@ requests==2.34.2
 requests-toolbelt==0.10.1
 ujson==5.12.1
 PyYAML==6.0.3
-# custom actions of the social bot (ChatGPT)
-openai==1.91.0
-httpx==0.28.1
+# no openai: the custom actions ask the LLM server (llm_client.py, standard library)
 # spaCy models of the pipelines (config/models/<lang>/config.yml)
 it-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/it_core_news_sm-3.4.0/it_core_news_sm-3.4.0-py3-none-any.whl
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.1/en_core_web_sm-3.4.1-py3-none-any.whl

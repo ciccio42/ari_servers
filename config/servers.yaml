@@ -15,22 +15,45 @@ whisper:
   language: Italian
   vad_threshold: 0.7
 
-# <LLM_PORT>: answers, with RAG on the documents. Env LLM_<FIELD>. Skeleton: the backends are still to be ported
-# from PepperDemo (llm_rag_utils)
+# <LLM_PORT>: answers of the demo (LLM + RAG), for the custom actions of Rasa. Env LLM_<FIELD>
 llm:
   port: 8010
-  model: meta-llama/Llama-3.1-8B-Instruct
-  backend: transformers
-  max_new_tokens: 350
-  rag: true
-  rag_index: models/rag/index      # FAISS index (prepare_rag.py of PepperDemo)
+  backend: openai                  # openai (ChatGPT), transformers (local: to port), echo (tests)
+  model: gpt-4o                    # OpenAI model, or Hugging Face id for transformers
+  temperature: 0.3                 # ChatGPT: only gpt-4o / gpt-4o-mini
+  timeout: 60                      # seconds for one answer, new attempts included
+  system_prompt_file: llm/prompts/ari_system.txt   # default system prompt ({max_char} -> max_char)
+  max_char: 250
+  history_length: 4                # messages per conversation, the request included
+  # RAG of the requests that do not say it: ChatGPT searches the documents of the OpenAI vector store (file_search,
+  # section openai); a local backend uses rag_index (not ported yet). The social action of Rasa asks for this default
+  rag: false
+  rag_index: models/rag/index      # FAISS index (prepare_rag.py of PepperDemo), local backends only
   embedding_model: google/embeddinggemma-300m
   reranker_model: BAAI/bge-reranker-v2-m3
   top_k: 4
+
+# ChatGPT backend of the LLM server (llm.backend: openai). Env OPENAI_<FIELD>. The key: only OPENAI_API_KEY in
+# config/secrets.env (not versioned). Commented: the default of the code
+openai:
+  reasoning_effort: low            # only gpt-5, o1, o3, o4: minimal, low, medium, high
+  vector_store_id: vs_6adf80ee4cf481919b35fecdd7d1efd9   # diabetology and cardiology documents (RAG)
+  # rag_model: gpt-4o              # model of the RAG answers; default llm.model
+  # rag_reasoning_effort: low      # default reasoning_effort
+  file_search_max_results: 5       # passages of every search, 1-50
+  file_search_tool_choice: required  # required: always search; auto: the model decides
+  # file_search_score_threshold: 0.3   # discard passages below this relevance (0-1)
+  # file_search_ranker: auto
+  # rag_max_output_tokens: 1000
+  # rag_temperature: 0.3           # only the non-reasoning models
+  # rag_verbosity: low             # gpt-5 only
+  max_retries: 1                   # new attempts after a server or connection error
 
 # <RASA_PORT>: dialogue. The clients reach this proxy on the ports of today, one per bot; it forwards to the bot
 # (rasa run --enable-api, internal port) taking the execution lock. Env RASA_<FIELD>
 rasa:
   # <client port>=<bot>: social (rasa/bots/social), rock paper scissor, connect four
   routes: "5002=http://localhost:5012, 5003=http://localhost:5013, 5004=http://localhost:5014"
-  exclusive: true
+  # false: the social action calls the LLM server, which takes the lock while it generates. With true the proxy would
+  # hold the lock during the whole answer and the LLM server would wait for it forever
+  exclusive: false

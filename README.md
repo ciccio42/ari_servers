@@ -10,7 +10,7 @@ Robot Control (Main-PC) are in `ari_control`.
 | Server | Folder | Port (`<..._PORT>`) | State |
 |---|---|---|---|
 | Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
-| LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | skeleton: API, configuration and lock in place, backends to port from PepperDemo |
+| LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | ChatGPT backend (reference, from the actions of Rasa) with OpenAI RAG; local backend and retriever to port |
 | RASA (dialogue) | [rasa/](rasa/README.md) | 5002, 5003, 5004 (one per bot) | the 3 bots of PepperDemo and their actions behind the proxy with the lock |
 
 ```
@@ -18,7 +18,7 @@ ari_servers/
 ├── config/servers.yaml   ports, models and options of every server, execution lock
 ├── common/ari_servers/   shared code: config.py, http.py (HTTPService), execution.py (lock), latency_log.py
 ├── whisper/              whisper_server/ (package), docker/, conda/, tools/
-├── llm/                  llm_server/ (package): config.py, backend.py, rag.py, server.py
+├── llm/                  llm_server/ (package): backends/ (abstract class, ChatGPT, ...), server.py, rag.py; docker/
 ├── rasa/                 bots/ (social, rock_paper_scissor, connect_four), rasa_proxy/ (package), docker/
 ├── models/  audio_files/  latency_logs/  run/
 ```
@@ -34,17 +34,17 @@ python -m whisper_server --model openai/whisper-small --optimization none --port
 ```
 `ARI_SERVERS_CONFIG` points to another YAML file.
 
-The RASA server has a second file for the options of its actions, [config/rasa.env](config/rasa.env) (OpenAI model,
-RAG on/off, flags of the demo), and takes the OpenAI key from `config/secrets.env`, which is not versioned. See
-[rasa/README.md](rasa/README.md#configuration).
+The RASA server has a second file, [config/rasa.env](config/rasa.env) (language, address of the LLM server, flags of the
+demo). Model, RAG on/off and OpenAI parameters of the answers are in the sections `llm` and `openai` of servers.yaml;
+the OpenAI key only in `config/secrets.env`, which is not versioned. See [llm/README.md](llm/README.md#configuration).
 
 ## No concurrent executions
 The servers share a lock file (`execution_lock` in servers.yaml, default `run/execution.lock`, `flock`): one request
 at a time among all of them, also in different containers of the same machine (they all mount this folder as
 `/workspace`). The time waited is `queue_s` in the replies. Empty `execution_lock`: disabled.
 
-Do not chain two servers holding the lock: if a custom action of Rasa calls the LLM server while the RASA proxy
-holds the lock, the LLM server waits for it forever. In that case set `rasa.exclusive: false`.
+Do not chain two servers holding the lock: the custom actions of Rasa call the LLM server, so the RASA proxy does not
+take it (`rasa.exclusive: false`) and the LLM server takes it during the generation.
 
 ## Run without containers
 ```bash

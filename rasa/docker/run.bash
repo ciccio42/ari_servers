@@ -13,10 +13,11 @@
 #   train   [<bot>|all] [it|en|all]: rasa train into models/rasa/<bot>/<lang>
 #   shell   shell inside the image
 #
-# Configuration: config/rasa.env (versioned): language, OpenAI model, RAG and flags of the demo; RASA_ENV_FILE: another
-# file. config/secrets.env (not versioned): OPENAI_API_KEY. Variables exported in the shell override both files:
-# RASA_<FIELD> (RASA_ROUTES, RASA_EXCLUSIVE, ...: the proxy, otherwise from config/servers.yaml), RASA_BOTS,
-# ACTIONS_PORT, DEMO_LANGUAGE, ARI_EXECUTION_LOCK, MAX_CHAR, DEBUG, KNOWLEDGE_GRAPH_RUNNING, OPENAI_*.
+# Configuration: config/rasa.env (versioned): language, address of the LLM server, flags of the demo; RASA_ENV_FILE:
+# another file. The answers of the social bot come from the LLM server (llm/docker/run.bash start). Variables exported
+# in the shell override the file: RASA_<FIELD> (RASA_ROUTES, RASA_EXCLUSIVE, ...: the proxy, otherwise from
+# config/servers.yaml), RASA_BOTS, ACTIONS_PORT, DEMO_LANGUAGE, ARI_EXECUTION_LOCK, MAX_CHAR, DEBUG,
+# KNOWLEDGE_GRAPH_RUNNING, LLM_URL, LLM_TIMEOUT.
 # status and test use the ports 5002 5003 5004 (RASA_PORTS to change them).
 
 COMMAND=$1
@@ -30,28 +31,22 @@ PORTS=${RASA_PORTS:-5002 5003 5004}
 
 RUN_ARGS=(--network=host -v "$ROOT_DIR":/workspace)
 # only the variables set here: otherwise defaults would hide config/servers.yaml
-for variable in $(compgen -e | grep -E '^(RASA_|ACTIONS_PORT$|DEMO_LANGUAGE$|ARI_EXECUTION_LOCK$|MAX_CHAR$|DEBUG$|KNOWLEDGE_GRAPH_RUNNING$|OPENAI_)'); do
+for variable in $(compgen -e | grep -E '^(RASA_|ACTIONS_PORT$|DEMO_LANGUAGE$|ARI_EXECUTION_LOCK$|MAX_CHAR$|DEBUG$|KNOWLEDGE_GRAPH_RUNNING$|LLM_URL$|LLM_TIMEOUT$)'); do
     case "$variable" in RASA_ENV_FILE|RASA_PORTS) ;; *) RUN_ARGS+=(-e "$variable=${!variable}") ;; esac
 done
 ENV_FILE=${RASA_ENV_FILE:-$ROOT_DIR/config/rasa.env}
-SECRETS_FILE=$ROOT_DIR/config/secrets.env
 [ -f "$ENV_FILE" ] || { echo "$ENV_FILE not found" >&2; exit 1; }
 RUN_ARGS+=(--env-file "$ENV_FILE")
-[ -f "$SECRETS_FILE" ] && RUN_ARGS+=(--env-file "$SECRETS_FILE")
 
-# before starting the server: docker --env-file keeps the quotes in the values, and without the key the action server
-# stops at the start (the container would restart in a loop)
+# before starting the server: docker --env-file keeps the quotes in the values. The LLM server: a warning only, the
+# bots and the games work without it
 check_config() {
-    local file
-    for file in "$ENV_FILE" "$SECRETS_FILE"; do
-        if [ -f "$file" ] && grep -n -E "^[A-Za-z_]+=[\"']" "$file"; then
-            echo "$file: write the values without quotes (lines above)" >&2; exit 1
-        fi
-    done
-    if [ -z "$OPENAI_API_KEY" ] && ! grep -q -s -E '^OPENAI_API_KEY=.+' "$SECRETS_FILE" "$ENV_FILE"; then
-        echo "OPENAI_API_KEY not set: echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env" >&2
-        exit 1
+    if grep -n -E "^[A-Za-z_]+=[\"']" "$ENV_FILE"; then
+        echo "$ENV_FILE: write the values without quotes (lines above)" >&2; exit 1
     fi
+    local url=${LLM_URL:-$(sed -n 's/^LLM_URL=//p' "$ENV_FILE")}
+    curl -sf -m 3 "${url:-http://localhost:8010}/health" > /dev/null \
+        || echo "warning: no LLM server at ${url:-http://localhost:8010}: the social bot will answer with its courtesy phrase" >&2
 }
 
 health() {
