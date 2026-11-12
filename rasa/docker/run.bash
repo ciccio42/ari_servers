@@ -13,10 +13,10 @@
 #   train   [<bot>|all] [it|en|all]: rasa train into models/rasa/<bot>/<lang>
 #   shell   shell inside the image
 #
-# Passed to the container only if set here, so they override config/servers.yaml: RASA_<FIELD> (RASA_ROUTES,
-# RASA_EXCLUSIVE, ...), RASA_BOTS, ACTIONS_PORT, DEMO_LANGUAGE (default Italian), ARI_EXECUTION_LOCK, MAX_CHAR, DEBUG,
-# KNOWLEDGE_GRAPH_RUNNING, OPENAI_* (OPENAI_API_KEY is needed by the actions of the social bot: never in the code).
-# RASA_ENV_FILE: a file of variables (e.g. OPENAI_API_KEY=...) passed with --env-file, not versioned.
+# Configuration: config/rasa.env (versioned): language, OpenAI model, RAG and flags of the demo; RASA_ENV_FILE: another
+# file. config/secrets.env (not versioned): OPENAI_API_KEY. Variables exported in the shell override both files:
+# RASA_<FIELD> (RASA_ROUTES, RASA_EXCLUSIVE, ...: the proxy, otherwise from config/servers.yaml), RASA_BOTS,
+# ACTIONS_PORT, DEMO_LANGUAGE, ARI_EXECUTION_LOCK, MAX_CHAR, DEBUG, KNOWLEDGE_GRAPH_RUNNING, OPENAI_*.
 # status and test use the ports 5002 5003 5004 (RASA_PORTS to change them).
 
 COMMAND=$1
@@ -33,7 +33,26 @@ RUN_ARGS=(--network=host -v "$ROOT_DIR":/workspace)
 for variable in $(compgen -e | grep -E '^(RASA_|ACTIONS_PORT$|DEMO_LANGUAGE$|ARI_EXECUTION_LOCK$|MAX_CHAR$|DEBUG$|KNOWLEDGE_GRAPH_RUNNING$|OPENAI_)'); do
     case "$variable" in RASA_ENV_FILE|RASA_PORTS) ;; *) RUN_ARGS+=(-e "$variable=${!variable}") ;; esac
 done
-[ -n "$RASA_ENV_FILE" ] && RUN_ARGS+=(--env-file "$RASA_ENV_FILE")
+ENV_FILE=${RASA_ENV_FILE:-$ROOT_DIR/config/rasa.env}
+SECRETS_FILE=$ROOT_DIR/config/secrets.env
+[ -f "$ENV_FILE" ] || { echo "$ENV_FILE not found" >&2; exit 1; }
+RUN_ARGS+=(--env-file "$ENV_FILE")
+[ -f "$SECRETS_FILE" ] && RUN_ARGS+=(--env-file "$SECRETS_FILE")
+
+# before starting the server: docker --env-file keeps the quotes in the values, and without the key the action server
+# stops at the start (the container would restart in a loop)
+check_config() {
+    local file
+    for file in "$ENV_FILE" "$SECRETS_FILE"; do
+        if [ -f "$file" ] && grep -n -E "^[A-Za-z_]+=[\"']" "$file"; then
+            echo "$file: write the values without quotes (lines above)" >&2; exit 1
+        fi
+    done
+    if [ -z "$OPENAI_API_KEY" ] && ! grep -q -s -E '^OPENAI_API_KEY=.+' "$SECRETS_FILE" "$ENV_FILE"; then
+        echo "OPENAI_API_KEY not set: echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env" >&2
+        exit 1
+    fi
+}
 
 health() {
     local ok=0
@@ -48,9 +67,11 @@ case "$COMMAND" in
         exec docker build -t "$IMAGE" "$SCRIPT_DIR"
         ;;
     server)
+        check_config
         exec docker run --rm -it "${RUN_ARGS[@]}" "$IMAGE" server
         ;;
     start)
+        check_config
         docker run -d --restart unless-stopped --name "$CONTAINER" "${RUN_ARGS[@]}" "$IMAGE" server || exit 1
         echo "The bots load in about a minute: bash $0 status"
         ;;

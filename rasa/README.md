@@ -33,28 +33,53 @@ reachable: `502`. If one listener stops (e.g. port already in use), the proxy st
 The lock is held for the whole answer of a bot, OpenAI calls of the custom actions included: Whisper and the LLM wait
 for it (`queue_s`).
 
+## Configuration
+Three files, in `config/`:
+
+| File | Versioned | What to change there |
+|---|---|---|
+| [config/rasa.env](../config/rasa.env) | yes | language, OpenAI model, **RAG on/off** and its parameters, flags of the demo (`KNOWLEDGE_GRAPH_RUNNING`, `MAX_CHAR`, `DEBUG`) |
+| `config/secrets.env` | **no** | `OPENAI_API_KEY` only |
+| [config/servers.yaml](../config/servers.yaml), section `rasa` | yes | ports of the clients and bots (`routes`), execution lock (`exclusive`), `timeout` |
+
+The key, once:
+```bash
+echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env
+```
+Never write the key in `rasa.env` or in another versioned file.
+
+Every parameter of `rasa.env` is commented with its meaning and its default; a line commented with `#` keeps the
+default of the code. The main switches:
+
+| Parameter | Value | |
+|---|---|---|
+| `DEMO_LANGUAGE` | `Italian` | `Italian` or `English` |
+| `OPENAI_MODEL` | `gpt-4o` (the one of the demo; code default `gpt-4o-mini`) | model of the answers |
+| `OPENAI_FILE_SEARCH` | `true` | **RAG**: `true` searches the documents of the OpenAI vector store before answering, `false` answers without them (faster) |
+| `OPENAI_VECTOR_STORE_ID`, `OPENAI_RAG_*`, `OPENAI_FILE_SEARCH_*` | commented | parameters of the RAG, used only with `OPENAI_FILE_SEARCH=true` |
+| `KNOWLEDGE_GRAPH_RUNNING` | `False` | `True`: `action_add_info_kg` uses the knowledge graph |
+
+Format of the files (`docker run --env-file`): `VARIABLE=value`, **no quotes** (they become part of the value:
+`run.bash` refuses such a file), no comment after the value. A variable exported in the shell wins over the files,
+e.g. `OPENAI_FILE_SEARCH=false bash rasa/docker/run.bash start` for one run without RAG. `RASA_ENV_FILE=<file>`
+uses another file instead of `rasa.env` (e.g. one for English); `secrets.env` is read anyway.
+
 ## Run with Docker (Spark)
 From `ari_servers`:
 ```bash
-bash rasa/docker/run.bash build
-RASA_ENV_FILE=~/rasa.env bash rasa/docker/run.bash start    # ~/rasa.env: OPENAI_API_KEY=... (not versioned)
+bash rasa/docker/run.bash build      # image ari_rasa_server, once
+bash rasa/docker/run.bash start      # with config/rasa.env and config/secrets.env; ready in about 15-60 s
 bash rasa/docker/run.bash status     # /health of 5002, 5003, 5004
-bash rasa/docker/run.bash test       # one message to every bot
+bash rasa/docker/run.bash test "qual è la ricetta della pizza?"   # one message to every bot
 bash rasa/docker/run.bash logs
 bash rasa/docker/run.bash stop
 ```
+**After a change** of the files of `config/`: `stop`, then `start` (the container reads them only at the
+start). A change of the actions or of the bots needs the same; a change of the image (`docker/`) needs `build` too.
+
 The container `rasa_server` runs the action server, the three bots (`rasa run --enable-api`) and the proxy; if one
 of them stops, the container stops and Docker restarts it. Stop the Rasa of PepperDemo first (`rasa_dev_container`):
 it uses the same ports.
-
-| Variable | Default | |
-|---|---|---|
-| `DEMO_LANGUAGE` | `Italian` | `Italian` or `English`: models of `models/rasa/<bot>/<it\|en>` |
-| `OPENAI_API_KEY` | none | **needed** by the action server: unset, it stops at the start. Never in the code |
-| `OPENAI_MODEL`, `OPENAI_FILE_SEARCH`, `OPENAI_*` | see `bots/social/actions/chat_gpt.py` | ChatGPT of the social bot and its RAG |
-| `KNOWLEDGE_GRAPH_RUNNING`, `MAX_CHAR`, `DEBUG` | `False`, 250, `False` | as in PepperDemo |
-| `RASA_BOTS` | `social:5012 rock_paper_scissor:5013 connect_four:5014` | `<bot>:<internal port>`, must match `rasa.routes` |
-| `ACTIONS_PORT` | 5055 | as `action_endpoint` of `bots/social/config/endpoints.yml` |
 
 ## Models
 `rasa run -m <folder>` loads the newest model of the folder. The models copied from PepperDemo are the ones it loaded
@@ -70,5 +95,5 @@ bash rasa/docker/run.bash train social it
 - Actions: only the modules used (`actions.py`, `chat_gpt.py`). The parts of `demo_utils` they need are copied next
   to them (`text_manager.py` with `phrases_rasa.yml`, `pluralize.py`, `runner.py`, `events.py`); the latency log is
   the one of `common/ari_servers`. Not copied: `gpt.py`, `wiki.py`, `chat_gpt_old.py`, `llm_rag.py` (not imported).
-- The OpenAI key is read from `OPENAI_API_KEY`, not written in the code.
+- The OpenAI key is read from `OPENAI_API_KEY` (`config/secrets.env`), not written in the code.
 - Image: CPU only, without torch and the libraries of the LLM, which belong to the LLM server.

@@ -34,6 +34,10 @@ python -m whisper_server --model openai/whisper-small --optimization none --port
 ```
 `ARI_SERVERS_CONFIG` points to another YAML file.
 
+The RASA server has a second file for the options of its actions, [config/rasa.env](config/rasa.env) (OpenAI model,
+RAG on/off, flags of the demo), and takes the OpenAI key from `config/secrets.env`, which is not versioned. See
+[rasa/README.md](rasa/README.md#configuration).
+
 ## No concurrent executions
 The servers share a lock file (`execution_lock` in servers.yaml, default `run/execution.lock`, `flock`): one request
 at a time among all of them, also in different containers of the same machine (they all mount this folder as
@@ -54,8 +58,8 @@ Shared folders (the workspace of every server, mounted as `/workspace` in the co
 
 | Folder | Content |
 |---|---|
-| `config/` | `servers.yaml` |
+| `config/` | `servers.yaml`, `rasa.env`; `secrets.env` with the keys, not versioned |
 | `models/` | models: `silero/silero_vad.onnx` (versioned), `whisper/` (exported at the first start), `rasa/` (trained bots): not versioned |
-| `audio_files/` | the 5 Italian WAV of the tests of the report |
+| `audio_files/` | the 5 Italian WAV of the tests, their reference transcripts (`references.csv`) and the [report of the Whisper models](audio_files/REPORT_modelli_whisper.md) |
 | `latency_logs/` | latency log of the servers (`latency_<date>_<host>.csv`), not versioned |
 | `run/` | execution lock, not versioned |

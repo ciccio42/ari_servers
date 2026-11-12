@@ -9,3 +9,5 @@ models/rasa/
 rasa/bots/*/.rasa/
 # written by the actions of the social bot with DEBUG=True
 rasa/bots/social/*.txt
+# secrets of the servers (OPENAI_API_KEY of the RASA server): never versioned
+config/secrets.env

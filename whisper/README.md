@@ -111,6 +111,12 @@ python3 whisper/tools/summarize_whisper.py audio_files latency_logs/whisper_runs
 `bench_http.py` needs numpy and soundfile; it saves the times of every reply of the server, so the summary needs no
 latency log and no clock sync between client and server.
 
+Accuracy: `wer.py` (standard library only) gives WER and CER of the transcripts against
+`audio_files/references.csv`, with the normalization of Whisper (lowercase, no punctuation):
+```bash
+python3 whisper/tools/wer.py latency_logs/whisper_runs_*.csv --per-file --csv latency_logs/wer.csv
+```
+
 Checked on the Spark on 2026-11-12, with the libraries of `ari_whisper:spark` and the entrypoint of this folder,
 large-v3-turbo O4 model through `WHISPER_MODEL_DIR`: inference 0.184 ± 0.026 s, VAD 0.017 ± 0.003 s (15 calls);
 with the execution lock held 2 s by another process, a request waited `queue_s` 1.97 s and then ran. The images `ari_whisper_server:*` are not built yet.
