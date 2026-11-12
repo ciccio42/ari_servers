@@ -1,12 +1,11 @@
 # Whisper server
 
-HTTP server with Whisper (ONNX Runtime, CUDA) and Silero VAD. Same server of `ari_demo`
-(`ros2_ws/src/asr/asr/whisper_server.py`), with the **model as a parameter** (default `openai/whisper-large-v3-turbo`,
-O4 fp16) and the execution lock shared with the other servers.
+HTTP server with Whisper (ONNX Runtime, CUDA) and Silero VAD, with the **model as a parameter** (default
+`openai/whisper-large-v3-turbo`, O4 fp16) and the execution lock shared with the other servers.
 ```
- robot (ROS)                                 machine with the GPU
- stt_server ──/asr/whisper──► whisper_client ──HTTP POST /transcribe──► whisper_server :8000
-                              (ari_demo)                                 (this folder)
+ robot                                  machine with the GPU
+ client ──HTTP POST /transcribe──► whisper_server :8000
+                                    (this folder)
 ```
 
 | Path | Content |
@@ -51,11 +50,11 @@ Options of the section `whisper` of `config/servers.yaml`, or `WHISPER_<FIELD>`,
 | `host`, `port` | `0.0.0.0`, 8000 | |
 
 When `model_dir` has no exported model, the server downloads `model`, exports it to ONNX, optimizes it and saves it
-there (large-v3-turbo: 1.6 GB, about 4–6 minutes). The model exported in `ari_demo` can be used instead:
+there (large-v3-turbo: 1.6 GB, about 4–6 minutes). A model already exported elsewhere can be used instead:
 ```bash
-export WHISPER_MODEL_DIR=~/ARI-DEMO/ari_demo/models/whisper/whisper-large-v3-turbo   # run.bash mounts it read-only
+export WHISPER_MODEL_DIR=<folder of the exported model>   # run.bash mounts it read-only
 ```
-or copied: `cp -r ../ari_demo/models/whisper models/`. GPU memory with large-v3-turbo: about 4 GB.
+or copied into `models/whisper/`. GPU memory with large-v3-turbo: about 4 GB.
 
 ## Run with Docker (Spark, Orin, internal Jetson of ARI)
 From `ari_servers`:
@@ -72,9 +71,9 @@ bash whisper/docker/run.bash spark stop
 |---|---|---|
 | `spark` | `ari_onnxruntime:spark-r39.1.arm64-sbsa-cu130-24.04` | ONNX Runtime 1.23.2 built for the GB10 with jetson-containers: `build` builds it if missing, with `docker/spark/jetson-containers-cu130.patch` applied to jetson-containers (CUDA 13.0, at most 6 build jobs: with the defaults the build used all the 121 GB of RAM) |
 | `orin` | `onnxruntime:r36.4.tegra-aarch64-cu126-22.04` | JetPack 6; torch of jetson-ai-lab, with OpenBLAS and cuDSS added |
-| `jp5` | `pepper_demo:r35` | JetPack 5, Python 3.8: the demo image already has torch, ONNX Runtime 1.16.1 and transformers; it has ROS too, not used |
+| `jp5` | `pepper_demo:r35` | JetPack 5, Python 3.8: the demo image already has torch, ONNX Runtime 1.16.1 and transformers |
 
-The container named `whisper_server` is the same name used by `ari_demo`: stop that one first
+The container is named `whisper_server`: if another container with that name is running, stop it first
 (`docker stop whisper_server`, then remove it by ID), only one server can listen on the port.
 
 ## Run with conda (cluster)
@@ -112,7 +111,6 @@ python3 whisper/tools/summarize_whisper.py audio_files latency_logs/whisper_runs
 `bench_http.py` needs numpy and soundfile; it saves the times of every reply of the server, so the summary needs no
 latency log and no clock sync between client and server.
 
-Checked on the Spark on 2026-11-12, with the libraries of `ari_whisper:spark` and the entrypoint of this folder
-(no ROS loaded in the process), model of `ari_demo` through `WHISPER_MODEL_DIR`: inference 0.184 ± 0.026 s, VAD
-0.017 ± 0.003 s (15 calls), as the server of `ari_demo`; with the execution lock held 2 s by another process, a
-request waited `queue_s` 1.97 s and then ran. The images `ari_whisper_server:*` are not built yet.
+Checked on the Spark on 2026-11-12, with the libraries of `ari_whisper:spark` and the entrypoint of this folder,
+large-v3-turbo O4 model through `WHISPER_MODEL_DIR`: inference 0.184 ± 0.026 s, VAD 0.017 ± 0.003 s (15 calls);
+with the execution lock held 2 s by another process, a request waited `queue_s` 1.97 s and then ran. The images `ari_whisper_server:*` are not built yet.

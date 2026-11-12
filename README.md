@@ -1,15 +1,15 @@
 # ARI-Demo Servers
 
 Network servers of the demos of ARIS: they run on the machine with the GPU (DGX Spark, Jetson, cluster)
-and the robot reaches them over HTTP. The ROS side (nodes, clients of these servers) stays in `ari_control`.
+and the robot reaches them over HTTP. The clients of these servers stay in `ari_control`.
 
 Architecture: [ari_demo_arch.png](ari_demo_arch.png). This repository is the **DGX-Spark** box: the three HTTP
 servers and the rule *no concurrent executions*. Visual-Perception (Jetson), Behavioral-Trees, HTTP clients and
-Robot Control (Main-PC) are ROS, in `ari_control`.
+Robot Control (Main-PC) are in `ari_control`.
 
 | Server | Folder | Port (`<..._PORT>`) | State |
 |---|---|---|---|
-| Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | from `ari_demo`, model as a parameter, tested on the Spark |
+| Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
 | LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | skeleton: API, configuration and lock in place, backends to port from PepperDemo |
 | RASA (dialogue) | [rasa/](rasa/README.md) | 5005 | proxy in front of Rasa (5006), tested with a fake Rasa |
 

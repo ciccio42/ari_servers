@@ -2,7 +2,7 @@
 
 Generation of the answers of the demo, with retrieval on the documents (RAG). In place: API, configuration (model as
 a parameter), execution lock, latency log. To do: the backends, ported from PepperDemo
-(`ros2_ws/src/trees/trees/llm_rag_utils`).
+(`llm_rag_utils`).
 
 | File | Content | State |
 |---|---|---|
