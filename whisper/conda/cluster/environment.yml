@@ -1,0 +1,23 @@
+# Whisper server on the cluster (x86_64, NVIDIA H100, driver CUDA 12.4): conda environment instead of a Docker image.
+# Only the HTTP server (whisper/whisper_server), no ROS.
+# CUDA and cuDNN come from the pip wheels of torch (nvidia-*-cu12), shared by torch and ONNX Runtime.
+# Create it from ari_servers: bash whisper/conda/run.bash cluster create
+name: ari_whisper
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      # cu124: the newest CUDA of the driver 550 of the cluster
+      - --extra-index-url https://download.pytorch.org/whl/cu124
+      - torch==2.6.0+cu124
+      # CUDA 12 and cuDNN 9, as the wheels of torch
+      - onnxruntime-gpu==1.22.0
+      # same versions of the Orin and the Spark
+      - numpy<2,>=1.26
+      - transformers==4.53.2
+      - optimum==2.1.0
+      - optimum-onnx
+      - soundfile
+      - scipy

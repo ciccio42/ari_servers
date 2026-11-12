@@ -1,0 +1,36 @@
+# Servers of the DGX Spark (architecture: ari_demo_arch.png). One section per server, the keys are the fields of its
+# config dataclass. Environment (<PREFIX>_<FIELD>) and command line (--<field>) override these values.
+# Relative paths are relative to ari_servers (WORKSPACE, /workspace in the containers).
+
+# No concurrent executions: the servers share this lock, one request at a time among all of them (also in different
+# containers: they all mount ari_servers). Empty: disabled. Env: ARI_EXECUTION_LOCK
+execution_lock: run/execution.lock
+
+# <WHISPER_PORT>: speech to text. Env WHISPER_<FIELD>, e.g. WHISPER_MODEL=openai/whisper-large-v3
+whisper:
+  port: 8000
+  model: openai/whisper-large-v3-turbo
+  optimization: O4                 # O1..O4, none
+  provider: CUDAExecutionProvider
+  language: Italian
+  vad_threshold: 0.7
+
+# <LLM_PORT>: answers, with RAG on the documents. Env LLM_<FIELD>. Skeleton: the backends are still to be ported
+# from PepperDemo (ros2_ws/src/trees/trees/llm_rag_utils)
+llm:
+  port: 8010
+  model: meta-llama/Llama-3.1-8B-Instruct
+  backend: transformers
+  max_new_tokens: 350
+  rag: true
+  rag_index: models/rag/index      # FAISS index (prepare_rag.py of PepperDemo)
+  embedding_model: google/embeddinggemma-300m
+  reranker_model: BAAI/bge-reranker-v2-m3
+  top_k: 4
+
+# <RASA_PORT>: dialogue. The clients reach this proxy, which forwards to Rasa (rasa run --enable-api) taking the
+# execution lock. Env RASA_<FIELD>
+rasa:
+  port: 5005
+  upstream: http://localhost:5006
+  exclusive: true

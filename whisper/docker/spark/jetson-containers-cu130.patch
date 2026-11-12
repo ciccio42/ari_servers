@@ -1,0 +1,40 @@
+diff --git a/packages/cuda/cudastack/config.py b/packages/cuda/cudastack/config.py
+index cc19a99a..90b6bbac 100644
+--- a/packages/cuda/cudastack/config.py
++++ b/packages/cuda/cudastack/config.py
+@@ -78,6 +78,9 @@ def cuda_stack_args():
+         tensorrt_url = f"{tensorrt_base_url}/10.16.1/tars/TensorRT-10.16.1.11.Linux.aarch64-gnu.cuda-13.2.tar.gz"
+         nccl_ver = '2.29.7'
+         nccl_url = f"https://developer.download.nvidia.com/compute/redist/nccl/v{nccl_ver}/nccl_{nccl_ver}-1+cuda13.2_aarch64.txz"
++        if CUDA_VERSION < Version('13.2'):  # DGX Spark driver: CUDA 13.0
++            tensorrt_ver = '10.13'
++            tensorrt_url = f"{tensorrt_base_url}/10.13.3/tars/TensorRT-10.13.3.9.Linux.aarch64-gnu.cuda-13.0.tar.gz"
+ 
+     else:  # x86_64
+         cudnn_ver = '9.21.1'
+@@ -167,6 +170,11 @@ def cuda_stack(name, with_tensorrt=False, minimal=False, requires=None):
+     build_args['WITH_NVPL'] = '0' if minimal else ('1' if IS_SBSA else '0')
+     build_args['WITH_NVSHMEM'] = '0' if minimal else '1'
+ 
++    # On sbsa with CUDA < 13.2 keep only what onnxruntime needs: the other libraries have no packages for it
++    if IS_SBSA and CUDA_VERSION < Version('13.2'):
++        for component in ('NCCL', 'CUDSS', 'CUSPARSELT', 'CUTENSOR', 'GDRCOPY', 'NVPL', 'NVSHMEM'):
++            build_args[f'WITH_{component}'] = '0'
++
+     # Enable distributed (experimental) NCCL for Jetson if explicitly enabled via environment variable
+     if IS_TEGRA and os.environ.get('ENABLE_DISTRIBUTED_JETSON_NCCL', '0') == '1':
+         build_args['ENABLE_DISTRIBUTED_JETSON_NCCL'] = '1'
+diff --git a/packages/ml/onnxruntime/config.py b/packages/ml/onnxruntime/config.py
+index fd219b8c..95b139c9 100644
+--- a/packages/ml/onnxruntime/config.py
++++ b/packages/ml/onnxruntime/config.py
+@@ -25,6 +25,9 @@ def onnxruntime(version, branch=None, requires=None, default=False):
+     if Version(version) >= Version('1.13'):
+         ort['build_args']['ONNXRUNTIME_FLAGS'] = '--allow_running_as_root'
+ 
++    if CUDA_VERSION >= Version('13.0'):  # CUDA 13 deprecates longlong4: a warning, an error with -Werror
++        ort['build_args']['ONNXRUNTIME_FLAGS'] += ' --compile_no_warning_as_error --parallel 6 --nvcc_threads 2'  # defaults (-j20, 4 threads) exhaust 121 GB
++
+     builder = ort.copy()
+     builder['name'] = builder['name'] + '-builder'
+     builder['build_args'] = {**builder['build_args'], 'FORCE_BUILD': 'on'}

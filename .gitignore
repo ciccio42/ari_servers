@@ -1,0 +1,6 @@
+# exported models (GBs), created at the first start; models/silero/silero_vad.onnx is versioned
+models/whisper/
+latency_logs/
+__pycache__/
+*.pyc
+run/
