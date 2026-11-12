@@ -1,0 +1,379 @@
+version: "3.1"
+nlu:
+  - synonym: person
+    examples: |
+      - person
+      - persons
+      - people
+
+  - synonym: bicycle
+    examples: |
+      - bicycle
+      - bicycles
+      - bike
+      - bikes
+
+  - synonym: car
+    examples: |
+      - car
+      - cars
+
+  - synonym: motorbike
+    examples: |
+      - motorbike
+      - motorbikes
+      - moto
+
+  - synonym: aeroplane
+    examples: |
+      - aeroplane
+      - airplane
+      - aeroplanes
+      - airplanes
+
+  - synonym: bus
+    examples: |
+      - bus
+      - buses
+
+  - synonym: train
+    examples: |
+      - train
+      - trains
+
+  - synonym: truck
+    examples: |
+      - truck
+      - trucks
+
+  - synonym: boat
+    examples: |
+      - boat
+      - boats
+
+  - synonym: traffic light
+    examples: |
+      - traffic light
+      - traffic lights
+
+  - synonym: fire hydrant
+    examples: |
+      - fire hydrant
+      - fire hydrants
+
+  - synonym: stop sign
+    examples: |
+      - stop sign
+      - stop signs
+
+  - synonym: parking meter
+    examples: |
+      - parking meter
+      - parking meters
+
+  - synonym: bird
+    examples: |
+      - bird
+      - birds
+
+  - synonym: cat
+    examples: |
+      - cat
+      - cats
+
+  - synonym: dog
+    examples: |
+      - dog
+      - dogs
+
+  - synonym: horse
+    examples: |
+      - horse
+      - horses
+
+  - synonym: sheep
+    examples: |
+      - sheep
+      - sheeps
+
+  - synonym: cow
+    examples: |
+      - cow
+      - cows
+
+  - synonym: elephant
+    examples: |
+      - elephant
+      - elephants
+
+  - synonym: bear
+    examples: |
+      - bear
+      - bears
+
+  - synonym: zebra
+    examples: |
+      - zebra
+      - zebras
+
+  - synonym: giraffe
+    examples: |
+      - giraffe
+      - giraffes
+
+  - synonym: backpack
+    examples: |
+      - backpack
+      - backpacks
+  
+  - synonym: umbrella
+    examples: |
+      - umbrella
+      - umbrellas
+
+  - synonym: handbag
+    examples: |
+      - handbag
+      - handbags
+      - hand bag
+      - hand bags
+
+  - synonym: tie
+    examples: |
+      - tie
+      - ties
+
+  - synonym: suitcase
+    examples: |
+      - suitcase
+      - suitcases
+
+  - synonym: frisbee
+    examples: |
+      - frisbee
+      - frisbees
+
+  - synonym: snowboard
+    examples: |
+      - snowboard
+      - snowboards
+
+  - synonym: sports ball
+    examples: |
+      - sports ball
+      - sports balls
+      - balls
+      - ball
+
+  - synonym: baseball bat
+    examples: |
+      - baseball bat
+      - baseball bats
+
+  - synonym: skateboard
+    examples: |
+      - skateboard
+      - skateboards
+
+  - synonym: surfboard
+    examples: |
+      - surfboard
+      - surfboards
+
+  - synonym: tennis racket
+    examples: |
+      - tennis racket
+      - tennis rackets
+
+  - synonym: bottle
+    examples: |
+      - bottle
+      - bottles
+
+  - synonym: wine glass
+    examples: |
+      - wine glass
+      - wine glasses
+      - glasses
+      - glass
+
+  - synonym: cup
+    examples: |
+      - cup
+      - cups
+
+  - synonym: spoon
+    examples: |
+      - spoon
+      - spoons
+
+  - synonym: banana
+    examples: |
+      - banana
+      - bananas
+
+  - synonym: apple
+    examples: |
+      - apple
+      - apples
+
+  - synonym: sandwich
+    examples: |
+      - sandwich
+      - sandwiches
+
+  - synonym: orange
+    examples: |
+      - orange
+      - oranges
+
+  - synonym: carrot
+    examples: |
+      - carrot
+      - carrots
+
+  - synonym: hot dog
+    examples: |
+      - hot dog
+      - hot dogs
+
+  - synonym: pizza
+    examples: |
+      - pizza
+      - pizzas
+
+  - synonym: donut
+    examples: |
+      - donut
+      - donuts
+
+  - synonym: cake
+    examples: |
+      - cake
+      - cakes
+
+  - synonym: chair
+    examples: |
+      - chair
+      - chairs
+
+  - synonym: sofa
+    examples: |
+      - sofa
+      - sofas
+
+  - synonym: pottedplant
+    examples: |
+      - pottedplant
+      - pottedplants
+
+  - synonym: bed
+    examples: |
+      - bed
+      - beds
+
+  - synonym: diningtable
+    examples: |
+      - diningtable
+      - diningtables
+
+  - synonym: toilet
+    examples: |
+      - toilet
+      - toilets
+      - wc
+
+  - synonym: tvmonitor
+    examples: |
+      - tvmonitor
+      - tvmonitors
+      - tv
+      - tvs
+      - monitor
+      - monitors
+
+  - synonym: laptop
+    examples: |
+      - laptop
+      - laptops
+      - notebook
+      - notebooks
+      - pc
+      - pcs
+      - computer
+      - computers
+      - personal computer
+      - personal computers
+
+  - synonym: remote
+    examples: |
+      - remote
+      - remotes
+
+  - synonym: keyboard
+    examples: |
+      - keyboard
+      - keyboards
+
+  - synonym: cell phone
+    examples: |
+      - cell phone
+      - cell phones
+      - smartphone
+      - smartphones
+      - smart phone
+      - smart phones
+      - phone
+      - phones
+
+  - synonym: microwave
+    examples: |
+      - microwave
+      - microwaves
+      - oven
+      - ovens
+
+  - synonym: toaster
+    examples: |
+      - toaster
+      - toasters
+
+  - synonym: sink
+    examples: |
+      - sink
+      - sinks
+
+  - synonym: refrigerator
+    examples: |
+      - refrigerator
+      - refrigerators
+
+  - synonym: book
+    examples: |
+      - book
+      - books
+
+  - synonym: clock
+    examples: |
+      - clock
+      - clocks
+
+  - synonym: motovaserbike
+    examples: |
+      - vase
+      - vases
+
+  - synonym: teddy bear
+    examples: |
+      - teddy bear
+      - teddy bears
+
+  - synonym: hair drier
+    examples: |
+      - hair drier
+      - hair driers
+
+  - synonym: toothbrush
+    examples: |
+      - toothbrush
+      - toothbrushes

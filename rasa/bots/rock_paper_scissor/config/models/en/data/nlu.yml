@@ -1,0 +1,520 @@
+version: "3.1"
+nlu:
+
+
+  - intent: affirm
+    examples: |
+      - I like it
+      - Accept
+      - Awesome!
+      - Good
+      - Great
+      - I accept
+      - I accept.
+      - I agree
+      - I am using it
+      - I changed my mind. I want to accept it
+      - I do
+      - I get it
+      - I guess so
+      - I have used it in the past
+      - I will
+      - I'd absolutely love that
+      - I'm sure I will!
+      - I'm using it
+      - Nice
+      - OK
+      - Ofcourse
+      - Oh yes
+      - Oh, ok
+      - Ok
+      - Ok let's start
+      - Ok.
+      - Okay
+      - Okay!
+      - PLEASE
+      - SURE
+      - Sure
+      - Sweet
+      - That would be great
+      - YES
+      - YUP
+      - Yea
+      - Yeah
+      - Yeah sure
+      - Yep
+      - Yep that's fine
+      - Yep!
+      - Yepp
+      - Yes
+      - Yes I do
+      - Yes please
+      - Yes please!
+      - Yes, I accept
+      - Yes.
+      - Yup
+      - a little
+      - absolutely
+      - accept
+      - accepted
+      - agreed
+      - ah ok
+      - alright
+      - alright, cool
+      - amayzing
+      - amazing!
+      - awesome
+      - awesome!
+      - confirm
+      - cool story bro
+      - definitely yes without a doubt
+      - done
+      - fair enough
+      - fcourse
+      - fine
+      - fuck yeah!
+      - go
+      - go ahead
+      - go for it
+      - going super well
+      - good.
+      - great
+      - great lets do that
+      - great!
+      - hell yeah
+      - hell yes
+      - hm, i'd like that
+      - how nice!
+      - i accept
+      - i agree
+      - i am!
+      - i want that
+      - i will!
+      - it is ok
+      - its okay
+      - ja
+      - ja cool
+      - ja thats great
+      - jezz
+      - jo
+      - k
+      - kk
+      - lets do it
+      - lets do this
+      - not bad
+      - of course
+      - ofcoure i do
+      - ofcourse
+      - oh awesome!
+      - oh cool
+      - oh good !!
+      - oh super
+      - ok
+      - ok cool
+      - ok fine
+      - ok friend
+      - ok good
+      - ok great
+      - ok i accept
+      - ok pepper
+      - ok, I behave now
+      - ok, I understood
+      - ok, pepper
+      - ok...
+      - okay
+      - okay cool
+      - okay sure
+      - okay..
+      - oki doki
+      - okie
+      - ook
+      - oui
+      - perfect
+      - please
+      - si
+      - sort of
+      - sure
+      - sure thing
+      - sure!
+      - that is cool
+      - that ok
+      - that sounds fine
+      - that's great
+      - thats fine
+      - thats good
+      - thats great
+      - top
+      - uh-huh
+      - very much
+      - well yes
+      - y
+      - ya
+      - ya cool
+      - ya go for it
+      - ya i want
+      - ya please
+      - ya thats cool
+      - yaah
+      - yap
+      - yaps
+      - yas
+      - yay
+      - ye
+      - ye splease
+      - yea
+      - yeah
+      - yeah do that
+      - yeah sure
+      - yeah'=
+      - yeah, why not
+      - yeeeeezzzzz
+      - yeeees
+      - yep
+      - yep i want that
+      - yep if i have to
+      - yep please
+      - yep that's nice
+      - yep thats cool
+      - yep, will do thank you
+      - yep. :/
+      - yes
+      - yes ...
+      - yes I do
+      - yes accept please
+      - yes baby
+      - yes cool
+      - yes give me information
+      - yes go ahead
+      - yes go for it
+      - yes great
+      - yes i accept
+      - yes i agree
+      - yes i have!
+      - yes it is
+      - yes it was okay
+      - yes of course
+      - yes pleae
+      - yes please
+      - yes please!
+      - yes pls
+      - yes sirfr
+      - yes that's great
+      - yes that's what i want
+      - yes you can
+      - yes'
+      - yes, I'd love to
+      - yes, cool
+      - yes, give me information, please
+      - yes,i am
+      - yes.
+      - yesh
+      - yess
+      - yessoo
+      - yesss
+      - yesssss
+      - yesyestyes
+      - yesyesyes
+      - yez
+      - yop
+      - you asked me a yes or no question, which i answered with yes
+      - you got me, I accept, if you want me to
+      - yres
+      - ys
+      - yup
+      - yyeeeh
+      - Okay cool
+      - ok..
+      - considering
+      - More a less
+      - sounds good!
+      - really
+      - yes yes
+      - You are right
+      - right
+      - Certainly
+      - absolutely yes
+      - no doubt
+      - I approve
+      - approved
+      - agree
+      - Exactly
+      - Like this
+      - just like that
+      - affirmative
+      - I confirm
+      - Yes, it is
+
+  - intent: deny
+    examples: |
+      - wrong
+      - that's wrong
+      - you are wrong
+      - I don't want to
+      - I don't want to give it to you
+      - I don't want to say
+      - I dont want to tell
+      - I'm not giving you my email address
+      - I'm not going to give it to you
+      - NEIN
+      - NO
+      - NO DON"T WANT THIS!
+      - Nah
+      - Neither
+      - Never
+      - Nevermind
+      - No
+      - No thank you
+      - No, not really.
+      - No, thank you
+      - No.
+      - Nopes
+      - Not really
+      - absolutely not
+      - decline
+      - definitely not
+      - deny
+      - i decline
+      - i don not like this
+      - i don't think so
+      - i don't want either of those
+      - i don't want to
+      - i don't want to give you my email
+      - i dont want to
+      - i dont want to accept :P lol
+      - i guess it means - no
+      - i'm afraid not
+      - i'm not sure
+      - it is going pretty badly
+      - it sucks
+      - it sux
+      - n
+      - na
+      - nah
+      - nah I'm good
+      - nah not for me
+      - nah, first time
+      - nah, i'm good
+      - nehi
+      - nein
+      - neither
+      - never
+      - never mind
+      - no
+      - no :(
+      - no I dont want
+      - no I haven't decided yet if I want to sign up
+      - no and no again
+      - no pepper at all
+      - no go
+      - no i can't
+      - no i don't accept
+      - no i dont want to
+      - no i dont want to accept :P lol
+      - no i won't
+      - no ma'am
+      - no sir
+      - no sorry
+      - no thank s
+      - no thank you
+      - no thanks
+      - no way
+      - no you did it wrong
+      - no!!!!
+      - no, i hate it
+      - no, my frst time
+      - no, thank you
+      - no, thanks
+      - no, thankyou
+      - no. u r idiot
+      - non
+      - noooooooooo
+      - noooooooooooooooooooooooooooooooooooooooo
+      - nop
+      - nope
+      - nope!
+      - nope. i am good
+      - not going well at all
+      - not really
+      - not right now
+      - not yet
+      - nö
+      - sorry not right now
+      - still dont want to tell
+      - thanks but no thanks
+      - this sucks
+      - very bad
+      - I do not need help installing
+      - I don't wanna tell the name of my company
+      - no stop
+      - stop it, i do not care!!!
+      - none of them
+      - I don't agree      
+      - I do not agree
+      - Absolutely not
+      - nono
+      - I reject
+      - negative
+      - I disagree
+      - don't feel like it
+      - don't like it
+      - you are absolutely wrong
+      - you are hugely wrong
+      - I don't agree
+      - mmm no
+
+  - intent: retry
+    examples: |
+      - we restart
+      - let's start over
+      - restart!
+      - reset
+      - reset the game
+      - I want to start over
+      - i want to start over
+      - i want to restart the game!
+      - I want to restart the game
+      - Let's start over
+      - Can we start over?
+      - Let's start over
+      - Let's start over
+      - I would like to start a new game
+      - Can I start over again?
+      - Reset everything, please
+      - I want to restart the game session.
+      - Let's start over from scratch
+      - Reset the game, please
+      - I want to start over playing rock, paper, scissors
+      - I want to start over playing rock, paper, scissors
+      - reset current game
+      - reset current game
+      - resets the current game of rock, paper, scissors
+      - restart the game
+      - restart the game of rock, paper, scissors
+      - restart the game
+      - restart session
+      - restart game please
+      - please i want to start the game over again
+      - let's start playing a new game again!
+      - let's restart the game
+      - kindly start a new game
+      - start a new game
+      - start the game over
+      - please start a new game of rock, paper, scissors
+      - shall we start the game over again?
+      - could you start a new game?
+      - could you reset the game?
+      - could you reset the game session?
+      - could we play the game from scratch?
+      - could you start the game again?
+      - could you reset the game?
+      - could you start a new game?
+      - could you start a new game session?
+      - could you reset?
+      - can you reset the game?
+      - can you reset the game of rock, paper, scissors?
+      - reset the game!
+      - start a new game!
+      - can we start a new game?
+      - start a new game?
+      - avii a new game?
+      - avii a new game session please?
+      - please start a new game session?
+      - kindly start a new game session please?
+      - please start a game from scratch?
+      - please start playing again?
+      - i want to play from scratch
+      - i want to start a new game session from scratch
+      - i want to play rock, paper, scissors again
+      - i want to play a new game of rock, paper, scissors
+      - could you please restart the game?
+      - could you please restart the game?
+      - could you please restart the game session?
+      - kindly could you please reset everything?
+      - could you please reset the game?
+      - please reset everything
+      - please reset everything?
+      - please reset the game?
+      - please can you start a new game?
+      - pepper restarts the game
+      - pepper restart game session
+      - pepper resets the game
+      - pepper resets the game
+      - pepper resets rock, paper, scissors
+      - pepper start new game
+      - pepper start new game session please
+      - pepper restarts game
+      - pepper restarts game session
+      - pepper resets game
+      - pepper resets game
+      - pepper resets rock, paper, scissors
+      - pepper start new game
+      - pepper start new game session please
+      - start new game pepper
+      - reset game pepper
+      - start new game session pepper
+      - restart game pepper
+      - please start over pepper
+      - please start the game over pepper
+      - start a new game pepper
+      - reset game pepper
+      - start a new game session pepper
+      - please start the game over pepper
+      - kindly start the game over pepper
+      - kindly start the game over again pepper
+      - let's play again!
+      - would it be possible to play a new game?
+      - i challenge you again!
+      - i want a rematch!
+      - hey let's play again!
+      - heila reset the game!
+      - heila let's start playing again!
+      - heila start a new game session again
+      - ue can you start a new game?
+      - I'm bored, let's start again
+      - let's try again!
+      - let's give it another try
+      - I want to give it another try
+      - Please let me have another try!
+      - hello let's play again
+      - hello, i want to play again
+      - hello, reset the game
+      - start a new game immediately
+      - immediately reset the game
+      - restart
+      
+  - intent: terminate
+    examples: |
+      - I got bored
+      - I'm tired of playing
+      - i want to end the game
+      - finish the game
+      - end the game
+      - turn off the game
+      - just turn off the game
+      - please stop the game
+      - please end the game
+      - pepper end the game
+      - pepper i don't want to play anymore
+      - I no longer want to play rock, paper, scissors
+      - i want to end the game.
+      - i am done playing the game.
+      - end the game.
+      - quit the game.
+      - end the game of rock, paper, scissors.
+      - end the game.
+      - i want to end the game.
+      - i want to stop playing the game.
+      - i don't want to play anymore.
+      - stop the game.
+      - stop the game
+      - pepper stop the game
+      - pepper ends the game
+      - pepper end game
+      - pepper i don't want to play anymore
+      - stop playing
+      - pepper end game
+      - pepper let's end it here
+      - let's end it here please
+      - i'm bored 
+      - close it i'm bored
+      

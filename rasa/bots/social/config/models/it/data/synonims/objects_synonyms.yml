@@ -1,0 +1,361 @@
+version: "3.1"
+nlu:
+  - synonym: persona
+    examples: |
+      - persona
+      - persone
+
+  - synonym: bicicletta
+    examples: |
+      - bicicletta
+      - biciclette
+      - bici
+
+  - synonym: auto
+    examples: |
+      - auto
+      - automobili
+
+  - synonym: moto
+    examples: |
+      - moto
+      - le moto
+
+  - synonym: aereo
+    examples: |
+      - aereo
+      - aeroplani
+
+  - synonym: bus
+    examples: |
+      - autobus
+
+  - synonym: treno
+    examples: |
+      - treno
+      - treni
+
+  - synonym: truck
+    examples: |
+      - camion
+
+  - synonym: boat
+    examples: |
+      - barca
+      - barche
+
+  - synonym: traffic light
+    examples: |
+      - semaforo
+      - semafori
+
+  - synonym: fire hydrant
+    examples: |
+      - idrante
+      - idranti
+
+  - synonym: stop sign
+    examples: |
+      - segnale di stop
+      - segnali di stop
+
+  - synonym: parking meter
+    examples: |
+      - parchimetro
+      - parchimetri
+
+  - synonym: bird
+    examples: |
+      - uccello
+      - uccelli
+
+  - synonym: cat
+    examples: |
+      - gatto
+      - gatti
+
+  - synonym: dog
+    examples: |
+      - cane
+      - cani
+
+  - synonym: horse
+    examples: |
+      - cavallo
+      - cavalli
+
+  - synonym: sheep
+    examples: |
+      - pecora
+      - pecore
+
+  - synonym: cow
+    examples: |
+      - mucca
+      - mucche
+
+  - synonym: elephant
+    examples: |
+      - elefante
+      - elefanti
+
+  - synonym: bear
+    examples: |
+      - orso
+      - orsi
+
+  - synonym: zebra
+    examples: |
+      - zebra
+      - zebre
+
+  - synonym: giraffe
+    examples: |
+      - giraffa
+      - giraffe
+
+  - synonym: backpack
+    examples: |
+      - zaino
+      - zaini
+  
+  - synonym: umbrella
+    examples: |
+      - ombrello
+      - gli ombrelli
+
+  - synonym: handbag
+    examples: |
+      - borsetta
+      - borsette
+      - borsa a mano
+      - borse a mano
+
+  - synonym: tie
+    examples: |
+      - cravatta
+      - cravatte
+
+  - synonym: suitcase
+    examples: |
+      - valigia
+      - valigie
+
+  - synonym: frisbee
+    examples: |
+      - frisbee
+
+  - synonym: snowboard
+    examples: |
+      - snowboard
+
+  - synonym: sports ball
+    examples: |
+      - palla sportiva
+      - palloni sportivi
+      - palle
+      - palla
+
+  - synonym: baseball bat
+    examples: |
+      - mazza da baseball
+      - mazze da baseball
+
+  - synonym: skateboard
+    examples: |
+      - skateboard
+
+  - synonym: surfboard
+    examples: |
+      - tavola da surf
+      - tavole da surf
+
+  - synonym: tennis racket
+    examples: |
+      - racchetta da tennis
+      - racchette da tennis
+
+  - synonym: bottle
+    examples: |
+      - bottiglia
+      - bottiglie
+
+  - synonym: wine glass
+    examples: |
+      - bicchiere di vino
+      - bicchieri di vino
+      - occhiali
+      - bicchiere
+
+  - synonym: cup
+    examples: |
+      - tazza
+      - tazze
+
+  - synonym: spoon
+    examples: |
+      - cucchiaio
+      - cucchiai
+
+  - synonym: banana
+    examples: |
+      - banana
+      - banane
+
+  - synonym: apple
+    examples: |
+      - mela
+      - mele
+
+  - synonym: sandwich
+    examples: |
+      - sandwich
+      - panini
+
+  - synonym: orange
+    examples: |
+      - arancia
+      - arance
+
+  - synonym: carrot
+    examples: |
+      - carota
+      - carote
+
+  - synonym: hot dog
+    examples: |
+      - hot dog
+
+  - synonym: pizza
+    examples: |
+      - pizza
+      - pizze
+
+  - synonym: donut
+    examples: |
+      - ciambella
+      - ciambelle
+
+  - synonym: cake
+    examples: |
+      - torta
+      - torte
+
+  - synonym: chair
+    examples: |
+      - sedia
+      - sedie
+
+  - synonym: sofa
+    examples: |
+      - divano
+      - divani
+
+  - synonym: pottedplant
+    examples: |
+      - pianta in vaso
+      - piante in vaso
+
+  - synonym: bed
+    examples: |
+      - letto
+      - letti
+
+  - synonym: diningtable
+    examples: |
+      - tavolo da pranzo
+      - tavoli da pranzo
+
+  - synonym: toilet
+    examples: |
+      - toilette
+      - servizi igienici
+      - wc
+
+  - synonym: tvmonitor
+    examples: |
+      - tvmonitor
+      - tvmonitors
+      - tv
+      - televisori
+      - tenere sotto controllo
+      - monitor
+
+  - synonym: laptop
+    examples: |
+      - computer portatile
+      - laptop
+      - taccuino
+      - i quaderni
+      - pc
+      - pz
+      - computer
+      - personal computer
+      - computer personale
+
+  - synonym: remote
+    examples: |
+      - a distanza
+      - telecomandi
+
+  - synonym: keyboard
+    examples: |
+      - tastiera
+      - tastiere
+
+  - synonym: cell phone
+    examples: |
+      - cellulare
+      - telefono cellulare
+      - smartphone
+      - telefono
+      - telefoni
+
+  - synonym: microwave
+    examples: |
+      - microonde
+      - forno
+      - forni
+
+  - synonym: toaster
+    examples: |
+      - tostapane
+
+  - synonym: sink
+    examples: |
+      - lavello
+      - lavabo
+
+  - synonym: refrigerator
+    examples: |
+      - frigorifero
+      - frigoriferi
+
+  - synonym: book
+    examples: |
+      - libro
+      - libri
+
+  - synonym: clock
+    examples: |
+      - orologio
+      - orologi
+
+  - synonym: motovaserbike
+    examples: |
+      - vaso
+      - vasi
+
+  - synonym: teddy bear
+    examples: |
+      - orsacchiotto di peluche
+      - orsi di peluche
+
+  - synonym: hair drier
+    examples: |
+      - asciugacapelli
+
+  - synonym: toothbrush
+    examples: |
+      - spazzolino
+      - spazzolini da denti

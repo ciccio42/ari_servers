@@ -11,7 +11,7 @@ Robot Control (Main-PC) are in `ari_control`.
 |---|---|---|---|
 | Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
 | LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | skeleton: API, configuration and lock in place, backends to port from PepperDemo |
-| RASA (dialogue) | [rasa/](rasa/README.md) | 5005 | proxy in front of Rasa (5006), tested with a fake Rasa |
+| RASA (dialogue) | [rasa/](rasa/README.md) | 5002, 5003, 5004 (one per bot) | the 3 bots of PepperDemo and their actions behind the proxy with the lock |
 
 ```
 ari_servers/
@@ -19,14 +19,14 @@ ari_servers/
 ├── common/ari_servers/   shared code: config.py, http.py (HTTPService), execution.py (lock), latency_log.py
 ├── whisper/              whisper_server/ (package), docker/, conda/, tools/
 ├── llm/                  llm_server/ (package): config.py, backend.py, rag.py, server.py
-├── rasa/                 rasa_proxy/ (package): config.py, server.py
+├── rasa/                 bots/ (social, rock_paper_scissor, connect_four), rasa_proxy/ (package), docker/
 ├── models/  audio_files/  latency_logs/  run/
 ```
 
 ## Configuration
 Every server is a dataclass of options (e.g. `WhisperConfig`), filled from the lowest to the highest priority by:
 its defaults, its section of [config/servers.yaml](config/servers.yaml), the environment `<PREFIX>_<FIELD>`
-(`WHISPER_MODEL`, `LLM_PORT`, `RASA_UPSTREAM`...), the command line `--<field>`. The **model** of each server is a
+(`WHISPER_MODEL`, `LLM_PORT`, `RASA_ROUTES`...), the command line `--<field>`. The **model** of each server is a
 field: change it in the YAML file, or for one run with a variable or an option.
 ```bash
 WHISPER_MODEL=openai/whisper-large-v3 python -m whisper_server       # another Whisper model
@@ -55,7 +55,7 @@ Shared folders (the workspace of every server, mounted as `/workspace` in the co
 | Folder | Content |
 |---|---|
 | `config/` | `servers.yaml` |
-| `models/` | models: `silero/silero_vad.onnx` (versioned), `whisper/` (exported at the first start, not versioned) |
+| `models/` | models: `silero/silero_vad.onnx` (versioned), `whisper/` (exported at the first start), `rasa/` (trained bots): not versioned |
 | `audio_files/` | the 5 Italian WAV of the tests of the report |
 | `latency_logs/` | latency log of the servers (`latency_<date>_<host>.csv`), not versioned |
 | `run/` | execution lock, not versioned |

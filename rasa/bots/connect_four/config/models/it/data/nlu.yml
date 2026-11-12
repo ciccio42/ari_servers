@@ -1,0 +1,278 @@
+version: "3.1"
+
+
+nlu:
+- intent: nlu_fallback
+  examples: |
+    - Eh
+    - Uhm
+    - Mmm
+    - Boh
+    - Eeeh
+    - Ah
+    - Mah
+    - Non saprei
+    - Cosa?
+    - Non lo so
+    - Mmmh
+    - Che cosa?
+    - Ehmm
+    - Sì... forse...
+    - Ehm, non sono sicuro
+    - Vediamo...
+    - Uh... aspetta
+    - Può darsi
+    - Insomma...
+    - Bla bla bla
+    - Uff
+    - Eh già
+    - Tipo...
+    - Non ricordo
+    - Più o meno
+    - Boh, chissà
+    - Mha
+    - Non importa
+    - Aspetta un attimo
+    - Qualcosa del genere
+    - Eh sì...
+    - Forse sì, forse no
+    - Non saprei dirti
+    - Mmm, vediamo
+    - Chissà
+    - Non fa niente
+    - Mah, vedremo
+    - Ah, ok...
+    - Non sono sicuro
+    - Eeehm, magari...
+    - Bla bla bla
+    - Uff
+    - Eh già
+    - Tipo...
+    - Non ricordo
+    - Più o meno
+    - Boh, chissà
+    - Mha
+    - Non importa
+    - Aspetta un attimo
+    - Qualcosa del genere
+    - Eh sì...
+    - Forse sì, forse no
+    - Non saprei dirti
+    - Mmm, vediamo
+    - Chissà
+    - Non fa niente
+    - Mah, vedremo
+    - Ah, ok...
+    - Non sono sicuro
+    - Eeehm, magari...
+    - Boh, va bene
+    - Vedremo
+    - Qualsiasi cosa
+    - Non fa differenza
+    - Mmm, forse...
+    - Uhm, chissà
+    - Forse... non so
+    - Ah sì, boh
+    - Non mi viene in mente
+    - Uhm, vediamo
+    - Eh
+    - Uhm
+    - Mmm
+    - Boh
+    - Eeeh
+    - Ah
+    - Mah
+    - Non saprei
+    - Cosa?
+    - Non lo so
+    - Mmmh
+    - Che cosa?
+    - Ehmm
+    - Sì... forse...
+    - Ehm, non sono sicuro
+    - Vediamo...
+    - Uh... aspetta
+    - Può darsi
+    - Insomma...
+    - Presumo vada bene, devi vedere solo questa cosa
+    - Boh, forse
+    - Non ne ho idea
+    - Mah, chi lo sa
+    - Ehm... non saprei
+    - Non lo so, sinceramente
+    - Può essere
+    - Forse è così
+    - Non sono convinto
+    - Chi può dirlo?
+    - Eh, non credo
+    - Mah, vediamo
+    - Uhm, interessante...
+    - Non saprei proprio
+    - Sì, no, forse
+    - Forse va bene così
+    - Vedremo più tardi
+    - Uh, buona domanda
+    - Non ne sono sicuro
+    - Eh, magari...
+    - Chissà cosa significa
+    - Mmm, fammi pensare
+    - Ci devo riflettere
+    - Non so che dire
+    - Ah, forse sì
+    - Ah boh, vedremo
+    - Non ne sono convinto
+    - Potrebbe essere
+    - Sinceramente non saprei
+    - Non fa differenza per me
+    - Eh, non ci ho mai pensato
+    - Mah, chi lo sa
+    - Uh sì, forse
+    - Eh, così così
+    - Boh, non importa
+    - Non so, ehm...
+    - Ah, è difficile
+    - Potrebbe darsi
+    - Mmm, interessante
+    - Non sono del tutto sicuro
+    - Non mi viene nulla in mente
+    - Forse, non ricordo
+    - Eh, vediamo più avanti
+    - Chi se lo ricorda
+    - Bah, non so
+    - Non ne sono certo
+    - Eh, fammi pensare un attimo
+    - Sì, cioè, no
+    - Difficile a dirsi
+    - Magari un giorno
+    - Non saprei proprio dirti
+    - Bah, forse più tardi
+    - Ci devo pensare meglio
+    - Non è chiaro
+    - Mah, lascerei perdere
+    - Non ho una risposta
+    - Non saprei spiegartelo
+    - Ah, potrebbe anche essere
+    - Mmm, non sono sicuro
+    - Fammi riflettere un po'
+    - Eh, è complicato
+    - Mha, chissà
+    - Non mi ricordo bene
+    - Magari sì, magari no
+    - Non fa molta differenza
+    - Boh, non ci penso
+    - Ah, mi sfugge
+    - Forse lo so, ma non sono sicuro
+    - Può darsi che sia così
+    - Non lo sapremo mai
+    - Mi sfugge al momento
+    - Non ricordo proprio
+    - Eh, potrebbe anche darsi
+    - Vedremo, chi lo sa
+    - Ah, è possibile
+    - Eh... lasciamo stare
+    - Non ci arrivo
+    - Non ci ho mai fatto caso
+    - Eh... non importa
+    - Non so bene
+    - Mah, vedremo come va
+    - Forse sì, forse no
+    - Non ho capito bene
+    - Non mi torna
+    - Ah, vediamo dopo
+    - Eh, boh, chi può dirlo
+    - Ci devo pensare
+    - Non ho una risposta precisa
+    - Mmm, non sono convinto
+    - Ah, è una domanda difficile
+    - Non ci ho mai fatto caso
+    - Non ho un'idea chiara
+    - Lasciamo stare per ora
+    - Bah, meglio non dire nulla
+    - È un po' confuso
+    - Non ne sono sicuro
+    - Vedremo poi
+    - Forse, ma non saprei
+
+
+- intent: affirm
+  examples: |
+    - Si
+    - Si le conosco
+    - Conosco già le regole
+    - Conosco le regole
+    - Ne sono a conoscenza
+    - So già giocare
+    - So già come si gioca
+    - Sì, le so.
+    - Sì, so come si gioca.
+    - Sì, le regole le conosco.
+    - Gioco già da tempo.
+    - Non ho bisogno che me le spieghi.
+    - So come funziona.
+    - Non serve spiegare, le so già.
+    - Sì, sono pratico del gioco.
+    - Conosco il gioco.
+    - Sì, ho già giocato.
+
+- intent: deny
+  examples: |
+    - No.
+    - No, non le conosco.
+    - Non conosco le regole.
+    - Non so come si gioca.
+    - Non sono a conoscenza delle regole.
+    - Non ho mai giocato prima.
+    - Ho bisogno che me le spieghi.
+    - Non so come funziona.
+    - Non le so ancora.
+    - Non sono pratico del gioco.
+    - Non ho mai imparato le regole.
+    - Non sono sicuro di saper giocare.
+    - Non ricordo come si gioca.
+    - Avrei bisogno di una spiegazione.
+    - Non ho esperienza con questo gioco.
+    - Non so di cosa si tratta.
+    - Non ho mai sentito parlare delle regole.
+    - Non mi è chiaro come si gioca.
+
+- intent: retry
+  examples: |
+    - Ricominciamo
+    - Facciamo un'altra partita
+    - Voglio giocare di nuovo
+    - Giochiamo di nuovo
+    - Nuova partita
+    - Giochiamo ancora
+    - Ricominciamo a giocare
+    - Facciamo un’altra partita insieme.
+    - Proviamo un’altra volta.
+    - Iniziamo un nuovo gioco.
+    - Rifacciamo il gioco.
+    - Ripartiamo da capo.
+    - Vorrei riprovare.
+    - Riavviamo la partita.
+    - Possiamo giocare di nuovo?
+    - Un’altra sfida, per favore.
+    - Diamo il via a un’altra partita.
+
+
+- intent: terminate
+  examples: |
+    - Non voglio più giocare
+    - Basta giocare
+    - Mi sono scocciato
+    - Basta
+    - Stop
+    - Ferma il gioco
+    - Chiudi il gioco
+    - Esci dal gioco
+    - Non voglio continuare.
+    - Ho finito di giocare.
+    - Non ho più voglia di giocare.
+    - Lasciamo perdere.
+    - Interrompi il gioco.
+    - Fermiamo tutto.
+    - Non gioco più.
+    - Metti fine al gioco.
+    - Chiudiamo qui.
+    - Termina la partita.

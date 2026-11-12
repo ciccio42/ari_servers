@@ -1,0 +1,37 @@
+version: "3.1"
+
+intents:
+  - nlu_fallback
+  - affirm
+  - retry
+  - deny
+  - terminate
+
+
+responses:
+  utter_affirm:
+  - text: "Ottimo, continuiamo a giocare."
+
+  utter_deny:
+  - text: "Bene, bella partita!"
+
+  utter_retry:
+  - text: "Okay, ricominciamo!"
+
+  utter_terminate:
+  - text: "Va bene, alla prossima partita!"
+  
+  utter_fallback:
+  - text: "Scusa, non posso rispondere a questa domanda"
+
+actions: 
+- utter_affirm
+- utter_deny
+- utter_retry
+- utter_terminate
+- utter_fallback
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

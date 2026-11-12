@@ -4,3 +4,8 @@ latency_logs/
 __pycache__/
 *.pyc
 run/
+# trained Rasa models (tens of MB each): models/rasa/<bot>/<it|en>/*.tar.gz, from PepperDemo or rasa/docker/run.bash train
+models/rasa/
+rasa/bots/*/.rasa/
+# written by the actions of the social bot with DEBUG=True
+rasa/bots/social/*.txt

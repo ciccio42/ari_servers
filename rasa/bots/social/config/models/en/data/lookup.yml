@@ -1,0 +1,183 @@
+version: "3.1"
+nlu:
+  - lookup: object_type
+    examples: |
+      - person
+      - persons
+      - people
+      - bicycle
+      - bicycles
+      - bike
+      - bikes
+      - car
+      - cars
+      - motorbike
+      - motorbikes
+      - moto
+      - aeroplane
+      - airplane
+      - aeroplanes
+      - airplanes
+      - bus
+      - buses
+      - train
+      - trains
+      - truck
+      - trucks
+      - boat
+      - boats
+      - traffic light
+      - traffic lights
+      - fire hydrant
+      - fire hydrants
+      - stop sign
+      - stop signs
+      - parking meter
+      - parking meters
+      - bench
+      - bird
+      - birds
+      - cat
+      - cats
+      - dog
+      - dogs
+      - horse
+      - horses
+      - sheep
+      - sheeps
+      - cow
+      - cows
+      - elephant
+      - elephants
+      - bear
+      - bears
+      - zebra
+      - zebras
+      - giraffe
+      - giraffes
+      - backpack
+      - backpacks
+      - umbrella
+      - umbrellas
+      - handbag
+      - handbags
+      - tie
+      - ties
+      - suitcase
+      - suitcases
+      - frisbee
+      - frisbees
+      - skis
+      - snowboard
+      - snowboards
+      - sports ball
+      - sports balls
+      - balls
+      - ball
+      - kite
+      - baseball bat
+      - baseball bats
+      - baseball glove
+      - skateboard
+      - skateboards
+      - surfboard
+      - surfboards
+      - tennis racket
+      - tennis rackets
+      - bottle
+      - bottles
+      - wine glass
+      - wine glasses
+      - glasses
+      - glass
+      - cup
+      - cups
+      - fork
+      - knife
+      - spoon
+      - spoons
+      - bowl
+      - banana
+      - bananas
+      - apple
+      - apples
+      - sandwich
+      - sandwiches
+      - orange
+      - oranges
+      - broccoli
+      - carrot
+      - carrots
+      - hot dog
+      - hot dogs
+      - pizza
+      - pizzas
+      - donut
+      - donuts
+      - cake
+      - cakes
+      - chair
+      - chairs
+      - sofa
+      - sofas
+      - pottedplant
+      - pottedplants
+      - bed
+      - beds
+      - diningtable
+      - diningtables
+      - toilet
+      - toilets
+      - wc
+      - tvmonitor
+      - tvmonitors
+      - tv
+      - tvs
+      - monitor
+      - monitors
+      - mouse
+      - laptop
+      - laptops
+      - notebook
+      - notebooks
+      - pc
+      - pcs
+      - computer
+      - computers
+      - personal computer
+      - personal computers
+      - remote
+      - remotes
+      - keyboard
+      - keyboards
+      - cell phone
+      - cell phones
+      - smartphone
+      - smartphones
+      - smart phone
+      - smart phones
+      - phone
+      - phones
+      - microwave
+      - microwaves
+      - oven
+      - ovens
+      - toaster
+      - toasters
+      - sink
+      - sinks
+      - refrigerator
+      - refrigerators
+      - book
+      - books
+      - clock
+      - clocks
+      - vase
+      - vases
+      - scissors
+      - teddy bear
+      - teddy bears
+      - hair drier
+      - hair driers
+      - toothbrush
+      - toothbrushes

@@ -1,0 +1,114 @@
+version: "3.1"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: false
+
+intents:
+  - nlu_fallback
+  - affirm
+  - goodbye
+  - greet
+  - deny
+  - ask_functions
+  # - ask_identity
+  - ask_age
+  - ask_gender
+  - ask_emotion
+  - ask_biometrics
+  - ask_objects
+  - what_games
+  - want_play
+  - choose_connect_four
+  - choose_rock_paper_scissor
+  - who_mario_vento_is
+  - doa
+  - gpt_4o
+  - personal_request
+  - ask_rag
+
+entities:
+  - age
+  - emotion
+  - gender
+  # - identity
+  - objects_list
+  - object_type
+  - image
+
+slots:
+  age:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: age
+  objects_list:
+    type: list
+    mappings:
+    - type: from_entity
+      entity: objects_list
+  emotion:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: emotion
+  gender:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: gender
+  # identity:
+  #   type: text
+  #   mappings:
+  #   - type: from_entity
+  #     entity: identity
+  object_type:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: object_type
+  image_slot:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: image
+
+responses:
+  utter_goodbye:
+    - text: Ciao Ciao
+    - text: Spero di rivederti presto
+  utter_affirm:
+    - text: Ottimo. Vuoi sapere altro?
+  utter_deny:
+    - text: Mi dispiace. Chiedimi qualcos'altro dai!
+  utter_what_games:
+    - text: So giocare a forza quattro e a sasso, carta, forbici!
+  utter_want_play:
+    - text: A che gioco vuoi giocare? So giocare a forza quattro e sasso, carta, forbici.
+  utter_functions:
+    - text: Posso riconoscere gli oggetti nell'ambiente. Inoltre posso rispondere a domande di cultura generale e riconoscere il tuo genere, età e emozioni. 
+  utter_who_mario_vento_is:
+    - text: Mario Vento è un docente ordinario di Intelligenza Artificiale e Machine Learning presso l'Università degli Studi di Salerno, nel corso di laurea in Ingegneria Informatica. È stato direttore del Dipartimento di Ingegneria dell'Informazione e attualmente dirige il Laboratorio di Macchine Intelligenti, coordinando il lavoro di 16 scienziati nei settori dell'intelligenza artificiale, della robotica cognitiva e della guida autonoma. Il Professore Vento ha pubblicato oltre 300 articoli scientifici internazionali e ha circa 13.600 citazioni, che lo posizionano da anni nel 2% degli scienziati più citati a livello mondiale per le sue attività di ricerca
+
+actions:
+  - action_biometrics
+  - action_emotion
+  - action_gender
+  - action_greet
+  - action_age
+  - action_people
+  - action_social
+  - action_doa
+  # - action_identity
+  - action_objects
+  - action_gpt_4o
+  - action_start_connect_four
+  - action_start_rock_paper_scissor
+  - utter_affirm
+  - utter_deny
+  - utter_functions
+  - utter_goodbye
+  - utter_what_games
+  - utter_who_mario_vento_is
+  - utter_want_play
+  - action_add_info_kg

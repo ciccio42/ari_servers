@@ -1,0 +1,2437 @@
+version: "3.1"
+
+nlu:
+  - intent: affirm
+    examples: |
+      - mi piace
+      - sì mi va
+      - bello
+      - bello, facciamolo
+      - bello facciamolo!
+      - Accetto
+      - Accetto.
+      - credo di accettare
+      - Eccezionale!
+      - Bene
+      - Grande
+      - Sono d'accordo
+      - Sì lo sto usando
+      - Ho cambiato idea. Voglio accettarlo
+      - Si lo faccio
+      - ho capito
+      - capito
+      - chiaro
+      - perfetto
+      - ottimo
+      - Credo di sì
+      - Credo di si
+      - L'ho usato in passato sì
+      - Lo farò
+      - Mi piacerebbe assolutamente
+      - Sono sicuro che lo farò!
+      - Carino
+      - OK
+      - affermativo
+      - affermo
+      - Ovviamente
+      - Certament
+      - Ovvio
+      - Certamente
+      - Oh si
+      - Oh va bene
+      - Ok iniziamo
+      - OK.
+      - Va bene
+      - Va bene!
+      - PER FAVORE
+      - SICURO
+      - Sicuro
+      - sicurissimo
+      - Sarebbe grandioso
+      - SÌ
+      - SI
+      - Sì
+      - Si
+      - si certo
+      - Sì, va bene
+      - Si, va bene
+      - Sì!
+      - Si!
+      - sì, certamente
+      - si, certamente
+      - sì grazie
+      - si grazie
+      - Sì grazie!
+      - Si grazie!
+      - Si accetto
+      - SÌ.
+      - Si.
+      - si dai
+      - direi proprio di sì
+      - Direi di sì
+      - Eccezionale sì
+      - un po'
+      - un po
+      - assolutamente
+      - voglio accettare
+      - accettato
+      - concordato
+      - concordo
+      - accetto volentieri
+      - Ah ok
+      - va bene, bello
+      - stupefacente
+      - fantastico
+      - fantastco
+      - fntastco
+      - sorprendente
+      - Sorprendente!
+      - Eccezionale
+      - Confermo
+      - approvo
+      - aggiudicato
+      - d'accordissimo
+      - va benissimo
+      - alla grande
+      - bella storia fratello
+      - sicuramente sì senza dubbio
+      - Fatto
+      - abbastanza giusto
+      - naturalmente
+      - certo
+      - crto
+      - cavolo si!
+      - puoi andare
+      - puoi andare avanti
+      - vai 
+      - vai vai
+      - si vai pure
+      - si vai
+      - vai avanti
+      - vai super bene
+      - vai forte
+      - vai alla grande amico
+      - Fallo
+      - stai andando super bene
+      - Bene.
+      - fantastico, facciamolo
+      - Grande!
+      - diavolo sì
+      - mah, mi piacerebbe
+      - che carino!
+      - sono d'accordo
+      - sono!
+      - sono io!
+      - lo voglio
+      - Lo farò!
+      - va bene
+      - ja
+      - è figo
+      - ja è fantastico
+      - oh è fantastico
+      - yeah è fantastico   
+      - facciamolo
+      - non male
+      - certo che lo faccio
+      - Oh fantastico!
+      - oh bello
+      - Oh bene !!
+      - ah super
+      - ok bello
+      - ok bene
+      - ok amico
+      - ok fantastico
+      - va bene accetto
+      - ok ari
+      - ok...
+      - okay
+      - ok, adesso mi comporto bene
+      - ok ho capito
+      - bene, ari
+      - ok, ari
+      - OK...
+      - va bene, d'accordo
+      - certo, sicuramente
+      - Va bene..
+      - okay..
+      - okay figo
+      - okay bello
+      - okay sicuro
+      - okie
+      - ook
+      - oki oki
+      - ok
+      - ok ok
+      - si ok
+      - Si va benissimo
+      - si va bien
+      - va bien
+      - oui
+      - Per favore si
+      - si per favore
+      - si
+      - sì una specie
+      - si qualcosa del genere
+      - è una cosa certa
+      - Sicuro!
+      - suona bene
+      - è fantastico
+      - grande
+      - Uh Huh
+      - molto bene
+      - bene bene
+      - Beh si
+      - sei forte
+      - ci provi
+      - ci provo
+      - si voglio
+      - per favore
+      - per piacere
+      - sì
+      - Sìì
+      - sii
+      - Sii
+      - sì fallo
+      - si'
+      - si 
+      - si, perchè no
+      - sì, perché no
+      - sì se devo
+      - si, se devo
+      - yeeeeezzzzz
+      - yeeeeee
+      - siiii
+      - si lo voglio
+      - si se devo
+      - sì, è carino
+      - sì, va bene
+      - si, grazie
+      - Sì. :/
+      - Si. :/
+      - SÌ ...
+      - SI ...
+      - si accetta per favore
+      - sì piccola
+      - sì bello
+      - si dammi informazioni
+      - si Fai pure
+      - sì, provaci
+      - si ottimo
+      - si accetto
+      - si, sono d'accordo
+      - sì!
+      - sì, andava bene
+      - si, andava bene
+      - Sì, naturalmente
+      - Si, naturalmente
+      - sì grazie!
+      - si grazie!
+      - si signore
+      - sì, è fantastico
+      - si, è fantastico
+      - si è quello che voglio
+      - si, puoi
+      - SÌ'
+      - SI'
+      - sì, mi piacerebbe
+      - si, mi piacerebbe
+      - si mi piacerebbe
+      - sì, bello
+      - si bello
+      - si, bello
+      - si, dammi informazioni, per favore
+      - sì, io sono
+      - si, io sono
+      - si sono io      -
+      - sioo
+      - siss
+      - sissss
+      - sìsìsì
+      - sisisi
+      - si si si
+      - sì sì sì
+      - yop
+      - sip
+      - mi hai chiesto sì o no e ho risposto sì
+      - mi hai fatto una domanda chiedendomi si o no, a cui ho risposto di si
+      - yyeeeh
+      - Va bene, d'accordo
+      - OK..
+      - consideralo
+      - Più un meno
+      - Piu o meno
+      - Più o meno
+      - suona bene!
+      - Veramente
+      - Veramente?
+      - Davvero
+      - Davvero?
+
+  - intent: goodbye
+    examples: |
+      - Ciao
+      - Ciao ciao
+      - addio
+      - addio?
+      - adios
+      - ciao ciao
+      - ci si rivede
+      - ci si rivede!
+      - alla prossima
+      - Alla prossima!
+      - ci si becca dopo
+      - ci si becca dopo!
+      - ciao fratelo
+      - Ciao .
+      - ciao :P
+      - ciao robot
+      - ciao ciao robot
+      - arrivederci
+      - ci vediamo
+      - ciaooo
+      - ciao a presto
+      - ciao amico
+      - ciao è stato bello parlare con te
+      - Ciao!
+      - ciao
+      - Ci vediamo dopo
+      - A dopo
+      - cia
+      - addio ari!
+      - Buona notte
+      - buonanotte
+      - arrivederci.
+      - CI SI RIVEDE!
+      - ciao alla prossima
+      - ci si rivede caro
+      - ci si rivede caro!
+      - devo andare
+      - k ciaooo
+      - ok ciao
+      - ci vediamo dopo
+      - ci vediamo . Ciao
+      - Stai attento
+      - allora ciao
+      - va bene ciao
+      - ci sentiamo più tardi
+      - io vado ciao
+      - Chiudi questo discorso
+      - chiudiamo questo discorso
+      - finiamo qui la conversazione
+      - ciau
+      - è stato un piacere, alla prossima
+      - ora devo andare
+      - scappo, ciao!
+      - a più tardi
+      - a domani
+      - a quando sarà
+      - buona giornata
+      - Ti auguro una buona giornata
+      - buona serata
+      - Una buona serata
+      - Una buona giornata a te
+      - a presto
+      - A presto dai
+      - a dopo amico 
+      - salve
+      - ci sentiamo
+      - Torno subito
+      - Aspettami
+      - Alla prossima volta
+      - ciao a domani
+      - Ciao a più tardi
+      - vado, a dopo
+      - ti saluto
+      - ti lascio
+      - Ti lascio per ora, ciao
+      - finiamola qui
+      - è ora di andare
+      - devo proprio scappare
+      - è tardi vado via
+      - devo andarmene
+      - ora devo proprio andare
+      - sto andando via
+      - Sto andando
+      - Devo per forza andare
+      - mi dispiace ma devo andare
+      - sono desolato però non posso continuare a parlare
+      - sono desolata devo lasciarti
+      - scusami ma devo andare
+      - perdonami vado
+
+  # - intent: deny
+  #   examples: |
+  #     - sbagliato
+  #     - è sbagliato
+  #     - Tui hai torto
+  #     - Tu hai torto
+  #     - non è cosi
+  #     - non è così!
+  #     - non è affatto così
+  #     - ti stai sbagliando molto!
+  #     - TI STAI SBGLIANDO MOLTO!
+  #     - non è vero assolutamente
+  #     - non è vero
+  #     - no affatt
+  #     - No affatto
+  #     - nessuno
+  #     - mi sa proprio di no
+  #     - non è mica vero
+  #     - non mi piace per niente
+  #     - no niente
+  #     - negativo
+  #     - stai sbagliando
+  #     - è proprio errato
+  #     - errato
+  #     - hai torto
+  #     - Non voglio
+  #     - Non voglio dartelo
+  #     - non voglio dirtelo
+  #     - non voglio dirlo
+  #     - Non ti do il mio indirizzo email
+  #     - Non te lo darò
+  #     - non voglio dartelo
+  #     - NO
+  #     - NO NON VOGLIO QUESTO!
+  #     - no, non voglio questo
+  #     - no non voglio qst
+  #     - direi proprio di no
+  #     - no non voglio
+  #     - no proprio no
+  #     - nenanche per sogno
+  #     - te lo puoi scordare
+  #     - Per niente
+  #     - Neanche morto
+  #     - non fare mai qualcosa del genere
+  #     - manco per idea
+  #     - non ne ho
+  #     - non mi piace
+  #     - no lascia stare
+  #     - No no lascia perdere
+  #     - non va
+  #     - No
+  #     - Nessuno dei due
+  #     - Mai
+  #     - Non importa
+  #     - No grazie
+  #     - No, non proprio.
+  #     - NO.
+  #     - Non proprio
+  #     - assolutamente no
+  #     - decisamente no
+  #     - nego tutto
+  #     - lo nego
+  #     - rifiuto
+  #     - non mi piace questo
+  #     - non credo
+  #     - no non credo
+  #     - No non voglio
+  #     - non voglio nessuno dei due
+  #     - non voglio
+  #     - non voglio darti la mia email
+  #     - non voglio accettare :P lol
+  #     - Immagino significhi di no
+  #     - Immagino significhi no
+  #     - Temo di no
+  #     - Non sono sicuro
+  #     - sta andando piuttosto male
+  #     - fa pena
+  #     - no
+  #     - no no
+  #     - no no no
+  #     - NO NO!
+  #     - no, sto bene
+  #     - nah non per me
+  #     - no, la prima volta
+  #     - nessuno dei due
+  #     - NO :(
+  #     - no non ho ancora deciso se voglio iscrivermi
+  #     - no e ancora no
+  #     - niente ari
+  #     - non andare
+  #     - no non posso
+  #     - no non accetto
+  #     - no non voglio accettare :P lol
+  #     - no non lo farò
+  #     - no signora
+  #     - no signore
+  #     - no scusa
+  #     - no grazie
+  #     - non c'è modo
+  #     - no hai sbagliato
+  #     - NO!!!!
+  #     - no lo odio
+  #     - no, non è come dici
+  #     - NO, sei poco preparato su questo
+  #     - non
+  #     - nooooooooo
+  #     - nooooooooooooooooooooooooooooooooooooooooo
+  #     - No!
+  #     - No, sono buono
+  #     - non va affatto bene
+  #     - non proprio
+  #     - non adesso
+  #     - Non ancora
+  #     - scusa non adesso
+  #     - ancora non voglio dirlo
+  #     - questo fa schifo
+  #     - questo proprio non va
+  #     - molto brutto
+  #     - Non ho bisogno di aiuto per l'installazione
+  #     - Non voglio dire il nome della mia azienda
+  #     - smettila, non mi interessa!!!
+  #     - nessuno di loro
+  #     - Non sono d'accordo
+
+  - intent: greet
+    examples: |
+      - Buongiorno
+      - buongiorno
+      - Buondì
+      - buondi
+      - Salute
+      - ciao bella
+      - Ciao bello
+      - tutto bene?
+      - come butta?
+      - buongiornissimo
+      - Eccoci
+      - eccoci
+      - Eccoci qua
+      - Ci risiamo
+      - Eccoci di nuovo!
+      - di nuovo qui
+      - paicere di rivederti
+      - ben trovati
+      - Bentrovati
+      - Bentrovato
+      - bentrovato
+      - Bentornato
+      - bentornato!
+      - Ciao piacere
+      - Ci sei?
+      - ci sei
+      - Puoi parlare?
+      - puoi parlare con me?
+      - parliamo?
+      - Parliamo dai
+      - facciamo due chiacchiere
+      - ciaone
+      - ciao caro amico
+      - ciao caro amico mio
+      - CIAO
+      - EHI
+      - Ciao
+      - Ciao ari
+      - Ciao!
+      - Ehi ari
+      - Ehi
+      - amico mio salve
+      - salve
+      - salve ari
+      - Salve fratello
+      - ciao caro
+      - hei caro
+      - Ciao ari!
+      - Ciao amico
+      - Ciao ari..
+      - CIAO!
+      - CIAO'
+      - Ciao, ari
+      - Ciaoee
+      - Ciaoeeeeeeeeeeee
+      - Ehilà ;)
+      - Come va?
+      - come stai?
+      - che paicere rivederti!
+      - allora che si dice?
+      - che si dice
+      - che si racconta?
+      - tutto ok?
+      - Tutto a posto?
+      - come procede?
+      - Come procede
+      - Eccotii
+      - eccoti
+      - Che cosa succede
+      - Come va il mio ari
+      - Che cosa succede?
+      - eiii come va
+      - eiii come stai
+      - eiii come stai?
+      - ehi capo
+      - pronto
+      - Pronto
+      - buona sera
+      - Buonasera
+      - un saluto a tutti
+      - Saluti
+      - ciao
+      - ciao ari
+      - ciaooo
+      - salveee
+      - ciao9o
+      - Ciao a tutti
+      - ciao c'è qualcuno
+      - ciao sono di nuovo io
+      - ciao robot
+      - ciao baby
+      - ciao dolce ragazzo
+      - Ciao mondo
+      - ciao, mi chiamo [Alessia Esposito](name)
+      - ciao, mi chiamo [Emilio Somma](name)
+      - Ciao?
+      - Ciao]
+      - ciaooooo
+      - Hey amico
+      - hei fra
+      - hei fratello
+      - hei fratello!
+      - ciao fratello      
+      - ehi ehi
+      - ehi parliamo
+      - Ehilà
+      - ciao ragazzo
+      - Ehilà..
+      - ehi, parliamo
+      - ehi, ari!
+      - ehi
+      - Hey ho
+      - CIAO !
+      - ciao mister
+      - Ciao di nuovo
+      - ciao puoi parlare?
+      - Ciao gente
+      - Ciao amici
+      - ciao ciao
+      - ciao sono [Antonio Re](name)
+      - ciao sono [Giulia Barone](name)
+      - ciao sono [Andrea Rossi](name)
+      - ciao sono [Giovanna Barbato](name)
+      - ciao signora ari
+      - ciao amico!
+      - ciao sono io
+      - CIAO...
+      - CIAO?
+      - uee
+      - sono [Fabio Tegola](name)
+      - jojojo
+      - ola ari
+      - ari ciao      
+      - salut
+      - saluti
+      - cosa succede
+      - cosa accade?
+      - cosa sta accadendo
+      - cosa sta succedendo?
+      - cosa sta succedendo qui
+      - che cosa succede
+      - che cosa succede?
+      - yo
+      - o
+      - ooo
+      - Bella
+      - heila ari
+      - heilà ari
+      - hei ari
+      - hey ari
+      - Hey
+      - hey
+      - hey hey
+      - Cià
+      - cià
+
+  - intent: ask_functions
+    examples: |
+      - Puoi spiegarmi in una frase cosa stai facendo?
+      - Mi puoi aiutare?
+      - Potresti per favore mostrarmi quello che puoi 
+      - Potresti per favore mostrarmi quello che puoi fare?
+      - Fantastico, c'è qualcos'altro che puoi fare, Ari?
+      - Cosa puoi fare?
+      - Come puoi aiutarmi 
+      - Come puoi aiutarmi?
+      - Come mi aiuti?
+      - Ho bisogno di aiuto
+      - ho bisogno di aiuto
+      - mi dai una mano?
+      - mi puoi aiutare
+      - che sai fa?
+      - dimmi cortesemente in cosa sei esperto
+      - avrei bisogno di una mano
+      - ho bisogno  di un aiuto
+      - Quali sono le mie opzioni
+      - Quali sono le mie opzioni?
+      - Che cosa sei è in grado di fare?
+      - Cosa posso chiederti?
+      - Cosa puoi dimostrare
+      - Cosa sai fare
+      - Cosa sai fare?
+      - cosa sai fare ari?
+      - Cosa puoi fare per me?
+      - Cosa puoi dirmi?
+      - Cosa fai
+      - Cosa fai?
+      - mi dici qualsiasi altra cosa?
+      - ci sono altre opzioni?
+      - posso chiederti altro?
+      - puoi fare altro?
+      - Mi puoi aiutare
+      - Figo! puoi fare qualcos'altro qui?
+      - Figo! puoi fare altro qui?
+      - ciao cosa puoi fare per me
+      - ciao cosa puoi fare per me?
+      - aiuto
+      - aiutami
+      - aiuto per favore
+      - aiuto per piacere
+      - aiuto?
+      - CIAO. Sara cosa fai?
+      - hm questo non mi aiuta del tutto c'è qualcos'altro che puoi fare?
+      - come posso usarti
+      - come posso usarti?
+      - come puoi aiutare?
+      - Come funziona?
+      - come puoi aiutarmi
+      - come mi aiuti
+      - ti ho chiesto se puoi fare qualcos'altro
+      - non so cosa voglio
+      - Ulteriori informazioni
+      - mi dici ulteriori info?
+      - mi dici ulteriori informazioni?
+      - ed ora?
+      - e ora cosa?
+      - mi dici ora cosa?
+      - adesso cosa?
+      - opzioni
+      - mi dici le opzioni?
+      - quali sono le opzioni?
+      - fammi vedere il menù
+      - fammi vedere il menu
+      - potresti farmi vedere il menu?
+      - potresti farmi vedere il menù?
+      - potresti mostrarmi il menù?
+      - mostrami cosa è possibile
+      - e ora
+      - e ora?
+      - Che cosa si può fare
+      - Che cosa si può fare?
+      - quindi in cosa puoi aiutarmi?
+      - quindi che succede adesso?
+      - parla con me
+      - parla con me!
+      - dimmi qualcosa che puoi fare
+      - dimmi qual è la tua abilità
+      - dimmi quali sono le tue abilità
+      - ehm... cosa adesso?
+      - quali sono tutte le cose che capisci?
+      - cosa capisci?
+      - cosa stai suonando
+      - cosa stai facendo
+      - in cosa sei bravo?
+      - cosa posso chiedere?
+      - cosa posso chiederti?
+      - cosa puoi fare
+      - di cosa possiamo parlare?
+      - cosa puoi rispondere
+      - cosa sai fare
+      - Cosa puoi fare per me
+      - cosa puoi fare sara?
+      - cosa sai fare?
+      - cosa puoi offrirmi?
+      - cosa puoi dirmi
+      - cosa puoi tu?
+      - cosa puoi fare per me?
+      - cosa fai
+      - cosa fai?
+      - cosa sai se non questo?
+      - cos'altro posso fare qui?
+      - cos'altro posso fare
+      - cos'altro posso fare?
+      - cos'altro puoi fare?
+      - in cos'altro puoi aiutare?
+      - in cos'altro puoi aiutarmi?
+      - cosa devo fare
+      - cosa devo fare?
+      - a cosa serve questo robot
+      - cosa puoi fare?
+      - cos'è quello che fai?
+      - che fai?
+      - cosa stai facendo?
+      - di cosa parli?
+      - puoi aiutarmi
+      - cosa puoi insegnarmi?
+      - Ari può fare calcoli?
+      - quello che puoi
+      - quello che puoi fare?
+      - cos'è che puoi fare?
+      - cos'è quello che puoi fare?
+
+  # - intent: ask_identity
+  #   examples: |
+  #     - Puoi dirmi il mio nome?
+  #     - Puoi dirmi come mi chiamo?
+  #     - Ho un nome?
+  #     - Ho un nome? Qual è?
+  #     - Conosci il mio nome?
+  #     - qual è il mio nome
+  #     - Sai come mi chiamo? 
+  #     - Ho un nome, qual è?
+  #     - Vorrei sapere il mio nome
+  #     - Vorrei sapere come mi chiamo
+  #     - Dimmi come mi chiamo
+  #     - Posso sapere il mio nome?
+  #     - Per favore, fammi sapere come mi chiamo
+  #     - Di Il mio nome.
+  #     - di il mio nome per piacere
+  #     - posso chiederti di dirmi come mi chiamo?
+  #     - Dimmi il mio nome
+  #     - Dimmi il mio nome.
+  #     - Come mi chiamo?
+  #     - Quale potrebbe essere il mio nome?
+  #     - Come mi chiamavano i miei genitori?
+  #     - Come mi chiamano i miei genitori?
+  #     - Come mi chiamano i miei colleghi?
+  #     - Come mi chiamano le persone?
+  #     - Come mi chiamano tutti?
+  #     - In quale altro modo mi chiamano le persone?
+  #     - Qual è esattamente il mio nome?
+  #     - Qual è il mio nome?
+  #     - Qual è il mio nome completo?
+  #     - Qual è il nome che mi è stato dato?  
+  #     - Che nome devo dare a me stesso?
+  #     - Quale sarebbe il nome sulla mia lapide?
+  #     - puoi dirmi il mio nome?
+  #     - Qual è il mio nome
+  #     - qual è il mio nome?
+  #     - Puoi dirmi chi sono?
+  #     - Sai chi sono?
+  #     - Sai chi sono io?
+  #     - Come posso determinare chi sono?
+  #     - Come faccio a scoprire chi sono?
+  #     - come faccio a capire chi sono
+  #     - Come faccio a capire chi sono?
+  #     - Posso sapere chi sono?
+  #     - Dimmi chi sono.
+  #     - Dimmi chi sono?
+  #     - Chi sono
+  #     - Chi sono?
+  #     - Chi potrei essere?
+  #     - puoi dirmi cosa sono?
+  #     - puoi dirmi qual è la mia identità?
+  #     - puoi dirmi chi sono?
+  #     - dimmi qual è la mia identità?
+  #     - dimmi chi sono?
+  #     - qual è la mia identità?
+  #     - chi sono
+  #     - chi sono io?
+  #     - chi posso?
+  #     - Puoi riconoscermi?
+  #     - riesci a riconoscermi?
+
+  - intent: ask_age
+    examples: |
+      - Quante candeline c'erano sulla mia ultima torta di compleanno?
+      - Da quanti anni sto vivendo?
+      - Quanti anni ho vissuto?
+      - Quanti anni ho?
+      - Quanti anni avevo durante il mio ultimo compleanno?
+      - Quanti anni avrò al mio prossimo compleanno?
+      - Dimmi il mio giorno, mese e anno di nascita.
+      - Qual è la mia età?
+      - Dimmi la mia età
+      - Qual è la mia data di nascita?
+      - Qual è il mio conteggio degli anni di vita finora?
+      - Qual era la mia età al mio ultimo compleanno?
+      - Quale sarà la mia età al mio prossimo compleanno?
+      - In che anno sono nato?
+      - Quando festeggio il mio giorno di nascita?
+      - e quanti anni ho?
+      - quanti anni ho?
+      - puoi dirmi esattamente quanti anni ho?
+      - puoi dirmi quale numero rappresenta la mia età?
+      - puoi dirmi la mia età?
+      - Sai quanti anni ho?
+      - mi dai la mia età?
+      - che ne dici della mia età
+      - che ne dici della mia età?
+      - quanti anni ho
+      - quanti anni hai
+      - Quanti anni ho
+      - quanti anni avevo al mio ultimo compleanno?
+      - quanti anni avevo quando ho festeggiato il mio ultimo compleanno?
+      - quanti anni avrò quest'anno?
+      - quanto sono vecchio?
+      - in che anno sono nato?
+      - dimmi quanti anni ho?
+      - dimmi il mio numero di età?
+      - dimmi la mia età?
+      - che età ho
+      - che età avevo quando ho festeggiato il mio ultimo compleanno?
+      - qual è la mia età?
+      - qual è il mio compleanno?
+      - qual è la mia età esatta?
+      - quale numero rappresenta la mia età?
+      - qual è il mio anno di nascita?
+      - quando è il mio compleanno?
+      - quando sono nato?  
+      - quando sono nat?
+      - quando sono nata?
+      - Prova a indovinare la mia età
+      - Prova a indovinare quanti anni ho
+      - Quanti anni ho?
+      - Quanti anni pensi che avrò l'anno prossimo?
+      - Quanti anni potrei avere?
+      - ari quanti anni ho
+      - dimmi quanti anni ho secondo te
+
+  - intent: ask_gender
+    examples: |      
+      - Sono una ragazza?
+      - Sono un ragazzo?
+      - Sono agender?
+      - Per favore dimmi se sono una ragazza
+      - Ho un sesso?
+      - Sono cisgender?
+      - Sono una ragazza o un ragazzo?
+      - Sono un ragazzo o una ragazza?
+      - Sono un uomo o una donna?
+      - Sono una donna?
+      - Per favore dimmi se sono trans
+      - Sono femmina?
+      - Qual è il mio genere?
+      - Qual è il mio sesso?
+      - Sono genderfluid?
+      - Sono maschio o femmina?
+      - Sono maschio?
+      - Sono un uomo?
+      - sono queer?
+      - Per favore dimmi se sono un ragazzo
+      - sono un uomo
+      - sono un uomo?
+      - Sono genderfluid
+      - Sono non binario
+      - Sono trans
+      - sono un ragazzo
+      - Sono genderqueer
+      - sono una ragazza
+      - Dove sono nello spettro di genere?
+      - Sono transgender
+      - Per favore dimmi il mio genere
+      - Dimmi tutto sul mio genere
+      - Io sono una donna
+      - Qual è la mia identità di genere?
+      - Sono bigender?
+      - sono una ragazza?
+      - sono un ragazzo?
+      - Non capisco se ho un genere o no
+      - Per favore dimmi se sono un uomo
+      - Sono transgender?
+      - Puoi dirmi il mio sesso?
+      - Ho un'identità di genere?
+      - Come mi identifico in termini di genere?
+      - Per favore, dimmi se sono una donna
+      - Per favore, dimmi se sono un uomo
+      - Ho un sesso?
+      - Sono nello spettro di genere?
+      - Che succede al mio sesso?
+      - Non capisco se ho un sesso o no
+      - Mi dici se sono un uomo
+      - Sono un transgender?
+      - Posso sapere il mio sesso?
+      - Ho anche un genere?
+      - Ho un'identità di genere?
+      - Come mi identifico in termini di genere?
+      - Per favore, dì se sono una donna      
+      - Le sembro un uomo o una donna?
+      - sono una donna?
+      - puoi dirmi se sono una ragazza o un ragazzo?
+      - Sono un uomo?
+      - Sono un uomo?
+      - Sono una donna?
+      - Può dirmi il mio sesso?
+      - è in grado di riconoscere il mio sesso?
+      - Visto che ho i capelli lunghi, ti sembro una donna?
+      - Dal mio volto diresti che sono un uomo o una donna?
+      - I miei lineamenti ti fanno pensare che io sia un uomo o una donna?
+      - dimmi il mio genere
+      - Pensi che io sia maschio o femmina?
+      - Quale pensi sia il mio genere?
+      - perché sembro un uomo?
+      - perché sembro una donna?
+      - dai miei tratti somatici mi consideri un uomo?
+      - dai miei lineamenti somatici mi consideri una donna?
+      - Visto che ho la barba, ti sembro un uomo?
+      - Visto che non ho la barba, ti sembro una donna?
+
+  - intent: ask_emotion
+    examples: |
+      - Sono felice?
+      - Sono triste?
+      - Sono di buon umore?
+      - Non sono allegro oggi?
+      - Sono sempre disgustato?
+      - Sono sempre arrabbiato?
+      - Qualcuno è di buon umore.
+      - Beh, non mi sento arrabbiato?
+      - Beh, non mi sento disgustato oggi?
+      - Beh, non mi sento temuto?
+      - Beh, non mi sento felice oggi?
+      - Beh, non mi sento triste?
+      - Beh, non mi sento sorpreso oggi?
+      - Beh, non sono arrabbiato?
+      - Beh, non sono disgustato oggi?
+      - Beh, non sono temuto?
+      - Beh, non sono felice oggi?
+      - beh, non sono triste
+      - Beh, non sono sorpreso?
+      - Beh, non sono allegro oggi?
+      - non mi sento felice oggi?
+      - non mi sento disgustato?
+      - non mi sento arrabbiato oggi?
+      - non mi sento temuto?
+      - non mi sento triste oggi?
+      - non mi sento sorpreso?
+      - non sono disgustato?
+      - non sono temuto oggi?
+      - non sono triste oggi?
+      - Cosa pensi che io stia provando?
+      - beh, cosa pensi che io stia provando?
+      - Come mi sento?
+      - Che emozione mostro?
+      - Quali emozioni sto provando?
+      - Quali emozioni pensi che io stia provando?
+      - Quali emozioni mostro che provo?
+      - Cosa dimostro di sentire?
+      - Quale emozione dimostro?
+      - Sono contento?
+      - Sono infelice?
+      - Sono di cattivo umore?
+      - Sono di cattivo umore oggi?
+      - Non mi sento allegro oggi?
+      - non mi sento arrabbiato?
+      - non mi sento disgustato oggi?
+      - non mi sento triste?
+      - non mi sento sorpreso oggi?
+      - non sono arrabbiato?
+      - non sono disgustato oggi?
+      - non sono temuto?
+      - non sono felice oggi?
+      - non sono triste
+      - non sono sorpreso?
+      - non sono allegro oggi?
+      - non mi sento felice?
+      - cerca di indovinare la mia emozione
+      - come mi vedi?
+      - che impressione ti do?
+      - Riesci a capire la mia emozione?
+      - Puoi dire se sono triste?
+      - Si capisce se sono felice?
+      - esprimo felicità?
+      - Che emozione ti comunico?
+      - cerca di indovinare il mio umore
+      - puoi dirmi qual è la mia emozione?
+      - riesci a capire i miei sentimenti?
+      - riesci a capire le mie emozioni?
+      - Può dirmi il mio stato emotivo?
+      - capisci quello che sento?
+      - Che emozione ho?
+      - Mi vedi giù?
+      - ti sembro abbattuto?
+      - ti sembro felice?
+      - Sono molto o poco arrabbiato?
+      - Sono o non sono felice?
+      - Sono molto o poco neutrale?
+
+  - intent: ask_biometrics
+    examples: |
+      - che dici di me
+      - che dici su di me?
+      - che dici di me?
+      - cosa puoi dirmi di me
+      - cosa puoi dire di me?
+      - cosa puoi dirmi su di me
+      - cosa puoi dire su di me?
+      - Raccontami qualcosa di me
+      - dimmi qualcosa su me
+      - dimmi qualcosa su di me
+      - cosa puoi dirmi di me?
+      - cosa sai di me
+      - cosa sai di me?
+      - Sai qualcosa su di me?
+      - che ne dici di me?
+      - Cosa pensi di me?
+      - Quali sono le tue impressioni su di me?
+      - Che impressione hai di me?
+      - Mi conosci bene?
+      - Cosa sai di me finora?
+      - Quali informazioni hai su di me?
+      - Cosa ti è stato detto su di me?
+      - Cosa pensi di me come persona?
+      - Hai qualche opinione su di me?
+      - Cosa ricordi di me?
+      - Puoi dirmi qualcosa di interessante su di me?
+      - Hai notato qualcosa di particolare su di me?
+
+  - intent: what_games
+    examples: |
+      - a quali giochi sai giocare?
+      - sai giocare a qualcosa?
+      - a che sai giocare?
+      - quali giochi conosci?
+      - conosci qualche gioco?
+      - ari conosci qualche gioco?
+      - conosci qualche gioco Ari?	  
+      - Ari, quali giochi sei in grado di giocare?
+      - ciao Ari, puoi dirmi quali giochi sai giocare?
+      - Ari, quali sono i giochi ai quali puoi partecipare?
+      - posso chiederti quali tipi di giochi conosci?
+      - hai esperienza con giochi? 
+      - Ari, mi piacerebbe sapere quali giochi riesci a giocare
+      - sai giocare a sasso, carta, forbici?
+      - sai giocare a forza 4?
+      - mi dici a che sai giocare?
+      - mi dici a cosa sai giocare?
+      - per piacere dimmi a cosa sai giocare
+      - dimmi a che sai giocare
+      - dimmi sa cosa sai giocare
+      - giochiamo a qualche gioco?
+      - a quale gioco vogliamo giocare?
+
+  - intent: ask_objects
+    examples: |
+      - quali oggetti sono nella scena?
+      - quali oggetti sono nella stanza
+      - quali oggetti ci sono nell'ambiente?
+      - vedi qualche oggetto?
+      - stai osservando qualche oggetto?
+      - stai guardando qualche oggetto?
+      - guardi qualche oggetto?
+      - guardi una persona?
+      - guardi delle persone?
+      - guardi un ragazzo?
+      - guardi una ragazza?
+      - guardi dei ragazzi?
+      - guardi delle ragazze?
+      - gardi un bambino?
+      - guardi un signore?
+      - guardi dei signori?
+      - guardi una signora?
+      - guardi delle signore?
+      - vedi qualcuna?
+      - vedi qualcuno?
+      - vedi qualche persona?
+      - vedi una ragazza?
+      - vedi un ragazzo?
+      - stai osservando qualcuno?
+      - stai osservando una persona?
+      - stai osservando qualcuna?
+      - stai osservando delle persone?
+      - stai osservando una ragazza?
+      - stai osservando delle regazze
+      - stai osservando dei ragazzi?
+      - stai osservando un ragazzo?
+      - stai vedendo qualcuno?
+      - stai vedendo una persona?
+      - stai vedendo delle persone?
+      - stai vedendo un gruppo di persone?
+      - stai vedendo un ragazzo?
+      - stai vedendo una ragazza?
+      - è presente una persona?
+      - è presente un ragazzo?
+      - è presente una ragazza?
+      - c'è una signora?
+      - c'è un signore?
+      - vedi delle persone?
+      - vedi un gruppo di ragazzi?
+      - vedi un gruppo di ragazze?
+      - vedi un gruppo di persone?
+      - vedi un gruppo di sinori?
+      - vedi un gruppo di signore?
+      - guardi un bambino?
+      - stai vedendo un bambino?
+      - stai osservando un bamnino?
+      - cosa stai guardando?
+      - stai guardando una persona?
+      - stai guardando delle persone?
+      - stai guardando un ragazzo?
+      - stai guardando una ragazza?
+      - stai guardando un gruppo di persone?
+      - stai guardando un gruppo di ragazzi?
+      - stai guardando un gruppo di ragazze?
+      - Quali oggetti vedi?
+      - quali oggetti puoi vedere?
+      - quali oggetti vedi in giro?
+      - vedi qualcosa in giro?
+      - quale oggetto vedi?
+      - quanti oggetti vedi?
+      - quali sono gli oggetti che stai vedendo ora?
+      - quante persone vedi?
+      - vedi qualche persona? 
+      - Quali oggetti vedi?
+      - Quante persone vedi?
+      - quante persone ci sono nel gruppo?
+      - vedi qualche persona?
+      - c'è qualche persona?
+      - vedi una persona? 
+      - vedi persone?
+      - vedi delle persone?
+      - è una persona?
+      - quante persone ci sono?
+      - vedi qualcunio?
+      - c'è qualcuno?
+      - quante [biciclette]{"entity": "object_type", "value": "biciclette"}?
+      - quante [valigie]{"entity": "object_type", "value": "valigie"} riesci a vedere?
+      - quante [sedie]{"entity": "object_type", "value": "sedie"} riesci a vedere?
+      - quante [mucche]{"entity": "object_type", "value": "mucche"} ci sono?
+      - quanti [laptop]{"entity": "object_type", "value": "laptop"} ci sono?
+      - Ci sono [uccelli]{"entity": "object_type", "value": "uccelli"}?
+      - Ci sono [bicchieri]{"entity": "object_type", "value": "bicchieri"}?
+      - Ci sono delle [banane]{"entity": "object_type", "value": "banana"}?
+      - Esiste una [ciambella]{"entity": "object_type", "value": "ciambella"}?
+      - riesci a vedere un [pallone]{"entity": "object_type", "value": "pallone"}?
+      - riesci a vedere una [mela]{"entity": "object_type", "value": "mela"}?
+      - riesci a vedere un [divano]{"entity": "object_type", "value": "divano"}?
+      - è uno [smartphone]{"entity": "object_type", "value": "smartphone"}?
+      - è uno [telefono]{"entity": "object_type", "value": "telefono"}?
+      - Quante [biciclette]{"entity": "object_type", "value": "biciclette"} sono presenti?
+      - Quante [macchine]{"entity": "object_type", "value": "macchine"} riesci a vedere?
+      - Quante [moto]{"entity": "object_type", "value": "moto"} puoi contare?
+      - Quanti [bus]{"entity": "object_type", "value": "bus"} ci sono in giro?
+      - Quanti [autobus]{"entity": "object_type", "value": "bus"} ci sono in giro?	  
+      - Ci sono [aerei]{"entity": "object_type", "value": "aerei"} nel cielo?
+      - Ci sono [barche]{"entity": "object_type", "value": "barche"} in acqua?
+      - Ci sono delle [parchimetro]{"entity": "object_type", "value": "parchimetro"} qui intorno?
+      - Esiste un [bancone]{"entity": "object_type", "value": "bancone"} in questa stanza?
+      - Riesci a vedere una [palla da tennis]{"entity": "object_type", "value": "palla da tennis"} da qualche parte?
+      - Riesci a individuare una [tazza]{"entity": "object_type", "value": "tazza"} sul tavolo?
+      - Riesci a scorgere un [frisbee]{"entity": "object_type", "value": "frisbee"} nel parco?
+      - Riesci a individuare una [bottiglia]{"entity": "object_type", "value": "bottiglia"} sullo scaffale?
+      - È presente una [tazza]{"entity": "object_type", "value": "tazza"} sul bancone?
+      - È un [cucchiaio]{"entity": "object_type", "value": "cucchiaio"} da gelato?
+      - È un [letto]{"entity": "object_type", "value": "letto"} matrimoniale o singolo?
+      - È presente un [orologio]{"entity": "object_type", "value": "orologio"} sulla parete?
+      - È una [scatola]{"entity": "object_type", "value": "scatola"} o un libro?
+      - Hai visto un [computer]{"entity": "object_type", "value": "computer"} in giro?
+      - Hai visto un [telefono cellulare]{"entity": "object_type", "value": "telefono cellulare"} in questa stanza?
+      - Hai notato un [frigorifero]{"entity": "object_type", "value": "frigorifero"} nella cucina?
+      - Hai notato un [libro]{"entity": "object_type", "value": "libro"} sul tavolo?
+      - È presente una [penna]{"entity": "object_type", "value": "penna"} sulla scrivania?
+      - È presente una [sedia]{"entity": "object_type", "value": "sedia"} accanto alla finestra?
+      - È presente un [divano]{"entity": "object_type", "value": "divano"} nel salotto?
+      - È presente un [lavandino]{"entity": "object_type", "value": "lavandino"} nel bagno?
+      - È presente una [lavatrice]{"entity": "object_type", "value": "lavatrice"} nella lavanderia?
+      - È presente una [televisione]{"entity": "object_type", "value": "televisione"} nella stanza?
+      - È presente un [microonde]{"entity": "object_type", "value": "microonde"} nella cucina?
+      - È presente un [toaster]{"entity": "object_type", "value": "toaster"} sul bancone?
+      - È presente un [lavabo]{"entity": "object_type", "value": "lavabo"} nel bagno?
+      - È presente una [libreria]{"entity": "object_type", "value": "libreria"} in questa stanza?
+      - È presente una [pianta]{"entity": "object_type", "value": "pianta"} nel salotto?
+      - Quante [persone]{"entity": "object_type", "value": "persone"} ci sono nel gruppo?
+      - Quante [persone]{"entity": "object_type", "value": "persone"} partecipano all'evento?
+      - Vedi qualche [persona]{"entity": "object_type", "value": "persona"}?
+      - c'è qualche [persona]{"entity": "object_type", "value": "persona"}?
+      - vedi una [persona]{"entity": "object_type", "value": "persona"}?
+      - vedi [persone]{"entity": "object_type", "value": "persone"}?
+      - vedi [persone]{"entity": "object_type", "value": "persone"}?
+      - vedi delle [persone]{"entity": "object_type", "value": "persone"}?
+      - c'è una [persona]{"entity": "object_type", "value": "persona"} nella stanza?
+      - c'è una [persona]{"entity": "object_type", "value": "persona"} nella scena?
+      - vedi una [persona]{"entity": "object_type", "value": "persona"} nella scena?
+      - vedi delle [persone]{"entity": "object_type", "value": "persone"} nella stanza?
+      - vedi delle [persone]{"entity": "object_type", "value": "persone"} qui?
+      - sono presenti [persone]{"entity": "object_type", "value": "persone"}?
+      - sono presenti [persone]{"entity": "object_type", "value": "persone"} qui?
+      - è presente una [persona]{"entity": "object_type", "value": "persona"} qui?
+      - è presente una [persona]{"entity": "object_type", "value": "persona"}?
+      - stai vedendo una [persona]{"entity": "object_type", "value": "persona"} qui?
+      - stai vedendo una [persona]{"entity": "object_type", "value": "persona"}?
+      - stai vedendo delle [persone]{"entity": "object_type", "value": "persone"} qui?
+      - stai vedendo delle [persone]{"entity": "object_type", "value": "persone"}?
+      - stai vedendo delle [persone]{"entity": "object_type", "value": "persone"} qui?
+      - stai vedendo delle [persone]{"entity": "object_type", "value": "persone"}?
+      - è una [persona]{"entity": "object_type", "value": "persona"}?
+      - quante [persone]{"entity": "object_type", "value": "persone"} ci sono?
+
+  - intent: nlu_fallback
+    examples: |
+      - A cosa serve l'esame della troponina?
+      - A cosa serve la troponina?
+      - Che cos'è l'emoglobina glicata e ogni quanto va misurata?
+      - Che cos'e' l'emoglobina glicata e ogni quanto va misurata?
+      - Che cos'è l'emoglobina glicata?
+      - Ogni quanto si misura l'emoglobina glicata?
+      - Come si calcola il rischio cardiovascolare?
+      - Come si cura il diabete di tipo 1?
+      - Come si cura l'angina stabile?
+      - Come si diagnostica il diabete gestazionale?
+      - Come si diagnostica lo scompenso cardiaco?
+      - Come si riconosce un infarto e come si conferma la diagnosi?
+      - Come si riconosce un infarto?
+      - Come si riduce il rischio cardiovascolare in una persona con diabete?
+      - Come si tratta la fibrillazione atriale?
+      - Cosa fare in caso di ipoglicemia?
+      - Qual è il valore obiettivo di emoglobina glicata nel diabete di tipo 2?
+      - Qual e' il valore obiettivo di emoglobina glicata nel diabete di tipo 2?
+      - Qual è il valore obiettivo dell'emoglobina glicata?
+      - Qual è il target di emoglobina glicata nel diabete?
+      - Qual è l'obiettivo di pressione arteriosa in una persona con diabete?
+      - Qual e' l'obiettivo di pressione arteriosa in una persona con diabete?
+      - Qual è la terapia dello scompenso cardiaco a frazione di eiezione ridotta?
+      - Qual e' la terapia dello scompenso cardiaco a frazione di eiezione ridotta?
+      - Qual è la terapia farmacologica del diabete di tipo 2?
+      - Qual e' la terapia farmacologica del diabete di tipo 2?
+      - Quale terapia si segue dopo un infarto?
+      - Quali sono i criteri diagnostici del diabete?
+      - Quali sono i valori normali dell'emoglobina?
+      - Quali sono i valori normali della glicemia a digiuno?
+      - Quali sono i valori obiettivo del colesterolo LDL?
+      - Quando si parla di ipertensione arteriosa?
+      - Quando si possono prescrivere SGLT2 inibitori e agonisti del GLP-1?
+      - Quali vaccinazioni sono raccomandate per un adulto?
+      - Quali screening oncologici sono raccomandati in Italia?
+      - Quali sono i primi segni dell'Alzheimer?
+      - Quali sono i rischi e i limiti dell'intelligenza artificiale in medicina?
+      - Come si tutela la privacy dei dati sanitari?
+      - Come si gestisce la politerapia nell'anziano?
+      - Quando la febbre in un neonato è un'emergenza?
+      - Quando la febbre in un neonato e' un'emergenza?
+      - emoglobina glicata nel diabete
+      - valori normali della glicemia
+      - valori normali del colesterolo
+      - quanto deve essere la pressione arteriosa?
+      - cosa indica un valore alto di emoglobina?
+      - che cos'è la glicemia?
+      - a cosa serve la metformina?
+      - quali sono i sintomi dello scompenso cardiaco?
+      - come si misura la pressione arteriosa?
+      - quali farmaci si usano per il colesterolo alto?
+      - Il mio orologio è più veloce del tuo.
+      - Puoi giocare a calcio?
+      - sai cos'è una palla?
+      - cosa si può dire dell'europa
+      - che ore sono
+      - niente da dire
+      - tifo la juventus
+      - puoi prendere una [palla]{"entity": "object_type", "value": "palla"}?
+      - parlami di chimica
+      - cosa si può dire del calcio
+      - parlami di cristiano ronaldo
+      - cosa ne sai di calcio?
+      - parlami di tennis
+      - cosa si può dire della robotica
+      - cosa si può dire di cristiano ronaldo
+      - mi puoi parlare del calcio?
+      - parlami dei draghi
+      - cosa ne sai di playboy
+      - che ne sai del mondo
+      - cosa ne sai di playboy?
+      - che ne sai del mondo?
+      - quanti libri ci sono nella tua biblioteca?
+      - quando è il tuo prossimo appuntamento dal dottore?
+      - Dove sei andato in vacanza con il tuo amico?
+      - Dov'è andato in vacanza il tuo amico?
+      - Qual è il modo migliore per cucinare il pollo?
+      - Chi è il personaggio principale di Harry Potter?
+      - Qual è la via più veloce per raggiungere l'aeroporto?
+      - Quante ore hai dormito la scorsa notte?
+      - Quando è stata l'ultima volta che hai visitato tua nonna?
+      - Qando è stata l'ultima volta che hai visitato tua nonna?
+      - Quale è il tuo film preferito?
+      - dove hai comprato le scarpe?
+      - Che tipo di film ti piace?
+      - Chi è il presidente degli Stati Uniti?
+      - Suggeriscimi dove posso trovare un buon parrucchiere in questa zona
+      - Qual è il tuo colore preferito?
+      - Quanti soldi spendi per la spesa ogni settimana?
+      - Quando hai iniziato a imparare a suonare la chitarra?
+      - quali sono i migliori giochi per andare in vacanza?
+      - quali sono i vantaggi di fare esercizi fisici?
+      - Chi è stata la prima persona a camminare sulla luna?
+      - Quale di questi ristoranti ha le recensioni migliori?
+      - Quanti cioccolatini ci sono nella scatola?
+      - Quando ci sarà buon tempo per un picnic?
+      - quante persone hanno assistito al concerto di ieri sera?
+      - Quand'è il tuo compleanno?
+      - Dove posso trovare un buon bar in questo quartiere?
+      - Qual è il tuo cibo preferito?
+      - Chi è un bravo musicista italiano?
+      - Quale libro mi consigli per conoscere la storia?
+      - Quanto costa il nuovo smartphone?
+      - Quando uscirà la prossima stagione del tuo programma televisivo preferito?
+      - dove sei andato durante la tua ultima vacanza?
+      - Quali sono i tuoi progetti per il fine settimana?
+      - Chi ha vinto l'ultima Coppa del Mondo?
+      - Qual è l'edificio più alto del mondo?
+      - Quante lingue parli fluentemente?
+      - Quali lingue parli fluentemente?
+      - Quando hai iniziato a imparare a nuotare?
+      - Dov'è il distributore di benzina più vicino?
+      - Qual è la capitale della Francia?
+      - chi ha scritto il libro "Il buio oltre la siepe"?
+      - Quale film ha vinto il premio per il miglior film agli Oscar l'anno scorso?
+      - quanti paesi ci sono nell'Unione Europea?
+      - quando fu fondato il Regno d'Italia?
+      - Quanti fratelli hai?
+      - Quante sorelle hai?
+      - Quando è prevista la prossima riunione?
+      - Dove hai incontrato il tuo migliore amico?
+      - Qual è il tuo hobby preferito?
+      - Chi è l'amministratore delegato dell'azienda per cui lavori?
+      - quanto tempo passi ogni giorno sui social?
+      - quando è stata l'ultima volta che hai visitato un museo?
+      - Dove posso trovare una buona pizzeria a Napoli?
+      - come si chiama il continente più grande del mondo?
+      - Chi è il tuo autore preferito?
+      - In quale università ti sei laureato?
+      - Quanti animali hai?
+      - Quali animali hai?
+      - Quando hai imparato ad andare in bicicletta?
+      - qual è il posto migliore per ammirare il tramonto a Roma?
+      - Come si chiama il più grande oceano della Terra?
+      - Chi è l'atleta più famoso in Spagna?
+      - Quale paese è conosciuto come il Paese del Sol Levante?
+      - Quante ore al giorno passi al telefono?
+      - Dimmi, dove posso trovare un buon ristorante italiano?
+      - Puoi dirmi a che ora inizia il concerto?
+      - Per favore dimmi quando è morta la regina Virginia?
+      - Dimmi, qual è il miglior libro di scienze da leggere per i principianti?
+      - Puoi dirmi chi ha vinto il campionato dell'anno scorso?
+      - Puoi dirmi, a che ora inizia il concerto?
+      - Per favore dimmi, quando è morta la regina Virginia?
+      - Dimmi, qual è il miglior libro di scienze da leggere per i principianti
+      - Puoi dirmi chi ha vinto il campionato dell'anno scorso
+      - parlami del tuo libro preferito
+      - Dimmi qual è la tua opinione sul riscaldamento globale?
+      - Dimmi quando è il momento migliore per visitare Parigi?
+      - Dimmi dove hai comprato quelle scarpe?
+      - Dimmi quali sono i requisiti per fare domanda per un lavoro da dottore?
+      - dimmi chi è il tuo modello?
+      - Dimmi qual è la città più bella del mondo
+      - Dimmi quanti fratelli e sorelle hai?
+      - Dimmi quali sono i tuoi piani per il fine settimana?
+      - Dimmi chi è il cantante principale di questa band
+      - Dimmi dov'è la stazione di servizio più vicina?
+      - dimmi qual è la capitale dell'Australia?
+      - Dimmi quanto costa viaggiare in Giappone?
+      - Dimmi quando è stata l'ultima volta che sei andato in vacanza?
+      - dimmi qual è la capitale dell'Australia
+      - Dimmi quanto costa viaggiare in Giappone
+      - Dimmi quando è stata l'ultima volta che sei andato in vacanza
+      - Dimmi qual è la tua opinione sul riscaldamento globale
+      - Dimmi quando è il momento migliore per visitare Parigi
+      - Dimmi dove hai comprato quelle scarpe
+      - Dimmi quali sono i requisiti per fare domanda per un lavoro da dottore
+      - dimmi chi è il tuo modello
+      - Dimmi quanti fratelli e sorelle hai
+      - Dimmi quali sono i tuoi piani per il fine settimana
+      - Dimmi dov'è la stazione di servizio più vicina
+      - Raccontami qualche esempio di musica classica
+      - dimmi qual è la montagna più alta del mondo
+      - dimmi da quanto tempo studi inglese
+      - Dimmi chi ha vinto l'ultimo premio Nobel per la letteratura?
+      - dimmi quali sono i benefici di una dieta sana?
+      - Dimmi chi ha vinto l'ultimo premio Nobel per la letteratura
+      - dimmi quali sono i benefici di una dieta sana
+      - Dimmi dove posso trovare un buon ristorante messicano
+      - Dimmi un viaggio da poter fare
+      - Dimmi cosa posso cucinare
+      - Dimmi cosa posso fare
+      - Dimmi cosa posso leggere
+      - Dimmi cosa posso realizzare
+      - Dimmi come posso fare il passaporto
+      - Dimmi come costruire un itinerario
+      - Mi dici cosa posso cucinare
+      - Mi dici qual è il tuo programma televisivo preferito?
+      - Mi dici quali sono i vantaggi di lavorare da casa?
+      - Mi dici quando è il momento migliore per visitare New York City?
+      - Dimmi qual è la tua cucina preferita
+      - Dimmi chi è il miglior attore italiano
+      - Mi dici qual è la destinazione turistica più popolare al mondo?
+      - Mi dici quante ore al giorno ti alleni?
+      - Mi dici qual è la tua più grande paura?
+      - Mi dici chi è il tuo cantante preferito?
+      - Mi dici dov'è l'ospedale più vicino?
+      - Mi dici qual è il significato di empatia
+      - Mi dici di quanto costa comprare una casa a Dubai
+      - Mi dici dove posso imparare a suonare la chitarra?
+      - Mi dici qual è il tuo hobby preferito?
+      - Dimmi qual è il fiume più lungo del mondo?
+      - Mi dici quanti paesi hai visitato?
+      - Mi dici chi è l'attuale presidente della Francia?
+      - Mi dici quali sono i diversi tipi di fonti energetiche rinnovabili?
+      - Mi dici dove posso trovare una buona libreria a Milano?
+      - suggeriscimi un buon posto dove andare per una cena romantica
+      - Mi suggerisci quale libro dovrei leggere dopo?
+      - suggeriscimi quando è il momento migliore per visitare le Hawaii
+      - Suggeriscimi dove posso trovare un buon meccanico a Roma
+      - suggeriscimi quali sono i modi migliori per rimanere motivati
+      - Suggeriscimi un buon autore di libri dell'orrore
+      - Suggeriscimi quale è la migliore marca di laptop
+      - mi suggerisci come migliorare le mie capacità di parlare in pubblico?
+      - Suggeriscimi qual è il modo migliore per imparare una nuova lingua?
+      - Suggeriscimi qual è il modo migliore per imparare una nuova lingua
+      - mi suggerisci chi è il miglior atleta di tutti i tempi?
+      - Suggeriscimi dov'è il posto migliore per acquistare prodotti freschi
+      - mi suggerisci qual è il modo migliore per risparmiare?
+      - Suggeriscimi qual è il miglior ristorante di New York
+      - Suggeriscimi quali sono i vantaggi di uno stile di vita sano
+      - suggeriscimi chi è la persona più influente della storia
+      - Suggeriscimi dove posso trovare un buon studio di yoga in questa città
+      - Suggeriscimi qual è il modo migliore per affrontare lo stress 
+      - Suggeriscimi qual è il modo migliore per affrontare lo stress
+      - Suggeriscimi qual è il miglior tipo di esercizio per la perdita di peso
+      - suggeriscimi quattro nomi di gatti
+      - suggeriscimi dei colori per la festa di compleanno di una bambina
+      - Puoi spiegare il concetto di entropia?
+      - Qual è la differenza tra una democrazia e una dittatura?
+      - Come funziona il mercato azionario?
+      - Puoi spiegare l'effetto serra?
+      - Qual è il significato del termine "dissonanza cognitiva"?
+      - In che modo il cervello umano elabora il linguaggio?
+      - Puoi spiegare il concetto di selezione naturale?
+      - dimmi la differenza tra un genotipo e un fenotipo
+      - spiegare il concetto di buco nero
+      - sapresti spiegarmi il concetto di buco nero?
+      - conosci la differenza tra fonti energetiche rinnovabili e non rinnovabili?
+      - c'è differenza tra un virus e un batterio?
+      - sai cos'è il bosone di Higgs?
+      - mi spieghi cos'è l'esistenzialismo?
+      - qual è la differenza tra uno scalare e un vettore?
+      - Conosci il concetto di Internet?
+      - conosci Internet?
+      - sai come spiegare la relatività?
+      - puoi spiegare il concetto di meccanica quantistica
+      - puoi spiegarmi il concetto di meccanica quantistica?
+      - Dimmi la differenza tra un gene e un allele
+      - dimmi cos'è l'empatia
+      - Spiega la teoria della probabilità
+      - spiegami la teoria della probabilità
+      - puoi spiegarci come cucinare un uovo?
+      - puoi spiegarci come si fa un buon caffè?
+      - Puoi dirmi come superare un esame?
+      - in quale anno i primi esseri umani sono sbarcati sulla Luna?
+      - dimmi la definizione di funzione pari
+      - dimmi la definizione di funzione dispari
+      - parlami di messi
+      - parlami di pele
+      - parlami di pelè
+      - parlami di maradona
+      - chi ha vinto lo scudetto in italia nel 2023?
+      - chi ha vinto lo scudetto in italia nel 2022
+      - Dimmi la ricetta della pizza
+      - Chi è Giuseppe Conte?
+      - Chi è Mr. Bean?
+      - Chi è Johnny Depp?
+      - Chi è Brad Pitt?
+      - Chi è Zingaretti?
+      - Chi è Monica Bellucci
+      - Chi è Alessandro Magno
+      - Dimmi una barzelletta
+      - Raccontami un barzelletta
+      - come si cucina la pasta al sugo?
+      - come si prepara la pizza
+      - come posso fare la carne
+      - come si studia per un esame
+      - Scrivimi un poema
+      - Sai scrivere una poesia?
+      - mi scrivi un testo
+      - scrivimi una fiaba
+      - quanto fa 2+2?
+      - quanto viene 3x3?
+      - quanto è grande l'Africa?
+      - quanto è lungo il fiume Po
+      - quanto pesa un elefante?
+      - quanti abitanti ci sono a New York?
+      - sai il numero di abitanti di Salerno
+      - dimmi quante persone vivono a Venezia
+      - qual è il patto tipico di Salerno?
+      - e invece di Napoli
+      - e invece del brasile
+      - qual è la capitale d'italia
+      - mi sai dire il piatto tipico di napoli
+      - come si cucina la parmigiana
+      - cos'è il maschio angino
+      - sai dirmi cos'è il maschio angioino
+      - come si cucina il kebab
+      - parlami dell'intelligenza artificiale
+      - come si cucina la pizza
+      - cosa posso fare questa sera?
+      - cosa posso fare stasera?
+      - cosa potrei fare stasera?
+      - cosa mi consigli di fare stasera?
+      - cosa mi consigli di fare oggi?
+      - cosa posso fare oggi pomeriggio?
+      - cosa posso fare dopo il lavoro?
+      - cosa posso fare dopo lavoro?
+      - cosa posso fare quando esco dal lavoro?
+      - cosa posso fare nel weekend?
+      - cosa posso fare questo fine settimana?
+      - cosa potrei fare di bello oggi?
+      - cosa potrei fare di divertente stasera?
+      - hai qualche idea su cosa fare stasera?
+      - hai qualche suggerimento per stasera?
+      - suggeriscimi qualcosa da fare
+      - suggeriscimi qualcosa da fare stasera
+      - suggeriscimi qualcosa da fare questo weekend
+      - consigliami qualcosa da fare
+      - consigliami cosa fare stasera
+      - dammi un consiglio su cosa fare
+      - dammi un'idea per stasera
+      - mi dai qualche idea per oggi?
+      - non so cosa fare stasera, hai qualche idea?
+      - non so cosa fare oggi, mi aiuti?
+      - cosa posso mangiare?
+      - cosa posso mangiare stasera?
+      - cosa posso mangiare a cena?
+      - cosa posso mangiare a pranzo?
+      - cosa potrei mangiare oggi?
+      - cosa mi consigli di mangiare?
+      - cosa mi consigli di mangiare stasera?
+      - suggeriscimi qualcosa da mangiare
+      - suggeriscimi qualcosa da mangiare stasera
+      - consigliami cosa mangiare
+      - consigliami qualcosa da mangiare per cena
+      - cosa potrei cucinare stasera?
+      - cosa mi consigli di cucinare?
+      - hai qualche idea su cosa mangiare?
+      - non so cosa mangiare, hai qualche suggerimento?
+      - mi consigli un piatto da preparare stasera?
+      - mi sai consigliare cosa mangiare oggi?
+
+
+
+  - intent: personal_request
+    examples: |
+      - Mi piace la pizza
+      - Mi piace il calcio
+      - Mi piace leggere
+      - Mi piace nuotare
+      - Mi piace viaggiare
+      - Mi piace la musica
+      - Mi piace il cinema
+      - Mi piace stare con gli amici
+      - Mi piace il mare
+      - Mi piace la montagna
+      - Mi piacciono i cani
+      - Mi piacciono i gatti
+      - Mi piacciono i videogiochi
+      - Mi piacciono i dolci
+      - Mi piacciono le serie TV
+      - Mi piacciono i film d'azione
+      - Mi piacerebbe visitare il Giappone
+      - Mi piacerebbe imparare a suonare la chitarra
+      - Mi piacerebbe fare un viaggio in America
+      - Mi piacerebbe provare la cucina giapponese
+      - Mi piacerebbe avere un cane
+      - Mi piacerebbe andare al mare questo weekend
+      - Mi piacerebbe cambiare lavoro
+      - Mi piacerebbe saper ballare
+      - Mi piacerebbe studiare lingue straniere
+      - Mi piacerebbe dormire di più
+      - Mi piacerebbe leggere di più
+      - Mi piacerebbe fare più sport
+      - Non mi piace il freddo
+      - Non mi piace cucinare
+      - Non mi piace alzarmi presto
+      - Non mi piace fare la fila
+      - Non mi piace la pioggia
+      - Non mi piace il traffico
+      - Non mi piacciono le verdure
+      - Non mi piacciono gli insetti
+      - Non mi piacciono i film dell'orrore
+      - Non mi piace per niente il caldo
+      - Non mi piace proprio il pesce
+      - Adoro la pizza
+      - Adoro stare al mare
+      - Adoro leggere libri
+      - Adoro fare sport all'aperta
+      - Amo la musica classica
+      - Amo cucinare per gli altri
+      - Amo gli animali
+      - Amo stare all'aria aperta
+      - Impazzisco per il gelato
+      - Vado matto per i dolci
+      - Mi fanno impazzire i videogiochi
+      - Vado pazzo per la pizza napoletana
+      - Preferisco il mare alla montagna
+      - Preferisco la carne al pesce
+      - Preferisco restare a casa
+      - Preferisco uscire la sera
+      - Preferisco cucinare da solo
+      - Preferisco il caffè al tè
+      - Preferisco i gatti ai cani
+      - Preferisco lavorare di mattina
+      - Mi piace un sacco la pizza
+      - Mi piace tantissimo viaggiare
+      - Mi piace molto leggere
+      - Mi piacciono molto le serie tv
+      - Mi piace davvero tanto la musica
+      - Odio alzarmi tardi
+      - Odio il traffico
+      - Non sopporto il rumore
+      - Detesto fare la spesa
+      - Non sopporto la confusione
+      - Odio aspettare
+      - Detesto il freddo umido
+      - Nel tempo libero guardo film
+      - Di solito ascolto musica
+      - Mi rilasso leggendo
+      - Mi piace uscire con gli amici
+      - Passo molto tempo a giocare ai videogiochi
+      - La domenica mi piace cucinare
+      - La sera guardo serie tv
+      - Di mattina faccio jogging
+      - Nel weekend mi piace andare in bici
+      - Faccio sport regolarmente
+      - Mi alleno ogni giorno
+      - Non faccio mai sport
+      - Mi piace andare in palestra
+      - Mi piace correre al parco
+      - Gioco a calcio il sabato
+      - Vado a nuoto due volte a settimana
+      - Mangio volentieri la pizza
+      - Non mangio carne
+      - Evito il pesce
+      - Non bevo latte
+      - Bevo spesso caffè
+      - Mangio tanto a colazione
+      - Salto spesso il pranzo
+      - Cucino spesso a casa
+      - Sono allergico al latte
+      - Sono allergico alla frutta secca
+      - Non tollero il lattosio
+      - Ho un'intolleranza al glutine
+      - Non posso assumere latticini
+      - Sono celiaco
+      - Sono intollerante al niche
+      - Seguo una dieta vegana
+      - Seguo una dieta vegetariana
+      - Non mangio prodotti animali
+      - Mangio solo cibi vegetali
+      - Seguo una dieta senza glutine
+      - La pizza è il mio piatto preferito
+      - Il mare è il mio posto preferito
+      - Il calcio è il mio sport preferito
+      - La lettura è il mio hobby preferito
+      - Il freddo non fa per me
+      - La montagna non mi piace tanto
+      - I dolci sono la mia passione
+      - Il cinema è la mia passione
+      - La cucina è la mia grande passione
+      - Sono di Roma
+      - Sono di Napoli
+      - Sono di Milano
+      - Sono di Torino
+      - Sono di Palermo
+      - Sono di Salerno
+      - Sono di Firenze
+      - Sono di Bologna
+      - Sono di Venezia
+      - Sono di Bari
+      - Sono italiano
+      - Sono francese
+      - Sono spagnolo
+      - Vengo da Roma
+      - Vengo da Napoli
+      - Vengo da Milano
+      - Vengo dal sud Italia
+      - Vengo dal nord Italia
+      - Sono originario di Napoli
+      - Sono originaria di Roma
+      - Sono del sud
+      - Sono del nord
+      - Sono del centro Italia
+      - Sono nato a Roma
+      - Sono nato a Napoli
+      - Sono nato a Milano
+      - Sono nato a Salerno
+      - Sono nato a Torino
+      - Sono nata a Firenze
+      - Sono nata a Bologna
+      - Sono nato in Italia
+      - Sono nato in Francia
+      - Sono nato in Spagna
+      - Sono nato al nord
+      - Sono nato al sud
+      - Sono nato in un piccolo paese
+      - Sono nato in una grande città
+      - Sono nato e cresciuto a Napoli
+      - Sono nato e cresciuto a Roma
+      - Sono cresciuto a Milano
+      - Sono cresciuta a Palermo
+      - Vivo a Roma
+      - Vivo a Napoli
+      - Vivo a Milano
+      - Vivo a Salerno
+      - Vivo a Torino
+      - Vivo a Firenze
+      - Vivo al nord
+      - Vivo al sud
+      - Vivo in Italia
+      - Vivo in Francia
+      - Vivo in Spagna
+      - Vivo in un piccolo paese
+      - Vivo in una grande città
+      - Vivo in centro
+      - Vivo in periferia
+      - Abito a Roma
+      - Abito a Napoli
+      - Abito a Milano
+      - Abito a Salerno
+      - Abito in centro
+      - Abito in periferia
+      - Abito in un piccolo paese
+      - Abito vicino al mare
+      - Abito vicino alla montagna
+      - Mi sono trasferito a Milano
+      - Mi sono trasferita a Roma
+      - Mi sono trasferito al nord
+      - Mi sono trasferita al sud
+      - Ora vivo a Milano ma sono di Napoli
+      - Ora abito a Roma ma sono originario di Salerno
+      - Lavoro a Roma
+      - Lavoro a Milano
+      - Lavoro a Napoli
+      - Lavoro a Salerno
+      - Lavoro a Torino
+      - Lavoro in centro
+      - Lavoro in periferia
+      - Lavoro fuori città
+      - Lavoro vicino a casa
+      - Lavoro lontano da casa
+      - Lavoro in Italia
+      - Lavoro all'estero
+      - Lavoro da casa
+      - Lavoro in smart working
+      - Lavoro in ufficio
+      - Lavoro in fabbrica
+      - Lavoro in ospedale
+      - Lavoro in una scuola
+      - Lavoro in un negozio
+      - Studio a Roma
+      - Studio a Napoli
+      - Studio a Milano
+      - Studio a Salerno
+      - Studio a Bologna
+      - Studio fuori sede
+      - Studio vicino a casa
+      - Studio all'università
+      - Studio in una scuola privata
+      - Vado all'università di Salerno
+      - Frequento l'università a Napoli
+      - Mi sono laureato a Bologna
+      - Mi sono laureata a Roma
+
+  - intent: ask_rag
+    examples: |
+      - Mi dici quali sono i dipartimenti dell'università?
+      - Mi dici quanti sono i dipartimenti dell'università?
+      - Quali dipartimenti ha l'università?
+      - Quanti dipartimenti ci sono nell'università?
+      - Vorrei sapere quali sono i dipartimenti dell'università
+      - Puoi elencarmi i dipartimenti dell'università?
+      - Mi fai una lista dei dipartimenti dell'università?
+      - Sai dirmi quali sono i dipartimenti dell'università?
+      - Qual è l'elenco dei dipartimenti universitari?
+      - Da quali dipartimenti è composta l'università?
+      - Mi dici quali sono i dipartimenti dell'Università di Salerno?
+      - Mi dici quanti sono i dipartimenti dell'Università di Salerno?
+      - Quali dipartimenti ha l'Università di Salerno?
+      - Quanti dipartimenti ci sono all'Università di Salerno?
+      - Vorrei conoscere i dipartimenti dell'Università di Salerno
+      - Puoi elencarmi i dipartimenti dell'Università di Salerno?
+      - Mi fai una lista dei dipartimenti dell'Università di Salerno?
+      - Sai dirmi quali sono i dipartimenti dell'Università di Salerno?
+      - Da quali dipartimenti è composta l'Università di Salerno?
+      - Mi dici quali sono i dipartimenti dell'Università degli Studi di Salerno?
+      - Mi dici quanti sono i dipartimenti dell'Università degli Studi di Salerno?
+      - Quali dipartimenti ha l'Università degli Studi di Salerno?
+      - Quanti dipartimenti ci sono all'Università degli Studi di Salerno?
+      - Vorrei conoscere i dipartimenti dell'Università degli Studi di Salerno
+      - Puoi elencarmi i dipartimenti dell'Università degli Studi di Salerno?
+      - Mi fai una lista dei dipartimenti dell'Università degli Studi di Salerno?
+      - Sai dirmi quali sono i dipartimenti dell'Università degli Studi di Salerno?
+      - Da quali dipartimenti è composta l'Università degli Studi di Salerno?
+      - Quali sono i dipartimenti di UNISA?
+      - Quanti sono i dipartimenti di UNISA?
+      - Mi elenchi i dipartimenti di UNISA?
+      - Puoi dirmi i dipartimenti presenti in UNISA?
+      - Da quali dipartimenti è formata UNISA?
+      - Mi racconti la storia dell'università di Salerno?
+      - Mi racconti la storia dell'università?
+      - Qual è la storia dell'università?
+      - Vorrei conoscere la storia dell'università
+      - Puoi parlarmi della storia dell'università?
+      - Sai dirmi qualcosa sulla storia dell'università?
+      - Quando è nata l'università?
+      - Quando è stata fondata l'università?
+      - Quali sono le origini dell'università?
+      - Raccontami le origini dell'università
+      - Mi puoi spiegare brevemente la storia dell'università?
+      - Dammi informazioni storiche sull'università
+      - Mi racconti la storia dell'Università di Salerno?
+      - Qual è la storia dell'Università di Salerno?
+      - Vorrei conoscere la storia dell'Università di Salerno
+      - Puoi parlarmi della storia dell'Università di Salerno?
+      - Sai dirmi qualcosa sulla storia dell'Università di Salerno?
+      - Quando è nata l'Università di Salerno?
+      - Quando è stata fondata l'Università di Salerno?
+      - Quali sono le origini dell'Università di Salerno?
+      - Raccontami le origini dell'Università di Salerno
+      - Dammi informazioni storiche sull'Università di Salerno
+      - Mi racconti la storia dell'Università degli Studi di Salerno?
+      - Qual è la storia dell'Università degli Studi di Salerno?
+      - Vorrei conoscere la storia dell'Università degli Studi di Salerno
+      - Puoi parlarmi della storia dell'Università degli Studi di Salerno?
+      - Sai dirmi qualcosa sulla storia dell'Università degli Studi di Salerno?
+      - Quando è nata l'Università degli Studi di Salerno?
+      - Quando è stata fondata l'Università degli Studi di Salerno?
+      - Quali sono le origini dell'Università degli Studi di Salerno?
+      - Raccontami le origini dell'Università degli Studi di Salerno
+      - Dammi informazioni storiche sull'Università degli Studi di Salerno
+      - Qual è la storia di UNISA?
+      - Quando è nata UNISA?
+      - Quando è stata fondata UNISA?
+      - Mi racconti la storia di UNISA?
+      - Sai dirmi qualcosa sulla storia di UNISA?
+      - Quali sono le origini di UNISA?
+      - Chi è l'attuale rettore dell'università?
+      - Chi è il rettore dell'università?
+      - Come si chiama il rettore dell'università?
+      - Mi dici il nome del rettore dell'università?
+      - Sai chi è il rettore dell'università?
+      - Vorrei sapere chi è il rettore dell'università
+      - Qual è il nome dell'attuale rettore?
+      - Chi guida l'università?
+      - Chi dirige l'università?
+      - Chi è a capo dell'università?
+      - Chi è l'attuale rettore dell'Università di Salerno?
+      - Chi è il rettore dell'Università di Salerno?
+      - Come si chiama il rettore dell'Università di Salerno?
+      - Mi dici il nome del rettore dell'Università di Salerno?
+      - Sai chi è il rettore dell'Università di Salerno?
+      - Vorrei sapere chi è il rettore dell'Università di Salerno
+      - Qual è il nome dell'attuale rettore dell'Università di Salerno?
+      - Chi guida l'Università di Salerno?
+      - Chi dirige l'Università di Salerno?
+      - Chi è a capo dell'Università di Salerno?
+      - Chi è l'attuale rettore dell'Università degli Studi di Salerno?
+      - Chi è il rettore dell'Università degli Studi di Salerno?
+      - Come si chiama il rettore dell'Università degli Studi di Salerno?
+      - Mi dici il nome del rettore dell'Università degli Studi di Salerno?
+      - Sai chi è il rettore dell'Università degli Studi di Salerno?
+      - Vorrei sapere chi è il rettore dell'Università degli Studi di Salerno
+      - Qual è il nome dell'attuale rettore dell'Università degli Studi di Salerno?
+      - Chi guida l'Università degli Studi di Salerno?
+      - Chi dirige l'Università degli Studi di Salerno?
+      - Chi è a capo dell'Università degli Studi di Salerno?
+      - Chi è il rettore di UNISA?
+      - Chi è l'attuale rettore di UNISA?
+      - Come si chiama il rettore di UNISA?
+      - Mi dici chi guida UNISA?
+      - Sai chi è a capo di UNISA?
+      - Qual è il nome del rettore di UNISA?
+
+  - intent: want_play
+    examples: |
+      - voglio cambiare, metti un gioco
+      - dai giochiamo
+      - ho proprio voglia di giocare
+      - giochiamo
+      - su giochiamo
+      - per piacere giochiamo
+      - ti prego metti un gioco?
+      - switcha e metti un gioco
+      - gentilmente possiamo giocare?
+      - possiamo giocare?
+      - giochiamo dai
+      - giochiamo?
+      - forza giochiamo
+      - forza metti un gioco
+      - voglio giocare
+      - voglio giocare ora
+      - giochiamo subito
+      - ti va di fare una partita?
+      - ti va una partita?
+      - ti va una giocata?
+      - cambia e metti il gioco
+      - ho il desiderio di giocare
+      - inserisci un gioco
+      - voglio divertirmi con un gioco
+      - veloce, giochiamo!
+      - avvia un gioco
+      - iniziamo a giocare
+      - inizia un gioco
+      - lancia un gioco
+      - cominciamo a giocare
+      - Ari, vuoi giocare?
+      - mi va di fare un gioco
+      - dai famo un gioco
+      - possiamo gicoare insieme?
+      - voglio giocre
+      - facciamo un goco
+      - su, cambiamo e giochiamo
+      - dai un gioco veloce!
+      - avviare un giocho
+      - giociamo
+      - forza cambiamo con un giocho
+      - ti va d'iniziare un gioco?
+      - potremmo fare un gioco ora
+      - inserisci un giocho ora
+      - giochiamo subbito
+      - metti subito un gioco
+      - inizia un altro gioco, dai
+      - giochiami insieme
+      - giochaimo
+      - cambiamo, metti il gioco
+      - metti un gioco che vuoi tu
+      - divertiamoci con un gioco
+      - lanciami un gico
+      - mi piacerebbe gicoare
+      - fammi un giocco!
+      - voglio gicoare subito
+      - metti giokko per favore
+      - daai cambiamo e giochamo
+      - gioco ora! fai partire
+      - fammi vedere un gioko
+      - dobbiamo gioacre insieme
+      - avvia un giioco
+      - ho voglia di gioccare
+      - cambiammo e metti un gioko
+      - mi piacerebbe giokare ora
+      - vuoi farmi giccare con te?
+      - ti prrego giochiamo
+      - giockiamo subbito ora!
+      - faciamo una partita subito
+      - giochimo? dai
+      - giokkaimoooo ora!
+      - per favore cambia su un giocoo
+      - metti subito un altro gioccho
+      - metti un qualcosa per gicoare
+      - cambiamo con un game
+      - facciammo un gioccho insieme
+      - dai! dammi un gioccho
+      - fammi partire il gico ora
+      - inizzia subito un game
+      - su facciamo un ggioco  
+      - metti giocchiamo insieme
+      - mi fa piacere gicoare
+      - cambiami su un bel gioocko
+
+  - intent: choose_connect_four
+    examples: |
+      - vorrei giocare a forza 4
+      - vorrei sfidarti a forza quattro
+      - giochiamo a forza 4
+      - ti va una partita a forza quattro?
+      - avvia una partita a forza quattro
+      - avvia forza 4
+      - Ari metti forza quattro
+      - Ari, vuoi fare una partita con me a foza quattro
+      - dai Ari, gioca con me a forza quatro
+      - ari sfidami a forza 4
+      - forza 4
+      - forza quattro
+      - foza quattro
+      - forza quatro
+      - giochiamo a forza quattro
+      - il primo dei due giochi, forza quattro
+      - quello che hai pronunciato per prima, forza quattro
+      - facciamo una partita di forza quattro
+      - mi piacerebbe sfidarti a forza quattor
+      - forza 4 dai!
+      - giociamo a forza 4
+      - ari, voglio fare forza 4
+      - dai fai partire foza quattor
+      - avviare forza qauttro
+      - il giocho forza 4
+      - hei giochiamo a forse 4
+      - we metti forsa quattro
+      - vuoi mettere forza quattvo
+      - vuoi giocare con me a forza quatto
+      - metti il gioco del forza quattor
+      - voglio giocare a foorza quattro
+      - forza quttro
+      - giochi con me a forza quattro?
+      - famo una partita a forza quattor
+      - sfidami subito a foza quattoro
+      - forza quattro subito!
+      - quello del gioco a forza quatrro
+      - metti Forza quatro
+      - fammi il gioco a foza quatro
+      - cambiamo gioco e metti forza quatro
+      - foza 4
+      - forsa quatro
+      - mi piacerebbe fare forza quattro
+      - ari, il primo gioco, forza 4!
+      - ari, voglio giocare a fovza quattro!
+      - dai metti fovza 4!
+      - forza quarto
+      - giokiamo a forza 4
+      - fai forz quattro subito
+      - fammi una partita foza quattro
+      - forza qurtro ora
+      - cambiamo con il gioco forza quatro
+      - gioco forza quttro subito!
+      - ari fai partire forza quarto
+      - metti gioco foza quattor
+      - mi piace foza quttro
+      - fai un gioco di foza quaatro
+      - inizia foza quatrro ora!
+      - è il gioco forza quatro
+      - ari cambiamo su forza quattrro
+      - gioco con me a forzza 4
+      - avviare forzza quatrro
+      - è il primo, foza quatttro
+      - ari sfidami su forza quatttro!
+      - forza quatrro mettilo ora
+      - dammi forza quatrro adesso
+      - è foza quatttro il gioco
+      - giochare forza quattroo insieme
+      - fammi sfidare su forza quatrro
+      - è quello, forza quatttro
+      - mi va forza quattrto ora
+      - fai partire forz quattro ora
+      - metti foza quatro subito
+
+  - intent: choose_rock_paper_scissor
+    examples: | 
+      - sasso, carta, forbice
+      - sasso, carta o forbice
+      - sasso, carta o forbici
+      - saso cata forbice
+      - sasso carta forbice
+      - sasso carta o forbice
+      - è il secondo, sasso, carta, forbici
+      - dai, gioca con me a sasso cart fobici
+      - giochiamo a sasso, carta, forbici
+      - voglio giocare a sasso, carta, forbici.
+      - facciamo una partita a sasso, carta, forbici?
+      - che ne dici di sfidarmi a sasso, carta, forbici?
+      - mi piacerebbe giocare a sasso, carta, forbici.
+      - comincia una nuova partita di sasso, carta, forbici
+      - Ari accendi sasso, carta o forbici
+      - sono pronto per una sfida a sasso, carta, forbici.
+      - lancia una nuova partita di sasso, carta o forbici
+      - inizia sasso, carta o forbice
+      - possiamo giocare a sasso, carta, forbice?
+      - giochiamo a sasso, carta o forbici?
+      - ti va una partita di sasso, carta, forbici?
+      - cambia e metti sasso, carta o forbici
+      - inserisci sasso, carta o forbici
+      - avvia sasso, carta o forbici
+      - metti sasso carta forbici
+      - voglio giocre a sasso, carta, forbice
+      - saso carta forbice
+      - carta, forbici e sasso
+      - cambiamo gioco e metti sasso carta forbice
+      - cominciamo a giocare a sasso carta foricbe
+      - forbie, carta e sasso
+      - giociamo a sasso carta forbice
+      - metti il gioco della carta forbice e sasso
+      - inizia una sfida a sasso carta forbice
+      - ari voglio giocre a sasso, carta, forbice
+      - sas carta forbice dai
+      - facciamo sasso carta forbicie ora
+      - voglio fare carta forbice e sasso
+      - fai partire sasso carta e foribce
+      - carta e forbice o sasso
+      - comincia subito sasso carta forbice
+      - avviare sasso, carta o forbice
+      - metti carta, forbice, sasso
+      - mi piace giocare a carta, forbice e sasso
+      - inserire un gioco di sasso carta forbice
+      - fammi una partita a sasso carta forbicie
+      - dai giochiamo a sasso carta forbie
+      - Ari, giochiamo a sasso-carta-forbici
+      - dai ari, giochiamo a sasso-carta-forbice
+      - cambia, sasso carta o forbice
+      - sasso carta e forbiice
+      - facciamo saso carta forbbice
+      - gioco sasso carta forbce
+      - è saso, carta forbici
+      - voglio fare un gioco di sasso carta
+      - metti sasso carta o forbi
+      - facciamo subito sass carta forbbice
+      - voglio sfidare sasso carta foribce
+      - dai sasso carta fobrici
+      - cambiami con sasso carta forbce
+      - giociamo a sasso carta foricbe
+      - giocho di sass carta forbicce
+      - è saso, carta e forbrice
+      - sass carta e forbcie
+      - fammi sass carta o foribce
+      - carta forbi o sass
+      - ari lancia sasso carta forbce
+      - metti sass carta forbii subito
+      - giochiamo a sas carta forbicce
+      - voglio gioccare sass carta forbbice
+      - cambiamo su carta forbce e sasso
+      - ti sfido a sass carta forbbce
+      - cambiamo su sass carta forbce ora
+      - forza giochiamo sasso carta forbrici
+      - ari su metti sass carta forrbice
+      
+  - intent: who_mario_vento_is
+    examples: |
+      - Conosci Mario Vento?
+      - Sai chi è Mario Vento?
+      - Dimmi qualcosa su Mario Vento
+      - Dimmi chi è Mario Vento
+      - Chi è Mario Vento?
+      - Mario Vento
+      - Mi dici chi è Mario Vento?
+      - Mi dici gentilmente chi è Mario Vento?
+      - Mi vuoi dire chi è Mario Vento?
+      - Mi diresti chi è Mario Vento?
+      - Spiega chi è Mario Vento
+      - Spiegami chi è Mario Vento
+      - Hai mai sentito parlare di Mario Vento?
+      - Sai qualcosa su Mario Vento?
+      - Conosci per caso Mario Vento?
+      - Ti suona familiare il nome Mario Vento?
+      - Hai informazioni riguardo a Mario Vento?
+      - Sei a conoscenza di qualcuno chiamato Mario Vento?
+      - Hai delle informazioni su Mario Vento?
+      - Conosci il Prof Mario Vento?
+      - Sai chi è il Prof Mario Vento?
+      - Dimmi qualcosa sul Prof Mario Vento
+      - Dimmi chi è il Prof Mario Vento
+      - Chi è il Prof Mario Vento?
+      - il Prof Mario Vento
+      - Mi dici chi è il Prof Mario Vento?
+      - Mi dici gentilmente chi è il Prof Mario Vento?
+      - Mi vuoi dire chi è il Prof Mario Vento?
+      - Mi diresti chi è il Prof Mario Vento?
+      - Spiega chi è il Prof Mario Vento
+      - Spiegami chi è il Prof Mario Vento
+      - Hai mai sentito parlare del Prof Mario Vento?
+      - Sai qualcosa sul Prof Mario Vento?
+      - Conosci per caso il Prof Mario Vento?
+      - Hai informazioni riguardo il Prof Mario Vento?
+      - Hai delle informazioni sul Prof Mario Vento?
+      - Conosci il professore Mario Vento?
+      - Sai chi è il professore Mario Vento?
+      - Dimmi qualcosa sul professore Mario Vento
+      - Dimmi chi è il professore Mario Vento
+      - Chi è il professore Mario Vento?
+      - il professore Mario Vento
+      - Mi dici chi è il professore Mario Vento?
+      - Mi dici gentilmente chi è il professore Mario Vento?
+      - Mi vuoi dire chi è il professore Mario Vento?
+      - Mi diresti chi è il professore Mario Vento?
+      - Spiega chi è il professore Mario Vento
+      - Spiegami chi è il professore Mario Vento
+      - Hai mai sentito parlare del professore Mario Vento?
+      - Sai qualcosa sul professore Mario Vento?
+      - Conosci per caso il professore Mario Vento?
+      - Hai informazioni riguardo il professore Mario Vento?
+      - Hai delle informazioni sul professore Mario Vento?
+
+  - intent: doa
+    examples: |
+      - Ari guardami, sono qui
+      - Ari guardami
+      - Ari sono qui
+      - Sono qui Ari
+      - Guardami Ari
+      - Guardami, sono qui
+      - Guardami sono qui
+      - Eccomi qui
+      - Sono qui
+      - Guarda qui
+      - Guardami
+      - Girati verso di me
+      - Sto qui
+      - Eccomi
+      - Guarda verso di me
+      - Vedi qua
+      - Dai un'occhiata qui
+      - Gira la testa verso di me
+      - Guarda in questa direzione
+      - Rivolgiti verso di me
+      - Sono proprio qui
+      - Dai un'occhiata qui
+      - Osservami
+      - Voltati verso di me
+      - Mi trovi qui
+      - Guardami qui
+      - Guarda in questa posizione
+      - Sono qui accanto a te
+
+  - intent: gpt_4o
+    examples: |
+      - Cosa indossa la persona?
+      - Cosa indossa la ragazza?
+      - Che abiti ha addosso la ragazza?
+      - Che vestiti porta la ragazza?
+      - Come è vestita la persona nell'immagine?
+      - Qual è il suo outfit?
+      - Che segno sto facendo con la mano?
+      - Che segno sto facendo con le mani?
+      - Che simbolo sto facendo con le mani?
+      - Come è vestito il signore alla mia destra?
+      - Cosa indossa il signore alla mia destra?
+      - Come è vestito il signore alla mia sinistra?
+      - Cosa indossa il signore alla mia sinistra?
+      - Pensi che il signore alla mia destra sia elegante?
+      - Pensi che la signora alla mia sinistra sia elegante?
+      - Sono vestito elegante?
+      - Indosso un abito elegante?
+      - Sono elegante?
+      - Seconde te sono elegante?
+      - Ti piace come sono vestito?
+      - Ari, ti piace cosa indosso?
+      - Ari, ti piace come sono vestito?
+      - Il ragazzo alla mia destra è elegante?
+      - La ragazza alla mia sinistra è elegante?
+      - Ti piace cosa indossa la ragazza alla mia sinistra?
+      - Cosa mostra la mia mano?
+      - Qual è il gesto che sto facendo?
+      - Che posizione hanno le mie mani?
+      - Cosa indossa il ragazzo?
+      - Che abiti ha addosso il giovane?
+      - Che vestiti porta lui?
+      - Cosa indossano queste persone?
+      - Che tipo di abiti hanno i partecipanti?
+      - Cosa indossano le ragazze?
+      - Come sono vestiti i membri del gruppo?
+      - Cosa indossano gli uomini?
+      - Come ha i capelli la ragazza?
+      - Che taglio di capelli ha il ragazzo?
+      - Di che colore sono i capelli della donna?
+      - Ha i capelli corti l'uomo?
+      - Come sono acconciati i capelli della ragazza?
+      - Il ragazzo ha i capelli ricci?
+      - Ha i capelli lunghi la donna?
+      - Qual è il colore dei capelli del ragazzo?
+      - Di che colore è la maglia del ragazzo?
+      - Che tipo di vestito indossa la donna?
+      - Qual è il colore dei pantaloni dell'uomo?
+      - Indossa una giacca la ragazza?
+      - Che tipo di scarpe ha l'uomo?
+      - Ha una gonna la ragazza?
+      - Indossa una camicia l'uomo?
+      - Che colore ha la maglietta del ragazzo? 
+      - Qual è il colore della mia maglietta?
+      - Indossa dei gioielli la ragazza?
+      - L'uomo ha un orologio al polso?
+      - Ha degli orecchini la donna?
+      - La ragazza indossa una collana?
+      - Il ragazzo ha un bracciale?
+      - Indossa degli occhiali l'uomo?
+      - La donna porta degli anelli?
+      - Ha dei tatuaggi la persona?
+      - Il ragazzo ha dei tatuaggi sulle braccia?
+      - Ha un tatuaggio visibile la ragazza?
+      - Di che colore sono gli occhi del ragazzo?
+      - La ragazza ha le unghie smaltate?
+      - L'uomo ha la barba?
+      - Che tipo di barba ha l'uomo?
+      - Indossa una cintura l'uomo?
+      - La donna ha una borsa con sé?
+      - Indossa un cappello il ragazzo?
+      - La donna ha degli occhiali da sole?
+      - Il ragazzo porta una sciarpa?
+      - La ragazza ha una cintura in vita?
+      - L'uomo indossa un orologio?
+      - La ragazza ha uno zaino con sé?
+      - L'uomo porta una valigetta?
+      - La donna ha una borsetta?
+      - Il ragazzo ha una tracolla?
+      - La donna indossa una fascia per capelli?
+      - Cosa vedi davanti a te
+      - Cosa ci sta davanti a te 
+      - Cosa riesci a vedere davanti?
+      - Cosa osservi proprio di fronte?
+      - Descrivimi quello che hai di fronte.
+      - Cosa vedi alla tua destra?
+      - Dimmi cosa c'è alla destra.
+      - Che cosa osservi sulla tua destra?
+      - Descrivimi quello che hai sulla destra.
+      - Cosa c'è sul lato destro?
+      - c'è un signore davanti a te?
+      - ci sono oggetti strani di fronte a te?
+      - quali oggetti vedi davanti a te?
+      - è presente una persona davanti a te? 
+      - vedi delle persone davanti a te?
+      - vedi qualcosa davanti a te?
+      - c'è qualcosa davanti a te?
+      - quale oggetto c'è davanti a te?
+      - ci sono oggetti strani davanti a te?
+      - c'è un signore davanti a te?
+      - Cosa c'è alla tua sinistra?
+      - Cosa riesci a vedere sulla sinistra?
+      - Dimmi cosa noti sul lato sinistro.
+      - Che cosa vedi a sinistra di te?
+      - Descrivimi quello che hai sulla sinistra.
+      - Cosa vedi sopra di te?
+      - Cosa c'è in alto?
+      - Descrivimi cosa noti sopra.
+      - Che cosa c'è in alto rispetto a te?
+      - Cosa osservi nella parte superiore?
+      - Che cosa vedi in alto a destra?
+      - Cosa noti nell'angolo in alto a destra?
+      - Cosa osservi sopra e a destra di te?
+      - Dimmi cosa c'è in alto a destra.      
+      - Cosa riesci a vedere nell'angolo superiore destro?
+      - Cosa vedi in alto a sinistra?
+      - Che cosa noti sopra e a sinistra di te?
+      - Cosa osservi nell'angolo in alto a sinistra?
+      - Dimmi cosa c'è nella parte superiore sinistra.
+      - Cosa noti nell'angolo superiore sinistro?
+      - Cosa vedi sotto di te?
+      - Cosa c'è in basso? 
+      - Che cosa noti nella parte inferiore?
+      - Dimmi cosa osservi in basso rispetto a te.
+      - Cosa riesci a vedere sotto?
+      - Cosa noti in basso a destra?
+      - Cosa c'è nell'angolo inferiore destro?
+      - Cosa riesci a vedere sotto e a destra di te?
+      - Descrivimi quello che c'è in basso a destra.
+      - Cosa osservi nell'angolo in basso a destra?
+      - Cosa vedi in basso a sinistra?
+      - Che cosa noti sotto e a sinistra di te?
+      - Cosa osservi nell'angolo inferiore sinistro?
+      - Cosa c'è in basso a sinistra rispetto a te?
+      - Dimmi cosa noti nell'angolo in basso a sinistra.
+      - Puoi descrivermi cosa stai vedendo?
+      - Mi puoi raccontare cosa c’è davanti a te?
+      - Cosa riesci a vedere in questa scena?
+      - Mi descrivi ciò che stai osservando?
+      - Mi descrivi cosa vedi?
+      - Mi puoi descrivere cosa vedi?
+      - Che cosa stai vedendo in questo momento?
+      - Cosa c'è nella scena che hai davanti?
+      - Puoi dirmi cosa noti nella scena?
+      - Descrivimi ciò che c'è intorno a te.
+      - Mi puoi spiegare cosa c'è intorno a te?
+      - Come descriveresti quello che hai davanti agli occhi?
+      - Cosa c'è da vedere nella scena che stai osservando?
+      - Raccontami cosa c’è di interessante nella scena.
+      - Che tipo di scena hai di fronte?
+      - Quali sono gli elementi più importanti che noti?
+      - Puoi descrivermi il luogo in cui ti trovi?
+      - Puoi dirmi dove ti trovi in questo momento?
+      - Dove pensi di trovarti?
+      - Cosa ho in mano?
+      - Cosa ho nella mano destra?
+      - Cosa ho nella mano sinistra?
+      - Cosa vedi nella stanza?
+      - Mi sai dire cosa vedi in questa stanza?
+      - Mi sai dire il posto?
+      - Come sono vestite le persone?
+      - Come sono vestito?
+      - Cosa indosso?
+      - Ci sono finestre o aperture visibili nell'ambiente?
+      - Qual è la postura delle persone?
+      - Qual è il linguaggio del corpo delle persone?
+      - Ci sono decorazioni visibili sullo sfondo?
+      - Le persone sono sedute, in piedi o in movimento?
+      - Cosa vedi sull sfondo?
+      - Cosa vedi in primo piano?
+      - Cosa vedi in alto a destra?
+      - Cosa vedi in basso a sinistra?
+      - Cosa vedi?
+      - Che cosa vedi?

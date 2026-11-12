@@ -1,0 +1,27 @@
+version: "3.1"
+
+rules:
+  - rule: Keep playing
+    steps:
+      - intent: affirm
+      - action: utter_affirm        
+
+  - rule: Finish the game
+    steps:
+      - intent: deny
+      - action: utter_deny
+
+  - rule: Restart the game
+    steps:
+      - intent: retry
+      - action: utter_retry
+
+  - rule: Ends the game
+    steps:
+      - intent: terminate
+      - action: utter_terminate
+  
+  - rule: Fallback rule
+    steps:
+      - intent: nlu_fallback
+      - action: utter_fallback

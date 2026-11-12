@@ -1,0 +1,162 @@
+version: "3.1"
+nlu:
+  - lookup: object_type
+    examples: |
+      - persona
+      - persone
+      - bicicletta
+      - biciclette
+      - bici
+      - auto
+      - automobili
+      - moto      
+      - aereo
+      - aeroplani
+      - autobus
+      - treno
+      - treni
+      - camion
+      - barca
+      - barche
+      - semaforo
+      - semafori
+      - idrante
+      - idranti
+      - segnale di stop
+      - segnali di stop
+      - parchimetro
+      - parchimetri
+      - panca
+      - uccello
+      - uccelli
+      - gatto
+      - gatti
+      - cane
+      - cani
+      - cavallo
+      - cavalli
+      - pecora
+      - pecore
+      - mucca
+      - mucche
+      - elefante
+      - elefanti
+      - orso
+      - orsi
+      - zebra
+      - zebre
+      - giraffa
+      - giraffe
+      - zaino
+      - zaini
+      - ombrello
+      - ombrelli
+      - borsetta
+      - borsette
+      - cravatta
+      - cravatte
+      - valigia
+      - valigie
+      - frisbee
+      - sci
+      - snowboard
+      - palla
+      - palloni 
+      - palle
+      - palla
+      - aquilone
+      - mazza da baseball
+      - mazze da baseball
+      - guanto da baseball
+      - skateboard
+      - tavola da surf
+      - tavole da surf
+      - racchetta da tennis
+      - racchette da tennis
+      - bottiglia
+      - bottiglie
+      - bicchiere di vino
+      - bicchieri di vino
+      - occhiali
+      - bicchiere
+      - tazza
+      - tazze
+      - forchetta
+      - coltello
+      - cucchiaio
+      - cucchiai
+      - ciotola
+      - banana
+      - banane
+      - mela
+      - mele
+      - sandwich
+      - panini
+      - arancia
+      - arance
+      - broccoli
+      - carota
+      - carote
+      - hot dog
+      - pizza
+      - pizze
+      - ciambella
+      - ciambelle
+      - torta
+      - torte
+      - sedia
+      - sedie
+      - divano
+      - divani
+      - pianta in vaso
+      - piante in vaso
+      - letto
+      - letti
+      - tavolo da pranzo
+      - tavoli da pranzo
+      - toilette
+      - servizi igienici
+      - wc
+      - tvmonitor
+      - tvmonitors
+      - tv
+      - televisori      
+      - monitor
+      - topo
+      - computer portatile
+      - laptop
+      - taccuino
+      - quaderni
+      - pc     
+      - computer
+      - personal computer
+      - a distanza
+      - telecomandi
+      - tastiera
+      - tastiere
+      - cellulare
+      - telefono cellulare
+      - smartphone
+      - telefono
+      - telefoni
+      - microonde
+      - forno
+      - forni
+      - tostapane
+      - lavello
+      - affonda
+      - frigorifero
+      - frigoriferi
+      - libro
+      - libri
+      - orologio
+      - orologi
+      - vaso
+      - vasi
+      - forbici
+      - orsacchiotto di peluche
+      - orsi di peluche
+      - orsacchiotti
+      - orsacchiotto
+      - asciugacapelli
+      - spazzolino

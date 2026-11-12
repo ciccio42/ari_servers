@@ -1,0 +1,552 @@
+version: "3.1"
+nlu:
+- intent: affirm
+  examples: |
+    - mi piace
+    - sì mi va
+    - bello
+    - bello, facciamolo
+    - bello facciamolo!
+    - Accetto
+    - Accetto.
+    - credo di accettare
+    - Eccezionale!
+    - Bene
+    - Grande
+    - Sono d'accordo
+    - Sì lo sto usando
+    - Ho cambiato idea. Voglio accettarlo
+    - Si lo faccio
+    - ho capito
+    - capito
+    - chiaro
+    - perfetto
+    - ottimo
+    - Credo di sì
+    - Credo di si
+    - L'ho usato in passato sì
+    - Lo farò
+    - Mi piacerebbe assolutamente
+    - Sono sicuro che lo farò!
+    - Carino
+    - OK
+    - affermativo
+    - affermo
+    - Ovviamente
+    - Certament
+    - Ovvio
+    - Certamente
+    - Oh si
+    - Oh va bene
+    - Ok iniziamo
+    - OK.
+    - Va bene
+    - Va bene!
+    - PER FAVORE
+    - SICURO
+    - Sicuro
+    - sicurissimo
+    - Sarebbe grandioso
+    - SÌ
+    - SI
+    - Sì
+    - Si
+    - si certo
+    - Sì, va bene
+    - Si, va bene
+    - Sì!
+    - Si!
+    - sì, certamente
+    - si, certamente
+    - sì grazie
+    - si grazie
+    - Sì grazie!
+    - Si grazie!
+    - Si accetto
+    - SÌ.
+    - Si.
+    - si dai
+    - direi proprio di sì
+    - Direi di sì
+    - Eccezionale sì
+    - un po'
+    - un po
+    - assolutamente
+    - voglio accettare
+    - accettato
+    - concordato
+    - concordo
+    - accetto volentieri
+    - Ah ok
+    - va bene, bello
+    - stupefacente
+    - fantastico
+    - fantastco
+    - fntastco
+    - sorprendente
+    - Sorprendente!
+    - Eccezionale
+    - Confermo
+    - approvo
+    - aggiudicato
+    - d'accordissimo
+    - va benissimo
+    - alla grande
+    - bella storia fratello
+    - sicuramente sì senza dubbio
+    - Fatto
+    - abbastanza giusto
+    - naturalmente
+    - certo
+    - crto
+    - cavolo si!
+    - puoi andare
+    - puoi andare avanti
+    - vai
+    - vai vai
+    - si vai pure
+    - si vai
+    - vai avanti
+    - vai super bene
+    - vai forte
+    - vai alla grande amico
+    - Fallo
+    - stai andando super bene
+    - Bene.
+    - fantastico, facciamolo
+    - Grande!
+    - diavolo sì
+    - mah, mi piacerebbe
+    - che carino!
+    - sono d'accordo
+    - sono!
+    - sono io!
+    - lo voglio
+    - Lo farò!
+    - va bene
+    - ja
+    - è figo
+    - ja è fantastico
+    - oh è fantastico
+    - yeah è fantastico
+    - facciamolo
+    - non male
+    - certo che lo faccio
+    - Oh fantastico!
+    - oh bello
+    - Oh bene !!
+    - ah super
+    - ok bello
+    - ok bene
+    - ok amico
+    - ok fantastico
+    - va bene accetto
+    - ok pepe
+    - ok...
+    - okay
+    - ok, adesso mi comporto bene
+    - ok ho capito
+    - bene, pepe
+    - ok, pepe
+    - OK...
+    - va bene, d'accordo
+    - certo, sicuramente
+    - Va bene..
+    - okay..
+    - okay figo
+    - okay bello
+    - okay sicuro
+    - okie
+    - ook
+    - oki oki
+    - ok
+    - ok ok
+    - si ok
+    - Si va benissimo
+    - si va bien
+    - va bien
+    - oui
+    - Per favore si
+    - si per favore
+    - si
+    - sì una specie
+    - si qualcosa del genere
+    - è una cosa certa
+    - Sicuro!
+    - suona bene
+    - è fantastico
+    - grande
+    - Uh Huh
+    - molto bene
+    - bene bene
+    - Beh si
+    - sei forte
+    - ci provi
+    - ci provo
+    - si voglio
+    - per favore
+    - per piacere
+    - sì
+    - Sìì
+    - sii
+    - Sii
+    - sì fallo
+    - si'
+    - si, perchè no
+    - sì, perché no
+    - sì se devo
+    - si, se devo
+    - yeeeeezzzzz
+    - yeeeeee
+    - siiii
+    - si lo voglio
+    - si se devo
+    - sì, è carino
+    - sì, va bene
+    - si, grazie
+    - Sì. :/
+    - Si. :/
+    - SÌ ...
+    - SI ...
+    - si accetta per favore
+    - sì piccola
+    - sì bello
+    - si dammi informazioni
+    - si Fai pure
+    - sì, provaci
+    - si ottimo
+    - si accetto
+    - si, sono d'accordo
+    - sì!
+    - sì, andava bene
+    - si, andava bene
+    - Sì, naturalmente
+    - Si, naturalmente
+    - sì grazie!
+    - si grazie!
+    - si signore
+    - sì, è fantastico
+    - si, è fantastico
+    - si è quello che voglio
+    - si, puoi
+    - SÌ'
+    - SI'
+    - sì, mi piacerebbe
+    - si, mi piacerebbe
+    - si mi piacerebbe
+    - sì, bello
+    - si bello
+    - si, bello
+    - si, dammi informazioni, per favore
+    - sì, io sono
+    - si, io sono
+    - si sono io      -
+    - sioo
+    - siss
+    - sissss
+    - sìsìsì
+    - sisisi
+    - si si si
+    - sì sì sì
+    - yop
+    - sip
+    - mi hai chiesto sì o no e ho risposto sì
+    - mi hai fatto una domanda chiedendomi si o no, a cui ho risposto di si
+    - yyeeeh
+    - Va bene, d'accordo
+    - OK..
+    - consideralo
+    - Più un meno
+    - Piu o meno
+    - Più o meno
+    - suona bene!
+    - Veramente
+    - Veramente?
+    - Davvero
+    - Davvero?
+    - Sì.
+
+- intent: deny
+  examples: |
+    - sbagliato
+    - è sbagliato
+    - Tui hai torto
+    - Tu hai torto
+    - non è cosi
+    - non è così!
+    - non è affatto così
+    - ti stai sbagliando molto!
+    - TI STAI SBGLIANDO MOLTO!
+    - non è vero assolutamente
+    - non è vero
+    - no affatt
+    - No affatto
+    - nessuno
+    - mi sa proprio di no
+    - non è mica vero
+    - non mi piace per niente
+    - no niente
+    - negativo
+    - stai sbagliando
+    - è proprio errato
+    - errato
+    - hai torto
+    - Non voglio
+    - Non voglio dartelo
+    - non voglio dirtelo
+    - non voglio dirlo
+    - Non ti do il mio indirizzo email
+    - Non te lo darò
+    - non voglio dartelo
+    - NO
+    - NO NON VOGLIO QUESTO!
+    - no, non voglio questo
+    - no non voglio qst
+    - direi proprio di no
+    - no non voglio
+    - no proprio no
+    - nenanche per sogno
+    - te lo puoi scordare
+    - Per niente
+    - Neanche morto
+    - non fare mai qualcosa del genere
+    - manco per idea
+    - non ne ho
+    - non mi piace
+    - no lascia stare
+    - No no lascia perdere
+    - non va
+    - No
+    - Nessuno dei due
+    - Mai
+    - Non importa
+    - No grazie
+    - No, non proprio.
+    - NO.
+    - Non proprio
+    - assolutamente no
+    - decisamente no
+    - nego tutto
+    - lo nego
+    - rifiuto
+    - non mi piace questo
+    - non credo
+    - no non credo
+    - No non voglio
+    - non voglio nessuno dei due
+    - non voglio
+    - non voglio darti la mia email
+    - non voglio accettare :P lol
+    - Immagino significhi di no
+    - Immagino significhi no
+    - Temo di no
+    - Non sono sicuro
+    - sta andando piuttosto male
+    - fa pena
+    - no
+    - no no
+    - no no no
+    - NO NO!
+    - no, sto bene
+    - nah non per me
+    - no, la prima volta
+    - nessuno dei due
+    - NO :(
+    - no non ho ancora deciso se voglio iscrivermi
+    - no e ancora no
+    - niente pepe
+    - non andare
+    - no non posso
+    - no non accetto
+    - no non voglio accettare :P lol
+    - no non lo farò
+    - no signora
+    - no signore
+    - no scusa
+    - no grazie
+    - non c'è modo
+    - no hai sbagliato
+    - NO!!!!
+    - no lo odio
+    - no, non è come dici
+    - NO, sei poco preparato su questo
+    - non
+    - nooooooooo
+    - nooooooooooooooooooooooooooooooooooooooooo
+    - No!
+    - No, sono buono
+    - non va affatto bene
+    - non proprio
+    - non adesso
+    - Non ancora
+    - scusa non adesso
+    - ancora non voglio dirlo
+    - questo fa schifo
+    - questo proprio non va
+    - molto brutto
+    - Non ho bisogno di aiuto per l'installazione
+    - Non voglio dire il nome della mia azienda
+    - smettila, non mi interessa!!!
+    - nessuno di loro
+    - Non sono d'accordo
+    - no ciao
+
+- intent: retry
+  examples: |
+    - ripartiamo
+    - ricominciamo
+    - ricominciao!
+    - resetta
+    - resetta la partita
+    - voglio ricominciare
+    - voglio ricominciare da capo
+    - voglio reiniziare la partita!
+    - voglio ricominciare la partita
+    - Iniziamo da capo
+    - Possiamo ripartire?
+    - Cominciamo nuovamente
+    - Ripartiamo daccapo
+    - Vorrei iniziare una nuova partita
+    - Posso ricominciare da capo?
+    - Resetta tutto, per favore
+    - Voglio ricominciare la sessione di gioco.
+    - Ricominciamo da zero
+    - Resetta il gioco, per piacere
+    - voglio iniziare da capo a giocare a sasso, carta, forbici
+    - voglio iniziare da capo a giocare a sasso, carta, forbice
+    - resetta la partita attuale
+    - resetta la partita corrente
+    - resetta la partita attuale di sasso, carta, forbici
+    - ricomincia la partita
+    - ricomincia la partita di sasso, carta, forbici
+    - restarta il gioco
+    - restarta la sessione
+    - restarta la partita per piacere
+    - per favore voglio ricominciare da capo la partita
+    - ricominciamo a giocare una nuova partita!
+    - ricominciamo a giocare
+    - gentilmente avvia una nuova partita
+    - avvia una nuova partita
+    - avvia da capo la partita
+    - avvia per favore una nuova partita di sasso, carta, forbici
+    - vogliamo ricominciare a giocare da capo?
+    - potresti avviare una nuova partita?
+    - potresti resettare il gioco?
+    - potresti resettare la sessione di gioco?
+    - potremmo giocare da zero?
+    - potresti avviare di nuovo il gioco?
+    - puoi resettare il gioco?
+    - puoi avviare una nuova partita?
+    - puoi avviare una nuova sessione di gioco?
+    - puoi resettare?
+    - puoi resettare la partita?
+    - puoi resettare la partita di sasso, carta, forbici?
+    - resetta la partita!
+    - inizia una nuova partita!
+    - possiamo iniziamo una nuova partita?
+    - inizi una nuova partita?
+    - avii una nuova partita?
+    - avii una nuova sessione di gioco per piacere?
+    - inizi una nuova sessione di gioco per piacere?
+    - gentilmente iniziamo di nuovo a giocare?
+    - per favore iniziamo da zero a giocare?
+    - inziamo a giocare da capo?
+    - voglio giocare da capo
+    - voglio iniziare da capo una nuova sessione di gioco
+    - voglio giocare di nuovo a sasso, carta, forbici
+    - voglio giocare una nuova partita a sasso, carta, forbici
+    - cortesemente potresti riavviare la partita?
+    - cortesemente potresti riavviare il gioco?
+    - cortesemente potresti riavviare la sessione di gioco?
+    - cortesemente potresti resettare tutto?
+    - cortesemente potresti resettare la partita?
+    - per piacere resetta tutto
+    - per piacere resetti tutto?
+    - per piacere resetti la partita?
+    - per piacere riesci ad avviare una nuova partita?
+    - pepe riavvia la partita
+    - pepe riavvia la sessione di gioco
+    - pepe resetta la partita
+    - pepe resetta il gioco
+    - pepe resetta sasso, carta, forbici
+    - pepe avvia una nuova partita
+    - pepe avvia una nuova sessione di gioco per piacere
+    - pepper riavvia la partita
+    - pepper riavvia la sessione di gioco
+    - pepper resetta la partita
+    - pepper resetta il gioco
+    - pepper resetta sasso, carta, forbici
+    - pepper avvia una nuova partita
+    - pepper avvia una nuova sessione di gioco per piacere
+    - avvia una nuova partita pepe
+    - resetta il gioco pepe
+    - avvia una nuova sessione di gioco pepe
+    - rigiochiamo da capo pepe
+    - per piacere ricominciamo da zero pepe
+    - gentilmente ricominciamo da capo la partita pepe
+    - avvia una nuova partita pepper
+    - resetta il gioco pepper
+    - avvia una nuova sessione di gioco pepper
+    - rigiochiamo da capo pepper
+    - per piacere ricominciamo da zero pepper
+    - gentilmente ricominciamo da capo la partita pepper
+    - giochiamo di nuovo!
+    - sarebbe possibile fare una nuova partita?
+    - ti sfido di nuovo!
+    - voglio una rivincita!
+    - hey rigiochiamo!
+    - heila resetta la partita!
+    - heilà ricominciamo a giocare!
+    - heilà ricomincia una nuova sessione di gioco
+    - ue puoi iniziare una nuova partita?
+    - mi sono scocciato, ricominciamo da capo
+    - proviamo di nuovo!
+    - facciamo un altro tentativo
+    - voglio fare un nuovo tentativo
+    - per piacere fammi fare un altro tentativ
+    - ciao ricominciamo a giocare
+    - salve, voglio giocare da capo
+    - salve, resetta la partita
+    - avvia subito una nuova partita
+    - resetta immediatamente la partita
+    - restarta
+
+- intent: terminate
+  examples: |
+    - basta
+    - stop
+    - uffa
+    - non mi va più
+    - mi sono scocciato
+    - mi sono scocciato di giocare
+    - voglio terminare la partita
+    - finisci la partita
+    - chiudi il gioco
+    - spegni il gioco
+    - basta spegni il gioco
+    - per piacere ferma il gioco
+    - per piacere termina la partita
+    - pepe termina il gioco
+    - pepe non voglio più giocare
+    - non voglio più giocare a sasso, carta, forbici
+    - voglio terminare il gioco.
+    - ho finito di giocare.
+    - chiudi il gioco.
+    - esci dalla partita.
+    - termina la partita di sasso, carta, forbici.
+    - basta con il gioco.
+    - voglio concludere il gioco.
+    - voglio smettere di giocare.
+    - non voglio più giocare.
+    - interrompi il gioco.
+    - stoppa il gioco
+    - pepper stoppa il gioco
+    - pepper termina la partita
+    - pepper termina il gioco
+    - pepper non voglio più giocare
+    - smettiamo di giocare
+    - pepe chiudi la partita
+    - pepe finiamola qui
+    - finiamola qui per piacere
+    - mi so scocciato 
+    - chiudi mi sto annoiando

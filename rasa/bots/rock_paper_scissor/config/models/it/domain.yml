@@ -1,0 +1,27 @@
+version: '3.1'
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+intents:
+- affirm
+- retry
+- deny
+- terminate
+
+responses:
+  utter_affirm:
+  - text: Grande, continuiamo a giocare.
+  utter_deny:
+  - text: Va bene, bella partita.
+  utter_retry:
+  - text: Ok, ricominciamo.
+  utter_terminate:
+  - text: Va bene, alla prossima.
+  
+actions:
+- utter_affirm
+- utter_deny
+- utter_retry
+- utter_terminate

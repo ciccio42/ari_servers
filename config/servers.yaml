@@ -16,7 +16,7 @@ whisper:
   vad_threshold: 0.7
 
 # <LLM_PORT>: answers, with RAG on the documents. Env LLM_<FIELD>. Skeleton: the backends are still to be ported
-# from PepperDemo (ros2_ws/src/trees/trees/llm_rag_utils)
+# from PepperDemo (llm_rag_utils)
 llm:
   port: 8010
   model: meta-llama/Llama-3.1-8B-Instruct
@@ -28,9 +28,9 @@ llm:
   reranker_model: BAAI/bge-reranker-v2-m3
   top_k: 4
 
-# <RASA_PORT>: dialogue. The clients reach this proxy, which forwards to Rasa (rasa run --enable-api) taking the
-# execution lock. Env RASA_<FIELD>
+# <RASA_PORT>: dialogue. The clients reach this proxy on the ports of today, one per bot; it forwards to the bot
+# (rasa run --enable-api, internal port) taking the execution lock. Env RASA_<FIELD>
 rasa:
-  port: 5005
-  upstream: http://localhost:5006
+  # <client port>=<bot>: social (rasa/bots/social), rock paper scissor, connect four
+  routes: "5002=http://localhost:5012, 5003=http://localhost:5013, 5004=http://localhost:5014"
   exclusive: true

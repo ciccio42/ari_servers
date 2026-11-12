@@ -1,0 +1,2378 @@
+version: "3.1"
+nlu:
+
+  - intent: affirm
+    examples: |
+      - I like it
+      - Accept
+      - Awesome!
+      - Good
+      - Great
+      - I accept
+      - I accept.
+      - I agree
+      - I am using it
+      - I changed my mind. I want to accept it
+      - I do
+      - I get it
+      - I guess so
+      - I have used it in the past
+      - I will
+      - I'd absolutely love that
+      - I'm sure I will!
+      - I'm using it
+      - Nice
+      - OK
+      - Ofcourse
+      - Oh yes
+      - Oh, ok
+      - Ok
+      - Ok let's start
+      - Ok.
+      - Okay
+      - Okay!
+      - PLEASE
+      - SURE
+      - Sure
+      - Sweet
+      - That would be great
+      - YES
+      - YUP
+      - Yea
+      - Yeah
+      - Yeah sure
+      - Yep
+      - Yep that's fine
+      - Yep!
+      - Yepp
+      - Yes
+      - Yes I do
+      - Yes please
+      - Yes please!
+      - Yes, I accept
+      - Yes.
+      - Yup
+      - a little
+      - absolutely
+      - accept
+      - accepted
+      - agreed
+      - ah ok
+      - alright
+      - alright, cool
+      - amayzing
+      - amazing!
+      - awesome
+      - awesome!
+      - confirm
+      - cool story bro
+      - definitely yes without a doubt
+      - done
+      - fair enough
+      - fcourse
+      - fine
+      - fuck yeah!
+      - go
+      - go ahead
+      - go for it
+      - going super well
+      - good.
+      - great
+      - great lets do that
+      - great!
+      - hell yeah
+      - hell yes
+      - hm, i'd like that
+      - how nice!
+      - i accept
+      - i agree
+      - i am!
+      - i want that
+      - i will!
+      - it is ok
+      - its okay
+      - ja
+      - ja cool
+      - ja thats great
+      - jezz
+      - jo
+      - k
+      - kk
+      - lets do it
+      - lets do this
+      - not bad
+      - of course
+      - ofcoure i do
+      - ofcourse
+      - oh awesome!
+      - oh cool
+      - oh good !!
+      - oh super
+      - ok
+      - ok cool
+      - ok fine
+      - ok friend
+      - ok good
+      - ok great
+      - ok i accept
+      - ok pepper
+      - ok, I behave now
+      - ok, I understood
+      - ok, pepper
+      - ok...
+      - okay
+      - okay cool
+      - okay sure
+      - okay..
+      - oki doki
+      - okie
+      - ook
+      - oui
+      - perfect
+      - please
+      - si
+      - sort of
+      - sure
+      - sure thing
+      - sure!
+      - that is cool
+      - that ok
+      - that sounds fine
+      - that's great
+      - thats fine
+      - thats good
+      - thats great
+      - top
+      - uh-huh
+      - very much
+      - well yes
+      - y
+      - ya
+      - ya cool
+      - ya go for it
+      - ya i want
+      - ya please
+      - ya thats cool
+      - yaah
+      - yap
+      - yaps
+      - yas
+      - yay
+      - ye
+      - ye splease
+      - yea
+      - yeah
+      - yeah do that
+      - yeah sure
+      - yeah'=
+      - yeah, why not
+      - yeeeeezzzzz
+      - yeeees
+      - yep
+      - yep i want that
+      - yep if i have to
+      - yep please
+      - yep that's nice
+      - yep thats cool
+      - yep, will do thank you
+      - yep. :/
+      - yes
+      - yes ...
+      - yes I do
+      - yes accept please
+      - yes baby
+      - yes cool
+      - yes give me information
+      - yes go ahead
+      - yes go for it
+      - yes great
+      - yes i accept
+      - yes i agree
+      - yes i have!
+      - yes it is
+      - yes it was okay
+      - yes of course
+      - yes pleae
+      - yes please
+      - yes please!
+      - yes pls
+      - yes sirfr
+      - yes that's great
+      - yes that's what i want
+      - yes you can
+      - yes'
+      - yes, I'd love to
+      - yes, cool
+      - yes, give me information, please
+      - yes,i am
+      - yes.
+      - yesh
+      - yess
+      - yessoo
+      - yesss
+      - yesssss
+      - yesyestyes
+      - yesyesyes
+      - yez
+      - yop
+      - you asked me a yes or no question, which i answered with yes
+      - you got me, I accept, if you want me to
+      - yres
+      - ys
+      - yup
+      - yyeeeh
+      - Okay cool
+      - ok..
+      - considering
+      - More a less
+      - sounds good!
+      - really
+      - yes yes
+      - You are right
+      - right
+      - Certainly
+      - absolutely yes
+      - no doubt
+      - I approve
+      - approved
+      - agree
+      - Exactly
+      - Like this
+      - just like that
+      - affirmative
+      - I confirm
+      - Yes, it is
+      - All right, all right
+      - OK.
+      - consider it
+      - Plus a less
+      - Roughly
+      - More or less
+      - sounds good!
+      - Truly
+      - Really?
+
+  - intent: goodbye
+    examples: |
+      - Bye
+      - Bye bye
+      - adios
+      - adios?
+      - bye
+      - bye .
+      - bye :P
+      - bye robot
+      - bye bye
+      - bye bye robot
+      - bye for now
+      - bye udo
+      - bye was nice talking to you
+      - bye!
+      - byee
+      - catch you later
+      - ciao
+      - cya
+      - farewell
+      - good bye
+      - good bye pepper!
+      - good night
+      - goodbye
+      - goodbye.
+      - goodnight
+      - gotta go
+      - k byyye #slay
+      - ok Bye
+      - ok bye
+      - ok, bye
+      - ok.bye
+      - see u later
+      - see ya
+      - see you
+      - see you . bye
+      - take care
+      - then bye
+      - tlak to you later
+      - toodle-oo
+      - Exit
+      - Close this talk
+      - byr
+      - till next time
+      - see you soon
+      - see you later
+      - good day
+      - have a good continuation
+      - greetings
+      - see you tomorrow
+      - see you when
+      - talk to you
+      - i'm going
+      - i'm leaving
+      - see you never
+      - we meet again dear!
+      - I have to go
+      - ok bye
+      - see you later
+      - see you. Hello
+      - Be careful
+      - then hello
+      - All right, bye
+      - see you later
+      - I'm gonna go bye
+      - Close this speech
+      - close this speech
+      - let's finish the conversation
+      - it was a pleasure, see you next
+      - now I must go
+      - I'm running, bye!
+      - until later
+      - until tomorrow
+      - have a good day
+      - Have a good day dear
+      - A good evening
+      - A good day to you
+      - see you soon
+      - See you soon
+      - we see after friend
+      - we feel
+      - I'll be right back
+      - Wait for me
+      - See you next time
+      - see you tomorrow
+      - See you later
+      - I go, until later
+      - I greet you
+      - I leave you
+      - I'll leave you for now, bye
+      - let's end here
+      - time to go
+      - I must run away
+      - it's late I'm leaving
+      - I have to leave
+      - I have to go now
+      - I am leaving
+      - I'm going
+      - I have to go
+      - I am sorry but I must go
+      - I am sorry but I cannot continue to speak
+      - I'm sorry I have to leave you
+      - excuse me but I must go
+      - forgive me I go
+
+  - intent: deny
+    examples: |
+      - wrong
+      - that's wrong
+      - you are wrong
+      - I don't want to
+      - I don't want to give it to you
+      - I don't want to say
+      - I dont want to tell
+      - I'm not giving you my email address
+      - I'm not going to give it to you
+      - NEIN
+      - NO
+      - NO DON"T WANT THIS!
+      - Nah
+      - Neither
+      - Never
+      - Nevermind
+      - No
+      - No thank you
+      - No, not really.
+      - No, thank you
+      - No.
+      - Nopes
+      - Not really
+      - absolutely not
+      - decline
+      - definitely not
+      - deny
+      - i decline
+      - i don not like this
+      - i don't think so
+      - i don't want either of those
+      - i don't want to
+      - i don't want to give you my email
+      - i dont want to
+      - i dont want to accept :P lol
+      - i guess it means - no
+      - i'm afraid not
+      - i'm not sure
+      - it is going pretty badly
+      - it sucks
+      - it sux
+      - n
+      - na
+      - nah
+      - nah I'm good
+      - nah not for me
+      - nah, first time
+      - nah, i'm good
+      - nehi
+      - nein
+      - neither
+      - never
+      - never mind
+      - no
+      - no :(
+      - no I dont want
+      - no I haven't decided yet if I want to sign up
+      - no and no again
+      - no pepper at all
+      - no go
+      - no i can't
+      - no i don't accept
+      - no i dont want to
+      - no i dont want to accept :P lol
+      - no i won't
+      - no ma'am
+      - no sir
+      - no sorry
+      - no thank s
+      - no thank you
+      - no thanks
+      - no way
+      - no you did it wrong
+      - no!!!!
+      - no, i hate it
+      - no, my frst time
+      - no, thank you
+      - no, thanks
+      - no, thankyou
+      - no. u r idiot
+      - non
+      - noooooooooo
+      - noooooooooooooooooooooooooooooooooooooooo
+      - nop
+      - nope
+      - nope!
+      - nope. i am good
+      - not going well at all
+      - not really
+      - not right now
+      - not yet
+      - nö
+      - sorry not right now
+      - still dont want to tell
+      - thanks but no thanks
+      - this sucks
+      - very bad
+      - I do not need help installing
+      - I don't wanna tell the name of my company
+      - no stop
+      - stop it, i do not care!!!
+      - none of them
+      - I don't agree      
+      - I do not agree
+      - Absolutely not
+      - nono
+      - I reject
+      - negative
+      - I disagree
+      - don't feel like it
+      - don't like it
+      - you are absolutely wrong
+      - you are hugely wrong
+      - I don't agree
+      - mmm no
+
+  - intent: greet
+    examples: |
+      - Bom dia
+      - Bonjour
+      - Good Morning
+      - Good morning
+      - Good mourning
+      - Guten Morgen
+      - HELLO
+      - HEY
+      - HEllo
+      - HI
+      - HI pepper
+      - Hallo
+      - Hei
+      - Hellllooooooo
+      - Hello
+      - Hello pepper
+      - Hello!
+      - Hey
+      - Hey pepper
+      - Heya
+      - Heylo
+      - Hi
+      - Hi pepper
+      - Hi pepper!
+      - Hi man
+      - Hi pepper..
+      - Hi there
+      - Hi!
+      - Hi'
+      - Hi,
+      - Hi, pepper
+      - Hieee
+      - Hieeeeeeeeeeeee
+      - Hola
+      - I said, helllllloooooO!!!!
+      - Well hello there ;)
+      - What is up?
+      - Whats up
+      - Whats up my pepper
+      - Whats up?
+      - ayyyy whaddup
+      - bonjour
+      - ey boss
+      - good evening
+      - good moring
+      - good morning
+      - greet
+      - hai
+      - hallo
+      - hallo pepper
+      - halloo
+      - halloooo
+      - halo
+      - halo pepper
+      - heeey
+      - heelio
+      - hell9o
+      - hellio
+      - hello
+      - hello pepper
+      - hello everybody
+      - hello friend
+      - hello hi
+      - hello is anybody there
+      - hello it is me again
+      - hello robot
+      - hello sweatheart
+      - hello sweet boy
+      - hello there
+      - hello world
+      - hello, my name is [Charles Pfeffer](name)
+      - hello?
+      - hello]
+      - hellooo
+      - helloooo
+      - helo
+      - hey
+      - hey dude
+      - hey hey
+      - hey let's talk
+      - hey pepper
+      - hey ther
+      - hey there
+      - hey there boy
+      - hey there..
+      - hey, let's talk
+      - hey, pepper!
+      - heya
+      - heyho
+      - heyo
+      - hhola
+      - hi
+      - hi !
+      - hi Mister
+      - hi again
+      - hi can you speak ?
+      - hi folks
+      - hi friend
+      - hi friends
+      - hi hi
+      - hi i'm [Sandra Hernandez](name)
+      - hi im [Amanda Anderson](name)
+      - hi mrs pepper
+      - hi pal!
+      - hi pepper
+      - hi there
+      - hi there it's me
+      - hi!
+      - hi.........................................................
+      - hi?
+      - hieee
+      - hii
+      - hiihihi
+      - hiii
+      - hlo
+      - hola
+      - howdy
+      - i am [Karen Mease](name)
+      - jojojo
+      - jop
+      - konichiwa
+      - merhaba
+      - ola pepper
+      - pepper hello
+      - salut
+      - sup
+      - wasssup
+      - wasssup!
+      - what up
+      - whats popping
+      - whats up
+      - yo
+      - yoo
+      - ssup?
+      - helleo
+      - regards
+      - good afternoon
+      - hey!
+      - see you again
+      - look who's back
+      - here you are
+      - nice
+      - dearest hello
+      - welcome
+      - heila pepe
+      - heilà pepe
+      - hei pepe
+      - hey pepe
+      - Hey
+      - hey
+      - hey hey
+      - hey you
+
+  - intent: ask_functions
+    examples: |
+      - Can you explain me in one sentence what you are doing?
+      - Can you help me?
+      - Could you please show me what you can
+      - Great, is there anything else you can do, pepper?
+      - How can you help me
+      - How you help me?
+      - I need help
+      - I need some help
+      - What are my options
+      - What are you able to do?
+      - What can I ask you?
+      - What can I do?
+      - What can you demo
+      - What can you do
+      - What can you do for me?
+      - What can you do?
+      - What can you tell me?
+      - What do you do
+      - anything els
+      - are there any other options?
+      - can I ask you anything else?
+      - can you do anything else?
+      - can you help me
+      - can you help me?
+      - come back
+      - cool! can I do something else here?
+      - hello what can you do for me
+      - help
+      - help me
+      - help please
+      - help pls
+      - help?
+      - hep me
+      - hi. Sara what do you do?
+      - hm that doesnt quite help me is there anything else you can do?
+      - how can i use you
+      - how can you help me
+      - how can you help me?
+      - how can you help?
+      - how does this work?
+      - how u can help me
+      - how you help me
+      - i asked you if you can do anything else
+      - i don't know what i want
+      - i need help
+      - more info
+      - now what?
+      - options
+      - show me the menu
+      - show me what's possible
+      - so now what
+      - so what can you do
+      - so what can you do?
+      - so what can you help me with?
+      - so what next?
+      - talk to me
+      - talk to me!
+      - tell me something you can do
+      - tell me what's your skill
+      - um what now
+      - what are all the things you understand?
+      - what are the options?
+      - what are you ding
+      - what are you doing
+      - what are you good at?
+      - what can we talk about?
+      - what can you answer
+      - what can you do
+      - what can you do for me
+      - what can you do, sara?
+      - what can you do?
+      - what can you offer me?
+      - what can you tell me
+      - what can you?
+      - what cn u do for me ?
+      - what do you do
+      - what do you do?
+      - what do you know except this?
+      - what else can I do here?
+      - what else can i do
+      - what else can i do?
+      - what else can you do?
+      - what else can you help with?
+      - what i have to do
+      - what is this robot for
+      - what u can do
+      - what u can do?
+      - what you can do
+      - what you can do for me?
+      - what you can do?
+      - what you do
+      - what you doing?
+      - what you talk about?
+      - you can hep me
+      - what can you teache me?
+      - Can pepper do calculations?
+      - what you can
+
+  # - intent: ask_identity
+  #   examples: |
+  #     - Can you tell me my name?
+  #     - Can you tell me what I am called?
+  #     - Do I have a name?
+  #     - Do I have a name? What is it?
+  #     - Do you know my name?
+  #     - Do you know what my name is?
+  #     - Explain my name to me.
+  #     - I have a name, what is it?
+  #     - I'd like to know my name
+  #     - I'd like to know what my name is
+  #     - Inform me what my name is
+  #     - May i know my name?
+  #     - Please let me know what my name is
+  #     - Say my name.
+  #     - Tell me my name
+  #     - Tell me my name.
+  #     - What am I called?
+  #     - What could be my name?
+  #     - What did my parents name me?
+  #     - What do I call myself?
+  #     - What do my colleagues call me?
+  #     - What do people call me?
+  #     - What does everyone call me?
+  #     - What else do people call me?
+  #     - What exactly is my name?
+  #     - What is my first name?
+  #     - What is my full name?
+  #     - What is my name?
+  #     - What is the name I was given?
+  #     - What name do I go by?
+  #     - What name should I recognize for myself?
+  #     - What was I named?
+  #     - What would be the name on my tombstone?
+  #     - can you tell me my name?
+  #     - what is my name
+  #     - what is my name?
+  #     - what's my name?
+  #     - Can you tell me who I am?
+  #     - Can you tell me who am I?
+  #     - Do you know who I am?
+  #     - Do you know who am I?
+  #     - How can I determine who I am?
+  #     - How can I determine who am I?
+  #     - How do I discover who I am?
+  #     - How do I discover who am I?
+  #     - How do I identify myself?
+  #     - Okay who am I?
+  #     - Shall i know who am i?
+  #     - Tell me who I am.
+  #     - Tell me who I am?
+  #     - Tell me who am I?
+  #     - WHo am I
+  #     - Who am I?
+  #     - Who could I be?
+  #     - can you tell me what I am?
+  #     - can you tell me what my identity is?
+  #     - can you tell me who I am?
+  #     - tell me what my identity is?
+  #     - tell me who I am?
+  #     - what's my identity?
+  #     - who am i
+  #     - who are I ?
+  #     - who may i ?
+  #     - Can you recognize me?
+  #     - are you able to recognize me?
+  #     - who I am?
+  #     - can you tell me who i am?
+  #     - can you identify me?
+  #     - what is my identity?
+  #     - who do I belong to?
+  #     - do you know me?
+  #     - can you tell me what my name is?
+  #     - who am I?
+  #     - do you know who I am?
+  #     - but do you know who I am?
+  #     - who are they?
+  #     - identify me now!
+
+  - intent: ask_age
+    examples: |
+      - How long have I been alive?
+      - How long have I been around?
+      - How long have I occupied the earth?
+      - How many candles were on my last birthday cake?
+      - How many years have I been alive?
+      - How many years have I lived?
+      - How old are I?
+      - How old were I on my last birthday?
+      - How old will I be on my next birthday?
+      - Tell me my day, month and year of birth.
+      - What is my age?
+      - What is my birthdate?
+      - What is my count of years being alive so far?
+      - What was my age on my last birthday?
+      - What will be my age on my next birthday?
+      - What year was I born?
+      - Whats my age?
+      - When do I celebrate my day of birth?
+      - and I am how many years old?
+      - can you tell me exactly how old I am?
+      - can you tell me what number represents my age?
+      - can you tell me my age?
+      - do you know how old I am?
+      - give me my age?
+      - how about my age
+      - how aold am I
+      - how many ages?
+      - how many years old am I?
+      - how old are u
+      - how old am I
+      - how old am I?
+      - how old was I on my last birthday?
+      - how old was I when I celebrated my last birthday?
+      - how old will I be this year?
+      - how old?
+      - in what year was I born?
+      - tell me how old I am?
+      - tell me my age number?
+      - tell me my age?
+      - what age am I
+      - what age was I when I celebrated my last birthday?
+      - what is my age?
+      - what is my birthday?
+      - what is my exact age?
+      - what number represents my age?
+      - what year was I born?
+      - what's my age?
+      - whats my age?
+      - whats my birth year?
+      - when is my birthday?
+      - when was I born?
+      - when I was bon
+      - What's my age?
+      - How old do I look to you?
+      - Can you estimate my age?
+      - How old do I look?
+      - Can you tell me how old I am?
+      - How old do you think I am?
+      - Tell me my age
+      - Do you know my age?
+      - Try to guess my age
+      - Try to guess how old I am
+      - How old am I?
+      - How old do you think I will be next year?
+      - How old do you think I could be?
+      - Pepper how old am I
+
+  - intent: personal_request
+    examples: |
+      - I like pizza
+      - I like football
+      - I like reading
+      - I like swimming
+      - I like travelling
+      - I like music
+      - I like cinema
+      - I like spending time with friends
+      - I like the sea
+      - I like the mountains
+      - I like dogs
+      - I like cats
+      - I like video games
+      - I like sweets
+      - I like TV series
+      - I like action movies
+
+      - I would like to visit Japan
+      - I would like to learn to play guitar
+      - I would like to take a trip to America
+      - I would like to try Japanese food
+      - I would like to have a dog
+      - I would like to go to the seaside this weekend
+      - I would like to change jobs
+      - I would like to know how to dance
+      - I would like to study foreign languages
+      - I would like to sleep more
+      - I would like to read more
+      - I would like to do more sport
+
+      - I don't like the cold
+      - I don't like cooking
+      - I don't like waking up early
+      - I don't like queuing
+      - I don't like the rain
+      - I don't like traffic
+      - I don't like vegetables
+      - I don't like insects
+      - I don't like horror movies
+      - I really don't like the heat at all
+      - I really don't like fish
+
+      - I adore pizza
+      - I love being at the seaside
+      - I love reading books
+      - I love doing outdoor sports
+      - I love classical music
+      - I love cooking for others
+      - I love animals
+      - I love being outdoors
+
+      - I'm crazy about ice cream
+      - I'm mad about sweets
+      - Video games drive me crazy
+      - I'm mad about Neapolitan pizza
+
+      - I prefer the sea to the mountains
+      - I prefer meat to fish
+      - I prefer staying at home
+      - I prefer going out in the evening
+      - I prefer cooking alone
+      - I prefer coffee to tea
+      - I prefer cats to dogs
+      - I prefer working in the morning
+
+      - I like pizza a lot
+      - I like travelling so much
+      - I like reading very much
+      - I like TV series very much
+      - I really like music a lot
+
+      - I hate getting up late
+      - I hate traffic
+      - I can't stand noise
+      - I detest doing the shopping
+      - I can't stand chaos
+      - I hate waiting
+      - I detest damp cold
+
+      - In my free time I watch films
+      - I usually listen to music
+      - I relax by reading
+      - I like going out with friends
+      - I spend a lot of time playing video games
+      - On Sundays I like to cook
+      - In the evening I watch TV series
+      - In the morning I go jogging
+      - At the weekend I like to go cycling
+
+      - I do sport regularly
+      - I train every day
+      - I never do sport
+      - I like going to the gym
+      - I like running in the park
+      - I play football on Saturdays
+      - I go swimming twice a week
+
+      - I happily eat pizza
+      - I don't eat meat
+      - I avoid fish
+      - I don't drink milk
+      - I often drink coffee
+      - I eat a lot at breakfast
+      - I often skip lunch
+      - I often cook at home
+
+      - I'm allergic to milk
+      - I'm allergic to nuts
+      - I'm lactose intolerant
+      - I have a gluten intolerance
+      - I can't have dairy products
+      - I'm coeliac
+      - I'm intolerant to nickel
+
+      - I follow a vegan diet
+      - I follow a vegetarian diet
+      - I don't eat animal products
+      - I only eat plant-based foods
+      - I follow a gluten-free diet
+
+      - Pizza is my favourite dish
+      - The sea is my favourite place
+      - Football is my favourite sport
+      - Reading is my favourite hobby
+      - The cold isn't for me
+      - I don't like the mountains that much
+      - Sweets are my passion
+      - Cinema is my passion
+      - Cooking is my great passion
+
+      - I'm from Rome
+      - I'm from Naples
+      - I'm from Milan
+      - I'm from Turin
+      - I'm from Palermo
+      - I'm from Salerno
+      - I'm from Florence
+      - I'm from Bologna
+      - I'm from Venice
+      - I'm from Bari
+      - I'm Italian
+      - I'm French
+      - I'm Spanish
+      - I come from Rome
+      - I come from Naples
+      - I come from Milan
+      - I come from southern Italy
+      - I come from northern Italy
+      - I'm originally from Naples
+      - I'm originally from Rome
+      - I'm from the south
+      - I'm from the north
+      - I'm from central Italy
+
+      - I was born in Rome
+      - I was born in Naples
+      - I was born in Milan
+      - I was born in Salerno
+      - I was born in Turin
+      - I was born in Florence
+      - I was born in Bologna
+      - I was born in Italy
+      - I was born in France
+      - I was born in Spain
+      - I was born in the north
+      - I was born in the south
+      - I was born in a small town
+      - I was born in a big city
+      - I was born and raised in Naples
+      - I was born and raised in Rome
+      - I grew up in Milan
+      - I grew up in Palermo
+
+      - I live in Rome
+      - I live in Naples
+      - I live in Milan
+      - I live in Salerno
+      - I live in Turin
+      - I live in Florence
+      - I live in the north
+      - I live in the south
+      - I live in Italy
+      - I live in France
+      - I live in Spain
+      - I live in a small town
+      - I live in a big city
+      - I live in the city centre
+      - I live in the suburbs
+      - I live near the sea
+      - I live near the mountains
+      - I moved to Milan
+      - I moved to Rome
+      - I moved to the north
+      - I moved to the south
+      - I now live in Milan but I'm from Naples
+      - I now live in Rome but I'm originally from Salerno
+
+      - I work in Rome
+      - I work in Milan
+      - I work in Naples
+      - I work in Salerno
+      - I work in Turin
+      - I work in the city centre
+      - I work in the suburbs
+      - I work outside the city
+      - I work near home
+      - I work far from home
+      - I work in Italy
+      - I work abroad
+      - I work from home
+      - I work remotely
+      - I work in an office
+      - I work in a factory
+      - I work in a hospital
+      - I work in a school
+      - I work in a shop
+
+      - I study in Rome
+      - I study in Naples
+      - I study in Milan
+      - I study in Salerno
+      - I study in Bologna
+      - I study away from home
+      - I study near home
+      - I study at university
+      - I study at a private school
+      - I go to the University of Salerno
+      - I attend university in Naples
+      - I graduated in Bologna
+      - I graduated in Rome
+
+  - intent: ask_rag
+    examples: |
+      - Can you tell me what the university departments are?
+      - Can you tell me how many university departments there are?
+      - What departments does the university have?
+      - How many departments are there at the university?
+      - I would like to know what the university departments are
+      - Can you list the university departments?
+      - Could you give me a list of the university departments?
+      - Do you know what the university departments are?
+      - What is the list of university departments?
+      - Which departments is the university composed of?
+
+      - Can you tell me what the departments of the University of Salerno are?
+      - Can you tell me how many departments the University of Salerno has?
+      - What departments does the University of Salerno have?
+      - How many departments are there at the University of Salerno?
+      - I would like to know the departments of the University of Salerno
+      - Can you list the departments of the University of Salerno?
+      - Could you give me a list of the departments of the University of Salerno?
+      - Do you know what the departments of the University of Salerno are?
+      - Which departments is the University of Salerno composed of?
+
+      - Can you tell me what the departments of the University of Salerno are?
+      - Can you tell me how many departments the University of Salerno has?
+      - What departments does the University of Salerno have?
+      - How many departments are there at the University of Salerno?
+      - I would like to know the departments of the University of Salerno
+      - Can you list the departments of the University of Salerno?
+      - Could you give me a list of the departments of the University of Salerno?
+      - Do you know what the departments of the University of Salerno are?
+      - Which departments is the University of Salerno composed of?
+
+      - What are the departments of UNISA?
+      - How many departments does UNISA have?
+      - Can you list the departments of UNISA?
+      - Can you tell me which departments are present at UNISA?
+      - Which departments is UNISA made up of?
+
+      - Can you tell me the history of the University of Salerno?
+      - Can you tell me the history of the university?
+      - What is the history of the university?
+      - I would like to know the history of the university
+      - Can you talk to me about the history of the university?
+      - Do you know anything about the history of the university?
+      - When was the university founded?
+      - When was the university established?
+      - What are the origins of the university?
+      - Tell me about the origins of the university
+      - Can you briefly explain the history of the university to me?
+      - Give me historical information about the university
+
+      - What is the history of the University of Salerno?
+      - I would like to know the history of the University of Salerno
+      - Can you tell me about the history of the University of Salerno?
+      - Can you talk to me about the history of the University of Salerno?
+      - Do you know anything about the history of the University of Salerno?
+      - When was the University of Salerno founded?
+      - When was the University of Salerno established?
+      - What are the origins of the University of Salerno?
+      - Tell me about the origins of the University of Salerno
+      - Give me historical information about the University of Salerno
+
+      - What is the history of the University of Salerno?
+      - I would like to know the history of the University of Salerno
+      - Can you tell me about the history of the University of Salerno?
+      - Can you talk to me about the history of the University of Salerno?
+      - Do you know anything about the history of the University of Salerno?
+      - When was the University of Salerno founded?
+      - When was the University of Salerno established?
+      - What are the origins of the University of Salerno?
+      - Tell me about the origins of the University of Salerno
+      - Give me historical information about the University of Salerno
+
+      - What is the history of UNISA?
+      - When was UNISA founded?
+      - When was UNISA established?
+      - Can you tell me the history of UNISA?
+      - Do you know anything about the history of UNISA?
+      - What are the origins of UNISA?
+
+      - Who is the current rector of the university?
+      - Who is the rector of the university?
+      - What is the name of the university rector?
+      - Can you tell me the name of the university rector?
+      - Do you know who the university rector is?
+      - I would like to know who the university rector is
+      - What is the name of the current rector?
+      - Who leads the university?
+      - Who runs the university?
+      - Who is in charge of the university?
+
+      - Who is the current rector of the University of Salerno?
+      - Who is the rector of the University of Salerno?
+      - What is the name of the rector of the University of Salerno?
+      - Can you tell me the name of the rector of the University of Salerno?
+      - Do you know who the rector of the University of Salerno is?
+      - I would like to know who the rector of the University of Salerno is
+      - What is the name of the current rector of the University of Salerno?
+      - Who leads the University of Salerno?
+      - Who runs the University of Salerno?
+      - Who is in charge of the University of Salerno?
+
+      - Who is the current rector of the University of Salerno?
+      - Who is the rector of the University of Salerno?
+      - What is the name of the rector of the University of Salerno?
+      - Can you tell me the name of the rector of the University of Salerno?
+      - Do you know who the rector of the University of Salerno is?
+      - I would like to know who the rector of the University of Salerno is
+      - What is the name of the current rector of the University of Salerno?
+      - Who leads the University of Salerno?
+      - Who runs the University of Salerno?
+      - Who is in charge of the University of Salerno?
+
+      - Who is the rector of UNISA?
+      - Who is the current rector of UNISA?
+      - What is the name of the rector of UNISA?
+      - Can you tell me who leads UNISA?
+      - Do you know who is in charge of UNISA?
+      - What is the name of the UNISA rector?
+
+
+  - intent: ask_gender
+    examples: |
+      - Do I have a gender?
+      - Am I a girl?
+      - Am I a guy?
+      - Am I agender?
+      - Please tell me if I am a girl
+      - Do I have a sex?
+      - Am I cisgender?
+      - Am I a boy?
+      - Am I a girl or a boy?
+      - Am I a guy or a girl?
+      - Am I a man or a woman?
+      - Am I a woman?
+      - Please tell me if I am trans
+      - Am I female?
+      - Am I gendered?
+      - Am I genderfluid?
+      - Am I male or female?
+      - Am I male?
+      - Am I a man?
+      - I am queer?
+      - Please tell me if I am a guy
+      - I am a man
+      - I am genderfluid
+      - I am nonbinary
+      - I am trans
+      - I am a boy
+      - I am genderqueer
+      - I am a girl
+      - I have a gender?
+      - Where Am I on the gender spectrum?
+      - I am agender
+      - I am gender neutral
+      - I am transgender
+      - What's my gender?
+      - Please tell me my gender
+      - Tell me all about my gender
+      - What gender do I identify with?
+      - What is my gender?
+      - What is my sex?
+      - I am a woman
+      - What's my gender identity?
+      - Am I bigender?
+      - What's my sex?
+      - Where do I fall in terms of gender
+      - I a girl?
+      - I a guy?
+      - I got a gender?
+      - Am I on the gender spectrum?
+      - What's going on with my gender?
+      - I don't understand if I have a gender or not
+      - Please tell me if I am a man
+      - Am I transgender?
+      - Can I tell me my gender?
+      - Do I even have a gender
+      - Do I have a gender identity?
+      - Am I queer?
+      - How do I identify in terms of gender?
+      - Please tell if I am a woman      
+      - Do I look like a man or a woman?
+      - am i a woman?
+      - can you tell me if i'm a girl or a boy?
+      - I'm a man?
+      - Am i a man?
+      - I'm a woman?
+      - Can you tell me my gender?
+      - are you able to recognize my gender?
+      - Since I have long hair, do I look like a woman to you?
+      - By my face would you tell I'm a man or a woman?
+      - Do my facial features make you think I'm a man or a woman?
+      - tell me my gender
+      - do you think i'm male or female?
+      - what do you think is my gender?
+      - why do i look like a man?
+      - why do i look like a woman?
+      - from my somatic traits do you consider me a man?
+      - from my somatic features do you consider me a woman?
+      - since I have a beard, do I look like a man?
+      - Since I don't have a beard, do I look like a woman to you?
+  
+  - intent: ask_emotion
+    examples: |
+      - what is my emotion?
+      - my emotion now?
+      - do you know my emotion
+      - Am i happy?
+      - Am I sad?
+      - In a good mood?
+      - Am I not you cheerful today?
+      - Am I always disgusted?
+      - Am I always angry?
+      - Someone's in a good mood.
+      - Well am I not feeling angry?
+      - Well am I not feeling disgusted today?
+      - Well am I not feeling feared?
+      - Well am I not feeling happy today?
+      - Well am I not feeling sad?
+      - Well am I not feeling surprised today?
+      - Well am I not angry?
+      - Well am I not disgusted today?
+      - Well am I not feared?
+      - Well am I not happy today?
+      - well am I not sad
+      - Well am I not surprised?
+      - Well am I not cheerful today?
+      - am I not feeling happy today?
+      - am I not feeling disgusted?
+      - am I not feeling angry today?
+      - am I not feeling feared?
+      - am I not feeling sad today?
+      - am I not feeling surprised?
+      - am I not disgusted?
+      - am I not feared today?
+      - am I not sad today?
+      - What do you think I'm feeling?
+      - well, What do you think I'm feeling?
+      - How do i feel?
+      - What emotion do I show?
+      - What emotions am I feeling?
+      - What emotions do you think I'm feeling?
+      - What emotions do I show that I feel?
+      - What do I prove I feel?      
+      - what emotion do I express?
+      - Am I surprised or sad?
+      - what am i feeling?
+      - how do you think he is?
+      - how do you think she is?
+      - Do I look cheerful to you?
+      - do i look bored?
+      - do i look sad to you?
+      - what mood am I in?
+      - do you see me down?
+      - do you see me happy?
+      - do you feel bored?
+      - try to guess my emotion
+      - how do you see me?
+      - what impression do I give you?
+      - Can you understand my emotion?
+      - Can you tell if I'm sad?
+      - Can you tell if I'm joyful?
+      - do I express happiness?
+      - what emotion do I communicate to you?
+      - try to guess my mood
+      - could you tell me my emotion?
+      - can you understand my feelings?
+      - can you understand my emotions?
+      - Can you tell me my emotional state?
+      - what I feel?
+      - how do I look?
+      - Do I look down on you?
+      - do i look dejected?
+      - do i look happy to you?
+      - Am I very or very little angry?
+      - Am I very or not happy?
+      - Am I very or very little neutral?
+
+  - intent: ask_biometrics
+    examples: |
+      - what about me
+      - what can you say about me?
+      - Tell me something about me 
+      - what can you tell me about me?
+      - what do you know about me
+      - Do you something about me?
+      - what about to me?
+      - describe me
+      - can you describe me?
+      - what are my characteristics?
+      - tell me something about me
+      - could you describe me?
+      - what would you say about me?
+      - what would you say about me to outline myself?
+      - try to outline me
+      - try to describe me
+      - what would you say about me to describe me?
+      - describe my appearance
+      - describe my characteristics
+      - say something about me
+      - what would you say about me to introduce myself to others?
+      - what are my peculiarities?
+      - what do you think characterizes me?
+      - what are my special marks?
+      - What do you think are my main characteristics?
+      - and what do you think about me?
+
+  - intent: what_games
+    examples: |
+      - what games can you play?  
+      - can you play anything?     
+      - what do you know how to play?
+      - what games do you know?
+      - do you know any games?
+      - pepper do you know any games?
+      - do you know any games pepper?	  
+      - Pepper, what games are you able to play?
+      - Hi Pepper, can you tell me what games you can play?
+      - Pepper, what are the games you can play?
+      - can I ask you what kinds of games do you know?
+      - do you have experience with games? 
+      - Pepper, I would like to know what games you can play.
+      - can you play rock, paper, scissors?
+      - can you tell me what you can play?
+      - please tell me what you can play
+      - tell me what can you play
+      - tell me knows what you can play
+      - let's play some games?
+      - what game do we want to play?  
+
+  - intent: ask_objects  
+    examples: |  
+      - What objects are in the scene?
+      - What objects are in the room?
+      - What objects are in the environment?
+      - Do you see any objects?
+      - Are you observing any objects?
+      - Are you looking at any objects?
+      - Are you looking at any object?
+      - Are you looking at a person?
+      - Are you looking at people?
+      - Are you looking at a boy?
+      - Are you looking at a girl?
+      - Are you looking at boys?
+      - Are you looking at girls?
+      - Are you looking at a child?
+      - Are you looking at a man?
+      - Are you looking at men?
+      - Are you looking at a woman?
+      - Are you looking at women?
+      - Do you see anyone?
+      - Do you see someone?
+      - Do you see any person?
+      - Do you see a girl?
+      - Do you see a boy?
+      - Are you observing someone?
+      - Are you observing a person?
+      - Are you observing anyone?
+      - Are you observing people?
+      - Are you observing a girl?
+      - Are you observing girls?
+      - Are you observing boys?
+      - Are you observing a boy?
+      - Are you seeing someone?
+      - Are you seeing a person?
+      - Are you seeing people?
+      - Are you seeing a group of people?
+      - Are you seeing a boy?
+      - Are you seeing a girl?
+      - Is there a person?
+      - Is there a boy?
+      - Is there a girl?
+      - Is there a woman?
+      - Is there a man?
+      - Do you see people?
+      - Do you see a group of boys?
+      - Do you see a group of girls?
+      - Do you see a group of people?
+      - Do you see a group of men?
+      - Do you see a group of women?
+      - Are you looking at a child?
+      - Are you seeing a child?
+      - Are you observing a child?
+      - What are you looking at?
+      - Are you looking at a person?
+      - Are you looking at people?
+      - Are you looking at a boy?
+      - Are you looking at a girl?
+      - Are you looking at a group of people?
+      - Are you looking at a group of boys?
+      - Are you looking at a group of girls?
+      - What objects do you see?
+      - What objects can you see?
+      - What objects do you see around?
+      - Do you see anything around?
+      - What object do you see?
+      - How many objects do you see?
+      - What are the objects you are seeing now?
+      - How many people do you see?
+      - Do you see any person?
+      - What objects do you see?
+      - How many people do you see?
+      - How many people are in the group?
+      - Do you see any person?
+      - Is there any person?
+      - Do you see a person?
+      - Do you see people?
+      - Do you see any people?
+      - Is it a person?
+      - How many people are there?
+      - Do you see anyone?
+      - Is there anyone? 
+      - How many [bicycles] {"entity": "object_type", "value": "bicycles"}?  
+      - How many [suitcases] {"entity": "object_type", "value": "suitcases"} can you see?  
+      - How many [chairs] {"entity": "object_type", "value": "chairs"} can you see?  
+      - How many [cows] {"entity": "object_type", "value": "cows"} are there?  
+      - How many [laptops] {"entity": "object_type", "value": "laptops"} are there?  
+      - Are there [birds] {"entity": "object_type", "value": "birds"}?  
+      - Are there [glasses] {"entity": "object_type", "value": "glasses"}?  
+      - Are there any [bananas] {"entity": "object_type", "value": "banana"}?  
+      - Is there a [donut] {"entity": "object_type", "value": "donut"}?  
+      - Can you see a [ball] {"entity": "object_type", "value": "ball"}?  
+      - Can you see an [apple] {"entity": "object_type", "value": "apple"}?  
+      - Can you see a [sofa] {"entity": "object_type", "value": "sofa"}?  
+      - Is it a [smartphone] {"entity": "object_type", "value": "smartphone"}?  
+      - Is it a [phone] {"entity": "object_type", "value": "phone"}?  
+      - How many [bicycles] {"entity": "object_type", "value": "bicycles"} are there?  
+      - How many [cars] {"entity": "object_type", "value": "cars"} can you see?  
+      - How many [motorcycles] {"entity": "object_type", "value": "motorcycles"} can you count?  
+      - How many [buses] {"entity": "object_type", "value": "bus"} are around?  
+      - How many [buses] {"entity": "object_type", "value": "bus"} are around?  
+      - Are there any [airplanes] {"entity": "object_type", "value": "airplanes"} in the sky?  
+      - Are there any [boats] {"entity": "object_type", "value": "boats"} in the water?  
+      - Are there any [parking meters] {"entity": "object_type", "value": "parking meters"} around here?  
+      - Is there a [counter] {"entity": "object_type", "value": "counter"} in this room?  
+      - Can you see a [tennis ball] {"entity": "object_type", "value": "tennis ball"} anywhere?  
+      - Can you spot a [cup] {"entity": "object_type", "value": "cup"} on the table?  
+      - Can you spot a [frisbee] {"entity": "object_type", "value": "frisbee"} in the park?  
+      - Can you spot a [bottle] {"entity": "object_type", "value": "bottle"} on the shelf?  
+      - Is there a [cup] {"entity": "object_type", "value": "cup"} on the counter?  
+      - Is it a [spoon] {"entity": "object_type", "value": "spoon"} for ice cream?  
+      - Is it a [bed] {"entity": "object_type", "value": "bed"} single or double?  
+      - Is there a [clock] {"entity": "object_type", "value": "clock"} on the wall?  
+      - Is it a [box] {"entity": "object_type", "value": "box"} or a book?  
+      - Have you seen a [computer] {"entity": "object_type", "value": "computer"} around?  
+      - Have you seen a [cell phone] {"entity": "object_type", "value": "cell phone"} in this room?  
+      - Have you noticed a [fridge] {"entity": "object_type", "value": "fridge"} in the kitchen?  
+      - Have you noticed a [book] {"entity": "object_type", "value": "book"} on the table?  
+      - Is there a [pen] {"entity": "object_type", "value": "pen"} on the desk?  
+      - Is there a [chair] {"entity": "object_type", "value": "chair"} next to the table?  
+      - Is there a [pencil] {"entity": "object_type", "value": "pencil"} in the pencil holder?  
+      - Are there any [plates] {"entity": "object_type", "value": "plates"} on the table?  
+
+  - intent: nlu_fallback
+    examples: |
+      - My watch is faster than yours.
+      - Look at the blackboard!
+      - can you play football
+      - I just walked on thee coolest pillow.
+      - do you know what is a ball
+      - what can you say about the europe
+      - what time is it
+      - nothing to say
+      - i like the juventus
+      - can you take a [ball]{"entity": "object_type", "value": "sports ball"}
+      - talk me about chemistry
+      - what can you say about football
+      - to me about ronaldo
+      - what do you know regarding soccer
+      - talk me about tennis
+      - what can you say about robotics
+      - to me about 
+      - talk me about cristiano ronaldo
+      - say me about dragons
+      - what do you know about playboy
+      - what do you know regarding the world
+      - how many bookes are in your library?
+      - whan is your next doctor's apointment?
+      - Where did you're friend go on vacation?
+      - What is the best way to cook chiken?
+      - Who is the main carachter in Harry Potter?
+      - wich is the fastst route to get to the air port?
+      - How meny hour's did you sleep last night?
+      - Wen was the last time you visited your grandmoter?
+      - whare did you buy your shose?
+      - Wat kind of movis do you lik?
+      - Who is the presidnt of the United States?  Sugggestt me where can I find a good hairstylist in this area?
+      - Which of these colour's do you prefer?
+      - How much money do you spend on grocerries each week?
+      - When did you start learnning how to play the guitar?
+      - where are the best plays to go on vacation?
+      - what are the benifits of exersize?
+      - Who was the first person to walk on the moon?
+      - Which of these restaurnats has the best reviewes?
+      - How mani choclates are in the box?
+      - When will the whether be good for a picnic?
+      - how many people attended the concert last night?
+      - When is your birthday?
+      - Where can I find a good coffee shop in this neighborhood?
+      - What is your favorite food?
+      - Who is a good italian musician?
+      - Which book do you recommend for learning about history?
+      - How much does the new smartphone cost?
+      - When will the next season of your favorite TV show be released?
+      - where did you go on your last vacation?
+      - What are your plans for the weekend?
+      - Who won the last World Cup?
+      - Which is the tallest building in the world?
+      - How many languages do you speak fluently?
+      - When did you first start learning how to swim?
+      - Where is the closest gas station?
+      - What is the capital of France?
+      - who wrote the book "To Kill a Mockingbird"?
+      - Which movie won the Best Picture award at the Oscars last year?
+      - how many countries are there in the European Union?
+      - when was the Kingdom of Italy founded?
+      - How many siblings do you have?
+      - When is the next meeting scheduled?
+      - Where did you meet your best friend?
+      - What is your favorite hobby?
+      - Who is the CEO of the company you work for?
+      - Which is your favorite color?
+      - how much time do you spend on social media every day?
+      - when was the last time you visited a museum?
+      - Where can I find a good pizza place in Naples?
+      - what is the name of the largest continent in the world?
+      - Who is your favorite author?
+      - Which university did you graduate from?
+      - How many pets do you have?
+      - When did you learn how to ride a bike?
+      - where is the best place to watch the sunset in Rome?
+      - What is the name of the biggest ocean on Earth?
+      - Who is the most famus athlete in Spain?
+      - Which country is known as the Land of the Rising Sun?
+      - How many hours a day do you spend on your phone?
+      - Tel me, whare can I find a good Italian restarant?
+      - Can you tel me, what time does the concert start?
+      - Plase tel me, when is the queen Virginia died?
+      - Tel me, which is the best science book to read for beginners?
+      - Can you tel me, who won the last year's championship?
+      - tell me abot your favorite book
+      - Telle me what is your opinion about global warming?
+      - Tel me when is the best time to visit Paris?
+      - Teell me where did you buy those shoes?
+      - Tell me what are the requirements to apply for doctor job?
+      - tll me who is your role model?
+      - Tel me which is the most beautiful city in the world
+      - Telle me how many brothers and sisters do you have?
+      - Telll me what are your plans for the weekend?
+      - Tlll me who is the lead singer of this band
+      - Tell me where is the nearest gas station?
+      - telle me what is the capital of Australia?
+      - Tel me how much does it cost to travel to Japan?
+      - Telll me when was the last time you went on vacation?
+      - Tell me some examples of classical music
+      - tell me which is the tallest mountain in the world?
+      - telle me how long have you been studying English
+      - Tel me who won the last Nobel Prize in Literature?
+      - telll me what are the benefits of a healthy diet?
+      - Tll me where can I find a good Mexican restaurant
+      - Talk me abut your favorite TV show?
+      - Talke me what are the advantages of working from home?
+      - talk me when is the best time to visit New York City?
+      - Talk me what is your favorite cuisine
+      - taalk me who is the best italian actor
+      - Talk me which is the most popular tourist destination in the world?
+      - Talkk me how many hours a day do you exercise?
+      - Talke me what is your biggest fear?
+      - Taalkk me who is your favorite singer?
+      - Talk me where is the nearest hospital?
+      - talke me what is the meaning of empathy
+      - talkk me how much does it cost to buy a house in Dubai
+      - Taalk me where can i learning to play the guitar?
+      - talkk me what is your favorite hobby?
+      - Taalk me which is the longest river in the world?
+      - Talkk me how many countries have you visited?
+      - talke me who is the current President of France?
+      - Talkk me what are the different types of renewable energy sources?
+      - Taalk me where can I find a good bookstore in Milan?
+      - suggest me a gud place to go for a romantic dinner
+      - Suggesst me what book should I read next?
+      - sugest me when is the best time to visit Hawaii
+      - Suggestt me where can I find a good mechanic in Rome
+      - suggesst me what are the best ways to stay motivated
+      - Sugggest me a good horror book author
+      - Sugest me which is the best brand of laptop
+      - sugggest me how to improve my public speaking skills?
+      - Suggestt me what is the best way to learn a new language?
+      - sugggest me who is the best athlete of all time?
+      - sugestt me where is the best place to buy fresh produce
+      - suggesst me what is the best way to save money?
+      - Sugggest me which is the best restaurant in New York
+      - Sugestt me what are the advantages of a healthy lifestyle?
+      - suggestt me who is the most influential person in history?
+      - Suggesst me where can I find a good yoga studio in this city?
+      - Sugggest me what is the best way to deal with stress?
+      - sugestt me which is the best type of exercise for weight loss
+      - suggest me four cat names
+      - suggest me some colors for a little girl's birthday party
+      - Can you explain the concept of entropy?
+      - What is the difference between a democracy and a dictatorship?
+      - How does the stock market work?
+      - Can you explain the greenhouse effect?
+      - What is the meaning of the term "cognitive dissonance"?
+      - How does the human brain process language?
+      - Can you explain the concept of natural selection?
+      - tell me the difference between a genotype and a phenotype
+      - explain the concept of a black hole
+      - do you know the difference between renewable and non-renewable energy sources?
+      - is there a difference between a virus and a bacteria?
+      - do you know what is the Higgs boson?
+      - can you explain what existentialism is?
+      - what is the difference between a scalar and a vector?
+      - Do you know the internet concept?
+      - do you know how to explain the relativity?
+      - can you explain the concept of quantum mechanics
+      - Tell me the difference between a gene and an allele
+      - tell me waht empathy is
+      - Explain the probability theory
+      - can you explain us how to cook an egg
+      - Can you tell me how to pass an exam?
+      - in which year did the first humans land on the Moon?
+      - tell me the definition of even function
+      - what is the fastest car?
+      - what is the most polluting substance?
+      - how to pass an exam without studying
+      - how can i relieve stress
+      - which singer has sold the most records in history?
+      - What is the highest grossing film?
+      - How long does it take to prepare for an exam?
+      - how fast is a turtle?
+      - What genres of music are there?
+      - what is the most beautiful European city?
+      - How did World War II start?
+      - tell me about global warming
+      - what are the avant-gardes in the IT field?
+      - What is the job that makes the most money?
+      - what can't a celiac eat?
+      - what is the best pizzeria in the world?
+      - Can you tell me a typical Indian food?
+      - who is the richest man in the world?
+      - Can you tell me something about the economic crisis?
+      - Can you tell me about renewable energy?
+      - what are the new frontiers of renewable energies?
+      - tell me the most beautiful place to go on vacation this summer.
+      - tell me what is situation awareness?
+      - Why is situation awareness needed in the field of cybersecurity?
+      - why is blockchain an emerging technology?
+      - Can you tell me how to get a girl?
+      - tell me what you know about elliptic curve cryptography
+      - talk about access control on linux
+      - what do you think about chatgpt?
+      - Do you recommend the Bahamas as a travel destination?
+      - tell me the best brand for a strawberry lipstick
+      - what do you think of Harry Styles?
+      - recommend me a disney song
+      - why is it often said "the winning team doesn't change?"
+      - tell me the recipe to prepare the couscous
+      - Is it true that it's always time to eat ice cream?
+      - In which film did Massimo Boldi star?
+      - recommend me a fantasy book
+      - tell me about Messi
+      - tell me about Pele
+      - tell me about pelè
+      - Tell me about maradona
+      - who won the championship in Italy in 2023?
+      - who won the title in Italy in 2022
+      - Tell me the recipe for pizza
+      - Do yuo know the university of salerno
+      - Who is Giuseppe Conte?
+      - Who is Mr. Bean?
+      - Who is Johnny Depp?
+      - Who is Brad Pitt?
+      - Who is Zingaretti?
+      - Who is Monica Bellucci
+      - Who is Alexander the Great
+      - Tell me a joke
+      - Tell me a funny story
+      - how to cook pasta with sauce?
+      - how to prepare pizza
+      - how can I make meat
+      - how to study for an exam
+      - Write me a poem
+      - Can you write a poem?
+      - write me a text
+      - write me a fairy tale
+      - what is 2+2?
+      - how much is 3x3?
+      - How big is Africa?
+      - what is the length of the Po river
+      - how much does an elephant weigh?
+      - can you tell me the recipe of couscous?
+      - tell me the pizza recipe
+      - I want to know the recipe of carbona
+      - What is the typical dish of Salerno?
+      - And what about Naples?
+      - And what about Brazil?
+      - What is the capital of Italy?
+      - Can you tell me the typical dish of Naples?
+      - How do you cook parmigiana?
+      - What is the Maschio Angino?
+      - Can you tell me what the Maschio Angioino is?
+      - How do you cook kebab?
+      - Tell me about artificial intelligence
+      - How do you cook pizza?
+      - what can I do tonight?
+      - what can I do this evening?
+      - what could I do tonight?
+      - what do you recommend I do tonight?
+      - what can I do today?
+      - what can I do this afternoon?
+      - what can I do after work?
+      - what can I do when I get off work?
+      - what can I do this weekend?
+      - what could I do this weekend?
+      - what could I do for fun today?
+      - what could I do for fun tonight?
+      - do you have any ideas for tonight?
+      - do you have any suggestions for tonight?
+      - suggest me something to do
+      - suggest me something to do tonight
+      - suggest me something to do this weekend
+      - recommend me something to do
+      - recommend me something fun to do tonight
+      - give me a suggestion on what to do
+      - give me an idea for tonight
+      - can you give me an idea for today?
+      - I don't know what to do tonight, any ideas?
+      - I don't know what to do today, can you help?
+      - what can I eat?
+      - what can I eat tonight?
+      - what can I eat for dinner?
+      - what can I eat for lunch?
+      - what could I eat today?
+      - what do you recommend I eat?
+      - what do you recommend I eat tonight?
+      - suggest me something to eat
+      - suggest me something to eat tonight
+      - recommend me what to eat
+      - recommend me something to eat for dinner
+      - what could I cook tonight?
+      - what do you recommend I cook?
+      - do you have any ideas on what to eat?
+      - I don't know what to eat, any suggestions?
+      - can you suggest a dish I could make tonight?
+      - can you recommend what I should eat today?
+
+
+  - intent: want_play
+    examples: |
+      - pepper, i want to change, put a game
+      - come on let's play
+      - i really want to play
+      - let's play
+      - would you like to play?
+      - please let's play
+      - please put the game on?
+      - pepe, switch and put the game
+      - kindly can we play?
+      - can we play?
+      - let's play come on
+      - shall we play?
+      - come on let's play
+      - i want to play
+      - i want to play now
+      - peppa, let's play now
+      - do you want to play a game?
+      - change and put game
+      - i have a desire to play
+      - insert game
+      - I want to have fun with the game
+      - quick, let's play!
+      - peppe, start the game
+      - let's start the game
+      - start the game
+      - let's start the game
+      - i wana play
+      - can we plaay?
+      - plai game now
+      - wanna play now
+      - i want to plai
+      - pleez let’s play
+      - quick start the play
+      - can you put a game?
+      - it's time to play
+      - how about we start a game?
+      - plz insert game
+      - i wnat to play
+      - put a game, pls
+      - I’m bored, let’s play something
+      - let us plae
+      - lets pla
+      - plai plai plai now!
+      - staaart the game
+      - begin game now
+      - pls game now
+      - do you want start game?
+      - game start plz
+      - start play fast!
+      - can we playy
+      - i wanna plai now
+      - would you like to pla?
+      - cmon, start a game already!
+      - playyyy pls
+      - i need to play
+      - insert game fast!
+      - I wanna play somethin
+      - start a game pls
+      - let’s play a gme
+      - I wat to play a game
+      - game now, plz!
+      - wanna playy?
+      - cmon, let’s plaay
+      - switch to a gaem now
+      - gimme a game to play
+      - I realy want to play
+      - can we start a gmae?
+      - plz, play something
+      - play with me now!
+      - pepper startt a game
+      - let's pla something fun
+      - plaay with me, please
+      - begin a gme right now
+      - turn on a gmame
+      - I want some fun, play
+      - let’s play rigth now
+      - Pepper, do you wanna play?
+      - gametime, please!
+      - I’m bored, let’s play
+      - let's play smth
+      - swtch to a game fast
+      - I’d love to pllay a game
+      - star a new gme pls
+      - let’s play a neww game
+      - fast, start a gmae
+      - can we plaay now?
+      - put a fun game on
+
+
+  - intent: choose_connect_four
+    examples: |
+      - connect 4
+      - connect four
+      - the game connect four
+      - excuse me, connect four
+      - the first of the two games, connect for
+      - the one you mentioned first kinnect four
+      - start a new game of connect 4
+      - pepper turn on connect four
+      - pepper put connect 4
+      - start a game of connect four
+      - would you like a game of connect four?
+      - let's play connect 4
+      - i would like to challenge you to connect four.
+      - i would like to play connect 4
+      - play connect for
+      - connect forr
+      - kinnect four
+      - conect 4
+      - connect for game
+      - pepper, i want connect for
+      - let’s plai connect 4
+      - pls turn on conect four
+      - insert conect four game
+      - can we play connec four?
+      - the first game, connect fourr
+      - conect foour game
+      - connect foorr
+      - connek four
+      - connct four
+      - let’s play connect fur
+      - start the connect 4 game
+      - peppa, i choose connect for
+      - start konnect four
+      - put cunnect 4
+      - start cunect for
+      - i would like to play connec four
+      - konnect fohr
+      - plai connect 4
+      - turn on connct four
+      - pepper, turn on connec fohr
+      - can you start connek four
+      - please let’s plae connect 4
+      - kinnect fohr pls
+      - i wanna plai conect for
+      - can we start kinnect four?
+      - I love connect for
+      - i want to challenge u to connec four
+      - let’s start a connect 4 game
+      - do you want to play with me cannet four?
+      - let’s play connect for
+      - connect 4 now
+      - Pepper, start connecct four
+      - wanna do connect foor?
+      - play connect fort with me
+      - start the first one, connect four
+      - launch connnect 4 pls
+      - cmon, connect foor right now
+      - I wanna play connet four
+      - play connect4 pls
+      - put conneccct 4 on
+      - do conneect for with me
+      - connectt foor, the game
+      - choose connect foar
+      - Pepper, let’s do connet 4
+      - I pick connect fort
+      - it’s connectt four I wanna play
+      - launch conect four pls
+      - start the connectt foour game
+      - we can play conect four
+      - let’s try connect foar!
+      - game one, connect four
+      - choose that one, connecct 4
+      - startt playing connect foor now
+      - play conect foour today
+      - make it connec 4
+      - I like connectt for a lot
+      - conect four pls
+      - force 4
+
+  - intent: choose_rock_paper_scissor
+    examples: |
+      - rock, paper, scissors
+      - rock, paper or scissor
+      - rock, paper or scissors
+      - rock-paper-scissor
+      - rock-paper-scissors
+      - it's the second, rock, paper, scissors
+      - the game rock, paper, scissors
+      - start rock, paper, or scissor
+      - start a new game of rock, paper, or scissors
+      - start a new game of rock, paper, scissors
+      - pepper turn on rock, paper, scissors
+      - start rock, paper or scissors
+      - insert rock, paper or scissors
+      - change and put rock, paper or scissors
+      - pepper, would you like a game of rock, paper, scissors?
+      - let's play rock, paper or scissor?
+      - can we play rock, paper or scissors?
+      - peppe, let's play rock, paper, scissors
+      - let's play a game of rock, paper, scissors?
+      - how about challenging me to rock, paper, scissors?
+      - i would like to play rock, paper, scissors.
+      - I'm ready for a challenge to rock, paper, scissors.
+      - shall we go play rock, paper, scissors?
+      - i want play rock-paper-scissors.
+      - pepper, rok paper scisor
+      - rock, papr or sissorr
+      - i want play with you roc pepa sisor
+      - rok paper scisorz
+      - rps game
+      - the second one, rok paper scisor
+      - rocc papr scissors
+      - let’s plai rock papr sissor
+      - pepe, play roock paper scisor pls
+      - roc papr siccors
+      - roc papr sissors
+      - I choose rock papr scissors
+      - pepper turn on rock papr siccor
+      - rok papper scizors
+      - rps game now
+      - start rok paper sissors
+      - pls play rock papr scizzor
+      - i want to play rok papr scisor
+      - start roc papr scizors
+      - let’s go rok paper scizzor
+      - rokk papr scissors game
+      - roc paper sicors now!
+      - roc-papr-scizzor
+      - peppa, can we play rock papper scizors?
+      - insert rok papr scissors
+      - rok papr sissor pls
+      - pls, turn on rok papr scissors
+      - roock-paper-scizzor
+      - start papr rok scissors
+      - I’m ready for rok papr scissors
+      - plai rock paper scisor
+      - start rok papr scissors game
+      - challange me to rok papr scissor
+        - let’s play rock paper cissor
+      - rock paper scisors pls
+      - do rock papr sissors
+      - it’s rock, papr, scissors
+      - I pick rock paper scirssors
+      - play rock papper scissors pls
+      - wanna do rocck paper scissr?
+      - start rock papr sissors
+      - I love rock papper sissor
+      - I wanna do rokk paper scissors
+      - pepper, launch rock paper cissors
+      - roc paper scisor is fun
+      - let's try roc paper scissors
+      - change to rokk paper scissrs
+      - Pepper, game two: rok paper scissors
+      - I wanna challenge rock papre scissors
+      - startt a match of roc paper scissor
+      - pls play rock papper scissors
+      - fast, rok paper scissors now!
+      - rock papper scisors pls
+      - rokk paper scizzor is cool
+      - roc, paper or sissors now!
+      - can we do rock papper scissors?
+      - start playing rok paper sissors
+      - let’s switch to roc paper scizors
+      - rokk papr or sissors
+      - rock, paper, sccisor
+      - rocck papper and scissors
+
+  - intent: who_mario_vento_is
+    examples: |
+      - Do you know Mario Vento?
+      - Do you know who Mario Vento is?
+      - Tell me something about Mario Vento
+      - Tell me who is Mario Vento
+      - Who is Mario Vento?
+      - Mario Vento
+      - Will you kindly tell me who Mario Vento is?
+      - Would you kindly tell me who Mario Vento is?
+      - Explain who is Mario Vento
+      - Explain to me who is Mario Vento
+      - Have you ever heard of Mario Vento?
+      - Do you know anything about Mario Vento?
+      - Do you happen to know Mario Vento?
+      - Does the name Mario Vento sound familiar to you?
+      - Do you have any information about Mario Vento?
+      - Are you aware of someone named Mario Vento?
+      - Do you know Prof Mario Vento?
+      - Do you know who Prof Mario Vento is?
+      - Tell me something about Prof Mario Vento
+      - Tell me who is Prof Mario Vento
+      - Who is Prof Mario Vento?
+      - Prof Mario Vento
+      - Will you kindly tell me who Prof Mario Vento is?
+      - Would you kindly tell me who Prof Mario Vento is?
+      - Explain who Prof Mario Vento is
+      - Have you ever heard of Prof Mario Vento?
+      - Do you know anything about Prof Mario Vento?
+      - Do you happen to know about Prof Mario Vento?
+      - Do you have any information about Prof Mario Vento?
+      - Do you know about Prof Mario Vento?
+      - Tell me something about professor Mario Vento
+      - Tell me who is professor Mario Vento
+      - Who is professor Mario Vento?
+      - Professor Mario Vento
+      - Will you kindly tell me who is professor Mario Vento?
+      - Will you kindly tell me who is Professor Mario Vento?
+      - Would you kindly tell me who Professor Mario Vento is?
+      - Explain who is professor Mario Vento
+      - Explain who professor Mario Vento is
+      - Have you ever heard of Professor Mario Vento?
+      - Do you know anything about Professor Mario Vento?
+      - Do you happen to know Professor Mario Vento?
+      - Do you have any information about Professor Mario Vento?
+
+  - intent: doa
+    examples: |
+      - Pepper, look at me, I'm here
+      - Pepper, look at me
+      - Pepper, I'm here
+      - I'm here, Pepper
+      - Look at me, Pepper
+      - Look at me, I'm here
+      - Look at me, I'm right here
+      - Here I am
+      - I'm here
+      - Look here
+      - Look at me
+      - Turn towards me
+      - I'm standing here
+      - Here I am
+      - Look towards me
+      - See here
+      - Take a look here
+      - Turn your head towards me
+      - Look in this direction
+      - Face me
+      - I'm right here
+      - Take a glance here
+      - Observe me
+      - Turn to face me
+      - You can find me here
+      - Look at me here
+      - Look in this position
+      - I'm right next to you
+
+  - intent: gpt_4o
+    examples: |
+      - What is the person wearing?
+      - What is the girl wearing?
+      - What clothes does the girl have on?
+      - What is the girl dressed in?
+      - How is the person in the image dressed?
+      - What is their outfit?
+      - What hand sign am I making?
+      - What sign am I making with my hands?
+      - What symbol am I making with my hands?
+      - How is the man to my right dressed?
+      - What is the man to my right wearing?
+      - How is the man to my left dressed?
+      - What is the man to my left wearing?
+      - Do you think the man to my right is elegant?
+      - Do you think the woman to my left is elegant?
+      - Am I dressed elegantly?
+      - Am I wearing a formal suit?
+      - Am I elegant?
+      - Do you think I'm elegant?
+      - Do you like how I'm dressed?
+      - Pepper, do you like what I'm wearing?
+      - Pepper, do you like how I'm dressed?
+      - Is the guy to my right elegant?
+      - Is the girl to my left elegant?
+      - Do you like what the girl on my left is wearing?
+      - What is my hand showing?
+      - What gesture am I making?
+      - What is the position of my hands?
+      - What is the boy wearing?
+      - What clothes does the young man have on?
+      - What clothes is he wearing?
+      - What are these people wearing?
+      - What type of clothes do the participants have?
+      - What are the girls wearing?
+      - How are the group members dressed?
+      - What are the men wearing?
+      - How is the girl’s hair styled?
+      - What haircut does the boy have?
+      - What color is the woman's hair?
+      - Does the man have short hair?
+      - How is the girl's hair styled?
+      - Does the boy have curly hair?
+      - Does the woman have long hair?
+      - What is the color of the boy's hair?
+      - What color is the boy’s shirt?
+      - What kind of dress is the woman wearing?
+      - What color are the man's trousers?
+      - Is the girl wearing a jacket?
+      - What kind of shoes does the man have on?
+      - Is the girl wearing a skirt?
+      - Is the man wearing a shirt?
+      - What color is the boy's t-shirt?
+      - What is the color of my t-shirt?
+      - Is the girl wearing any jewelry?
+      - Does the man have a watch on his wrist?
+      - Does the woman have earrings?
+      - Is the girl wearing a necklace?
+      - Does the boy have a bracelet?
+      - Is the man wearing glasses?
+      - Does the woman have rings on?
+      - Does the person have tattoos?
+      - Does the boy have tattoos on his arms?
+      - Does the girl have a visible tattoo?
+      - What color are the boy’s eyes?
+      - Does the girl have painted nails?
+      - Does the man have a beard?
+      - What type of beard does the man have?
+      - Is the man wearing a belt?
+      - Does the woman have a bag with her?
+      - Is the boy wearing a hat?
+      - Does the woman have sunglasses?
+      - Is the boy wearing a scarf?
+      - Does the girl have a belt on?
+      - Is the man wearing a watch?
+      - Does the girl have a backpack with her?
+      - Is the man carrying a briefcase?
+      - Does the woman have a handbag?
+      - Does the boy have a shoulder bag?
+      - Is the woman wearing a headband?
+      - What do you see in front of you?
+      - What is in front of you?
+      - What can you see ahead?
+      - What do you observe right in front?
+      - Describe what is in front of you.
+      - What do you see to your right?
+      - Tell me what is on your right.
+      - What do you observe on your right?
+      - Describe what you have on the right.
+      - What is on the right side?
+      - Is there a man in front of you?
+      - Are there strange objects in front of you?
+      - What objects do you see in front of you?
+      - Is there a person in front of you?
+      - Do you see people in front of you?
+      - Do you see anything in front of you?
+      - Is there something in front of you?
+      - What object is in front of you?
+      - Are there strange objects in front of you?
+      - Is there a man in front of you?
+      - What is to your left?
+      - What can you see on the left?
+      - Tell me what you notice on the left side.
+      - What do you see to your left?
+      - Describe what you have on the left.
+      - What do you see above you?
+      - What is up there?
+      - Describe what you notice above.
+      - What is above you?
+      - What do you observe in the upper part?
+      - What do you see at the top right?
+      - What do you notice in the top right corner?
+      - What do you observe above and to your right?
+      - Tell me what is in the top right.
+      - What can you see in the top right corner?
+      - What do you see at the top left?
+      - What do you notice above and to your left?
+      - What do you observe in the top left corner?
+      - Tell me what is in the top left.
+      - What do you notice in the upper left corner?
+      - What do you see below you?
+      - What is at the bottom?
+      - What do you notice in the lower part?
+      - Tell me what you observe below.
+      - What can you see underneath?
+      - What do you notice at the bottom right?
+      - What is in the bottom right corner?
+      - What can you see below and to your right?
+      - Describe what is at the bottom right.
+      - What do you observe in the bottom right corner?
+      - What do you see at the bottom left?
+      - What do you notice below and to your left?
+      - What do you observe in the bottom left corner?
+      - What is at the bottom left of you?
+      - Tell me what you notice in the bottom left corner.
+      - Can you describe what you're seeing?
+      - Can you tell me what's in front of you?
+      - What can you see in this scene?
+      - Describe what you're observing.
+      - Can you describe what you see?
+      - Can you tell me what you see?
+      - What are you seeing right now?
+      - What is in the scene in front of you?
+      - Can you tell me what you notice in the scene?
+      - Describe what's around you.
+      - Can you explain what's around you?
+      - How would you describe what is in front of your eyes?
+      - What can you see in the scene you're observing?
+      - Tell me what's interesting in the scene.
+      - What kind of scene do you have in front of you?
+      - What are the most important elements you notice?
+      - Can you describe the place you're in?
+      - Can you tell me where you are right now?
+      - Where do you think you are?
+      - What am I holding in my hand?
+      - What do I have in my right hand?
+      - What do I have in my left hand?
+      - What do you see in the room?
+      - Can you tell me what you see in this room?
+      - Can you tell me the place?
+      - How are the people dressed?
+      - How am I dressed?
+      - What am I wearing?
+      - Are there windows or openings visible in the environment?
+      - What is the posture of the people?
+      - What is the body language of the people?
+      - Are there decorations visible in the background?
+      - Are the people sitting, standing, or moving?
+      - What do you see in the background?
+      - What do you see in the foreground?
+      - What do you see at the top right?
+      - What do you see at the bottom left?
+      - What do you see?
+      - What are you seeing?
+      - What am I doing?
+      - What am I doing right now?

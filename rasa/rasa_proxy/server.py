@@ -1,15 +1,17 @@
 """RASA server of the architecture: a proxy in front of Rasa, so Rasa follows "no concurrent executions" too.
 
 Rasa has its own HTTP API (rasa run --enable-api): the clients of the demo keep using it unchanged
-(/webhooks/rest/webhook, /conversations/<id>/tracker/events, /model/parse, /), on the port of this proxy.
-Every request is forwarded as it is to RasaProxyConfig.upstream, holding the execution lock of the servers.
+(/webhooks/rest/webhook, /conversations/<id>/tracker/events, /model/parse, /), on the ports of this proxy.
+One listener per route of RasaProxyConfig.routes (one per bot): every request is forwarded as it is to the bot of
+that port, holding the execution lock of the servers, shared by all the listeners.
 
-  GET /health   {"status": "ok", "service": "rasa_proxy", "upstream": ..., "upstream_ok": ...}
-  any other     forwarded to Rasa; 502 if Rasa does not answer
+  GET /health   {"status": "ok", "service": "rasa_proxy_<port>", "upstream": ..., "upstream_ok": ...}
+  any other     forwarded to the bot; 502 if it does not answer
 
-Run: python -m rasa_proxy [--upstream ...] [--port ...] (PYTHONPATH: common and rasa). Standard library only.
+Run: python -m rasa_proxy [--routes ...] (PYTHONPATH: common and rasa). Standard library only.
 """
 import http.client
+import threading
 import time
 from contextlib import nullcontext
 from urllib.parse import urlsplit
@@ -27,12 +29,12 @@ HOP_BY_HOP = {"connection", "keep-alive", "proxy-authenticate", "proxy-authoriza
 
 class RasaProxy(HTTPService):
 
-    def __init__(self, cfg: config.RasaProxyConfig, exclusive):
-        super().__init__("rasa_proxy", cfg.host, cfg.port, exclusive)
-        self.cfg = cfg
-        upstream = urlsplit(cfg.upstream)
+    def __init__(self, cfg: config.RasaProxyConfig, port: int, upstream_url: str, exclusive):
+        super().__init__(f"rasa_proxy_{port}", cfg.host, port, exclusive)
+        self.cfg, self.upstream_url = cfg, upstream_url
+        upstream = urlsplit(upstream_url)
         if upstream.scheme != "http" or not upstream.hostname:
-            raise ValueError(f"upstream must be http://host:port, got {cfg.upstream}")
+            raise ValueError(f"upstream must be http://host:port, got {upstream_url}")
         self.upstream_host, self.upstream_port = upstream.hostname, upstream.port or 80
         self.fallback = self.forward
 
@@ -42,7 +44,7 @@ class RasaProxy(HTTPService):
             ok = status < 500
         except OSError:
             ok = False
-        return {"upstream": self.cfg.upstream, "upstream_ok": ok}
+        return {"upstream": self.upstream_url, "upstream_ok": ok}
 
     def _request(self, method, path, body, headers):
         connection = http.client.HTTPConnection(self.upstream_host, self.upstream_port, timeout=self.cfg.timeout)
@@ -64,9 +66,9 @@ class RasaProxy(HTTPService):
             try:
                 status, reply_headers, reply = self._request(method, request.path, body, headers)
             except OSError as e:
-                raise HTTPError(502, f"Rasa not reachable at {self.cfg.upstream}: {e}")
+                raise HTTPError(502, f"Rasa not reachable at {self.upstream_url}: {e}")
             t_end = time.perf_counter()
-        mark("rasa_proxy", "done", client=request.client_address[0], method=method, path=request.route_path,
+        mark("rasa_proxy", "done", port=self.port, client=request.client_address[0], method=method, path=request.route_path,
              status=status, queue_s=round(waited, 4), rasa_s=round(t_end - t_forward, 4),
              total_s=round(t_end - request.t_in, 4))
         passed = {k: v for k, v in reply_headers if k.lower() not in HOP_BY_HOP and k.lower() != "content-type"}
@@ -77,7 +79,16 @@ class RasaProxy(HTTPService):
 
 def main(argv=None):
     setup_logging()
-    RasaProxy(config.load(argv), execution.from_config()).serve_forever()
+    cfg = config.load(argv)
+    exclusive = execution.from_config()  # one lock for all the listeners
+    proxies = [RasaProxy(cfg, port, upstream, exclusive) for port, upstream in cfg.parsed_routes()]
+    threads = [threading.Thread(target=proxy.serve_forever, name=proxy.name, daemon=True) for proxy in proxies]
+    for thread in threads:
+        thread.start()
+    # a listener that stops (e.g. port already in use) stops the process: the container restarts it
+    while all(thread.is_alive() for thread in threads):
+        threads[0].join(1.0)
+    raise SystemExit("a listener of the RASA proxy stopped")
 
 
 if __name__ == "__main__":

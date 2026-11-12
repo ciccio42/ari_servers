@@ -1,0 +1,13 @@
+
+version: "3.1"
+stories:
+- story: interactive_story_1
+  steps:
+  - intent: affirm
+  - action: utter_affirm
+  - intent: retry
+  - action: utter_retry
+  - intent: deny
+  - action: utter_deny
+  - intent: terminate
+  - action: utter_terminate

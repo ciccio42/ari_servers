@@ -1,0 +1,274 @@
+version: "3.1"
+
+nlu:
+- intent: nlu_fallback
+  examples: |
+    - Eh
+    - Uhm
+    - Mmm
+    - Boh
+    - Eeeh
+    - Ah
+    - Meh
+    - I don't know
+    - What?
+    - I don't know
+    - Hmm
+    - What is it?
+    - Umm
+    - Yes... maybe...
+    - Um, I'm not sure
+    - Let's see...
+    - Uh... wait
+    - Maybe
+    - Well...
+    - Blah blah blah
+    - Ugh
+    - Yeah right
+    - Kind of...
+    - I don't remember
+    - More or less
+    - Who knows
+    - Meh
+    - Doesn't matter
+    - Wait a moment
+    - Something like that
+    - Yeah...
+    - Maybe yes, maybe no
+    - I wouldn't know
+    - Hmm, let's see
+    - Who knows
+    - Never mind
+    - Meh, we'll see
+    - Oh, ok...
+    - I'm not sure
+    - Um, maybe...
+    - Blah blah blah
+    - Ugh
+    - Yeah right
+    - Kind of...
+    - I don't remember
+    - More or less
+    - Who knows
+    - Meh
+    - Doesn't matter
+    - Wait a moment
+    - Something like that
+    - Yeah...
+    - Maybe yes, maybe no
+    - I wouldn't know
+    - Hmm, let's see
+    - Who knows
+    - Never mind
+    - Meh, we'll see
+    - Oh, ok...
+    - I'm not sure
+    - Um, maybe...
+    - Well, alright
+    - We'll see
+    - Anything
+    - It doesn't make a difference
+    - Hmm, maybe...
+    - Um, who knows
+    - Maybe... I don't know
+    - Oh yes, who knows
+    - I can't remember
+    - Um, let's see
+    - Eh
+    - Uhm
+    - Mmm
+    - Boh
+    - Eeeh
+    - Ah
+    - Meh
+    - I don't know
+    - What?
+    - I don't know
+    - Hmm
+    - What is it?
+    - Umm
+    - Yes... maybe...
+    - Um, I'm not sure
+    - Let's see...
+    - Uh... wait
+    - Maybe
+    - Well...
+    - I guess that's fine, just check this thing
+    - Who knows, maybe
+    - I have no idea
+    - Meh, who knows
+    - Um... I don't know
+    - I don't know, honestly
+    - Could be
+    - Maybe that's it
+    - I'm not convinced
+    - Who can say?
+    - Eh, I don't think so
+    - Meh, let's see
+    - Um, interesting...
+    - I really don't know
+    - Yes, no, maybe
+    - Maybe that's fine
+    - We'll see later
+    - Uh, good question
+    - I'm not sure
+    - Eh, maybe...
+    - Who knows what it means
+    - Hmm, let me think
+    - I need to think about it
+    - I don't know what to say
+    - Oh, maybe yes
+    - Oh well, we'll see
+    - I'm not convinced
+    - Could be
+    - Honestly, I don't know
+    - Doesn't make a difference to me
+    - Eh, I never thought about it
+    - Meh, who knows
+    - Uh yes, maybe
+    - Eh, so so
+    - Who cares
+    - I don't know, um...
+    - Oh, it's difficult
+    - Could be
+    - Hmm, interesting
+    - I'm not entirely sure
+    - Nothing comes to mind
+    - Maybe, I don't remember
+    - Eh, we'll see later
+    - Who remembers
+    - Bah, I don't know
+    - I'm not sure
+    - Eh, let me think for a second
+    - Yes, I mean, no
+    - Hard to say
+    - Maybe someday
+    - I really couldn't say
+    - Bah, maybe later
+    - I need to think about it better
+    - It's not clear
+    - Meh, I'd leave it
+    - I have no answer
+    - I wouldn't know how to explain
+    - Oh, it could also be
+    - Hmm, I'm not sure
+    - Let me reflect a bit
+    - Eh, it's complicated
+    - Meh, who knows
+    - I don't quite remember
+    - Maybe yes, maybe no
+    - Doesn't make much of a difference
+    - I don't care
+    - Oh, I can't recall
+    - Maybe I know, but I'm not sure
+    - Could be that's the case
+    - We'll never know
+    - Slips my mind for now
+    - I really don't remember
+    - Eh, it might even be
+    - We'll see, who knows
+    - Oh, it's possible
+    - Eh... let's drop it
+    - I can't figure it out
+    - I never noticed
+    - Eh... doesn't matter
+    - I'm not sure
+    - Meh, we'll see how it goes
+    - Maybe yes, maybe no
+    - I didn't quite understand
+    - Doesn't make sense
+    - Oh, we'll see later
+    - Eh, well, who knows
+    - I need to think about it
+    - I don't have a clear answer
+    - Hmm, I'm not convinced
+    - Oh, it's a tough question
+    - I never noticed
+    - I don't have a clear idea
+    - Let's drop it for now
+    - Meh, better say nothing
+    - It's a bit confusing
+    - I'm not sure
+    - We'll see later
+    - Maybe, but I don't know
+
+- intent: affirm
+  examples: |
+    - Yes
+    - Yes, I know them
+    - I already know the rules
+    - I know the rules
+    - I'm aware of them
+    - I already know how to play
+    - I know how to play
+    - Yes, I know them.
+    - Yes, I know how to play.
+    - Yes, I know the rules.
+    - I've been playing for a while.
+    - I don't need you to explain them.
+    - I know how it works.
+    - No need to explain, I already know.
+    - Yes, I'm familiar with the game.
+    - I know the game.
+    - Yes, I've played before.
+
+- intent: deny
+  examples: |
+    - No.
+    - No, I don't know them.
+    - I don't know the rules.
+    - I don't know how to play.
+    - I'm not aware of the rules.
+    - I've never played before.
+    - I need you to explain them to me.
+    - I don't know how it works.
+    - I don't know them yet.
+    - I'm not familiar with the game.
+    - I've never learned the rules.
+    - I'm not sure if I know how to play.
+    - I don't remember how to play.
+    - I would need an explanation.
+    - I have no experience with this game.
+    - I don't know what it is about.
+    - I've never heard of the rules.
+    - I'm not clear on how to play.
+
+- intent: retry
+  examples: |
+    - Let's start over
+    - Let's play another game
+    - I want to play again
+    - Let's play again
+    - New game
+    - Let's keep playing
+    - Let's start playing again
+    - Let's do another game together.
+    - Let's try again.
+    - Let's start a new game.
+    - Let's redo the game.
+    - Let's start over.
+    - I'd like to try again.
+    - Let's restart the game.
+    - Can we play again?
+    - Another challenge, please.
+    - Let's start another game.
+
+- intent: terminate
+  examples: |
+    - I don't want to play anymore
+    - Stop playing
+    - I'm tired of this
+    - Stop
+    - End the game
+    - Close the game
+    - Exit the game
+    - I don't want to continue.
+    - I'm done playing.
+    - I don't feel like playing anymore.
+    - Let's drop it.
+    - Interrupt the game.
+    - Let's stop everything.
+    - I'm not playing anymore.
+    - End the game.
+    - Let's stop here.
+    - Finish the game.

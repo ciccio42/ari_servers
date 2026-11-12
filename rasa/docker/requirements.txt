@@ -1,0 +1,36 @@
+# Versions of the image that runs the demo today on the Spark (rasa_dev of PepperDemo, Python 3.10, aarch64):
+# Rasa 3.6 breaks with newer numpy, pydantic, sanic, sqlalchemy, click, websockets...
+rasa[spacy]==3.6.21
+rasa-sdk==3.6.2
+tensorflow==2.12.0
+tensorflow-hub==0.13.0
+tensorflow-io-gcs-filesystem==0.32.0
+keras==2.12.0
+protobuf==4.23.3
+jax==0.4.30
+numpy==1.23.5
+scipy==1.10.1
+scikit-learn==1.1.3
+spacy==3.4.4
+thinc==8.1.12
+pydantic==1.10.9
+sanic==21.12.2
+Sanic-Cors==2.0.1
+sanic-routing==0.7.2
+websockets==10.4
+aiohttp==3.9.5
+SQLAlchemy==1.4.54
+typer==0.7.0
+click==8.2.1
+packaging==20.9
+urllib3==1.26.20
+requests==2.34.2
+requests-toolbelt==0.10.1
+ujson==5.12.1
+PyYAML==6.0.3
+# custom actions of the social bot (ChatGPT)
+openai==1.91.0
+httpx==0.28.1
+# spaCy models of the pipelines (config/models/<lang>/config.yml)
+it-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/it_core_news_sm-3.4.0/it_core_news_sm-3.4.0-py3-none-any.whl
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.1/en_core_web_sm-3.4.1-py3-none-any.whl

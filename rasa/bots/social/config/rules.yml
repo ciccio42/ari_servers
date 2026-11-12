@@ -1,0 +1,112 @@
+version: "3.1"
+
+rules:
+  - rule: Saluto iniziale personalizzato
+    steps:
+      - intent: greet
+      - action: action_greet
+
+  - rule: Saluto finale
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - rule: Affermativo
+    steps:
+      - intent: affirm
+      - action: utter_affirm
+
+  - rule: Negativo
+    steps:
+      - intent: deny
+      - action: utter_deny
+
+  - rule: Functions
+    steps:
+      - intent: ask_functions
+      - action: action_social
+
+  - rule: Doa
+    steps: 
+      - intent: doa
+      - action: action_doa
+
+  - rule: Gender
+    steps:
+      - intent: ask_gender
+      - action: action_gender
+
+  - rule: Age
+    steps:
+      - intent: ask_age
+      - action: action_age
+
+  - rule: Emotion
+    steps:
+      - intent: ask_emotion
+      - action: action_emotion
+
+  # - rule: Identity
+  #   steps:
+  #     - intent: ask_identity
+  #     - action: action_identity
+      
+  - rule: Objects
+    steps:
+      - intent: ask_objects
+      - action: action_objects
+
+  - rule: Biometrics
+    steps:
+      - intent: ask_biometrics
+      - action: action_biometrics
+
+  - rule: Fallback
+    steps:
+      - intent: nlu_fallback
+      - action: action_social
+
+  - rule: AddInfoKG
+    steps:
+      - intent: personal_request
+      - action: action_add_info_kg
+  
+  - rule: AskRag
+    steps:
+      - intent: ask_rag
+      - action: action_social
+
+  - rule: quale gioco
+    steps:
+      - intent: what_games
+      - action: utter_what_games
+
+  - rule: scegli forza 4
+    steps:
+      - intent: choose_connect_four
+      - action: action_start_connect_four
+
+  - rule: scegli sasso carta forbici
+    steps:
+      - intent: choose_rock_paper_scissor
+      - action: action_start_rock_paper_scissor
+  
+  - rule: voglio giocare
+    steps:
+      - intent: want_play
+      - action: utter_want_play
+
+  - rule: mario vento
+    steps:
+      - intent: who_mario_vento_is
+      - action: utter_who_mario_vento_is
+  
+  - rule: Utilizzo di gpt_4o
+    steps: 
+      - intent: gpt_4o
+      - action: action_gpt_4o
+
+  - rule: Personal Request
+    steps: 
+      - intent: personal_request
+      - action: action_add_info_kg

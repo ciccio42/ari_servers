@@ -1,0 +1,22 @@
+version: "3.1"
+
+rules:
+  - rule: Continua a giocare
+    steps:
+      - intent: affirm
+      - action: utter_affirm        
+
+  - rule: Finisci la partita
+    steps:
+      - intent: deny
+      - action: utter_deny
+
+  - rule: Ricominciamo la partita
+    steps:
+      - intent: retry
+      - action: utter_retry
+
+  - rule: Termina la partita
+    steps:
+      - intent: terminate
+      - action: utter_terminate

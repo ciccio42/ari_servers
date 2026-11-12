@@ -1,0 +1,115 @@
+version: "3.1"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: false
+
+intents:
+  - nlu_fallback
+  - affirm
+  - goodbye
+  - greet
+  - deny
+  - ask_functions
+  # - ask_identity
+  - ask_age
+  - ask_gender
+  - ask_emotion
+  - ask_biometrics
+  - ask_objects
+  - what_games
+  - want_play
+  - choose_connect_four
+  - choose_rock_paper_scissor
+  - who_mario_vento_is
+  - doa
+  - gpt_4o
+  - personal_request
+  - ask_rag
+
+entities:
+  - age
+  - emotion
+  - gender
+  # - identity
+  - objects_list
+  - object_type
+  - image
+
+slots:
+  age:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: age
+  objects_list:
+    type: list
+    mappings:
+    - type: from_entity
+      entity: objects_list
+  emotion:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: emotion
+  gender:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: gender
+  # identity:
+  #   type: text
+  #   mappings:
+  #   - type: from_entity
+  #     entity: identity
+  object_type:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: object_type
+  image_slot: 
+    type: text
+    mappings:
+    - type: from_entity
+      entity: image
+
+responses:
+  utter_goodbye:
+    - text: Bye bye
+    - text: hope to see you soon
+  utter_affirm:
+    - text: Great. Do you want to know more?
+  utter_deny:
+    - text: I am desolated. Ask me something else
+  utter_functions:
+    - text: I can recognize your identity and the object in the environment. Moreover, I can recognize your gender, age and emotions.
+  utter_what_games:
+    - text: I can play connect four and rock, paper, scissors!
+  utter_want_play:
+    - text: Which game do you want to play? I can play Connect Four and Rock, Paper, Scissors!
+  utter_who_mario_vento_is:
+    - text: Mario Vento is a full professor of Artificial Intelligence and Machine Learning at the University of Salerno, in the Computer Engineering program. He has been the director of the Department of Information Engineering and currently leads the Intelligent Machines Laboratory, coordinating the work of 16 scientists in the fields of artificial intelligence, cognitive robotics, and autonomous driving. Professor Vento has published over 300 international scientific papers and has approximately 13,600 citations, placing him for years among the top 2% of the most cited scientists worldwide for his research activities.
+
+actions:
+  - action_biometrics
+  - action_emotion
+  - action_gender
+  - action_greet
+  - action_age
+  - action_people
+  - action_social
+  - action_doa
+  # - action_identity
+  - action_objects
+  - action_gpt_4o
+  - action_start_connect_four
+  - action_start_rock_paper_scissor
+  - utter_affirm
+  - utter_deny
+  - utter_functions
+  - utter_goodbye
+  - utter_what_games
+  - utter_want_play
+  - utter_who_mario_vento_is
+  - action_add_info_kg
+  #- action_split_decision
