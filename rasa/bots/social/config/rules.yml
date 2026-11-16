@@ -66,10 +66,6 @@ rules:
       - intent: nlu_fallback
       - action: action_social
 
-  - rule: AddInfoKG
-    steps:
-      - intent: personal_request
-      - action: action_add_info_kg
   
   - rule: AskRag
     steps:
@@ -109,4 +105,4 @@ rules:
   - rule: Personal Request
     steps: 
       - intent: personal_request
-      - action: action_add_info_kg
+      - action: action_social

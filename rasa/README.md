@@ -34,16 +34,16 @@ With `exclusive: false` the bots answer without the lock (10–40 ms of CPU); th
 during the generation of the answers of the social bot.
 
 ## Answers of the social bot
-`action_social` (general and medical questions), `action_gpt_4o` (questions about the scene, with the image of the
-camera) and `action_add_info_kg` (knowledge graph) ask the [LLM server](../llm/README.md) through
+`action_social` (general and medical questions, and the intent `personal_request`) and `action_gpt_4o` (questions
+about the scene, with the image of the camera) ask the [LLM server](../llm/README.md) through
 `actions/llm_client.py`, with `conversation_id` = the sender of the tracker. Model, RAG, OpenAI key and history are
-configured there; the prompts stay here (`phrases_rasa.yml`: "Medical Prompt", "KG_Prompt"). If the LLM server does
+configured there; the prompts stay here (`phrases_rasa.yml`: "Medical Prompt"). If the LLM server does
 not answer, the actions answer with their courtesy phrase (`So1`) and the dialogue goes on.
 
 ## Configuration
 | File | Versioned | What to change there |
 |---|---|---|
-| [config/rasa.env](../config/rasa.env) | yes | language, address of the LLM server (`LLM_URL`, `LLM_TIMEOUT`), flags of the demo (`KNOWLEDGE_GRAPH_RUNNING`, `MAX_CHAR`, `DEBUG`) |
+| [config/rasa.env](../config/rasa.env) | yes | language, address of the LLM server (`LLM_URL`, `LLM_TIMEOUT`), flags of the demo (`MAX_CHAR`, `DEBUG`) |
 | [config/servers.yaml](../config/servers.yaml), section `rasa` | yes | ports of the clients and bots (`routes`), execution lock (`exclusive`), `timeout` |
 | [config/servers.yaml](../config/servers.yaml), sections `llm` and `openai`; `config/secrets.env` | yes; **no** | model, **RAG on/off**, OpenAI parameters and key: they belong to the LLM server, see [llm/README.md](../llm/README.md#configuration) |
 

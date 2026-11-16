@@ -33,6 +33,14 @@ llm:
   reranker_model: BAAI/bge-reranker-v2-m3
   top_k: 4
 
+# <TTS_PORT>: text to speech (Piper) for the behaviour trees of ARI: POST /synthesize -> WAV. Env TTS_<FIELD>
+tts:
+  port: 8020
+  # <voice name>=<model .onnx (its .onnx.json next to it)>: the requests choose the voice by name, the first is the default
+  voices: "Italian=models/piper/it_IT-paola-medium.onnx, English=models/piper/en_GB-cori-medium.onnx"
+  use_cuda: true                   # GPU: ~0.1 s for any length; CPU: 0.08 s (short phrase) - 0.3 s (250 characters)
+  exclusive: true                  # take the execution lock during the synthesis
+
 # ChatGPT backend of the LLM server (llm.backend: openai). Env OPENAI_<FIELD>. The key: only OPENAI_API_KEY in
 # config/secrets.env (not versioned). Commented: the default of the code
 openai:

@@ -17,7 +17,7 @@
 # another file. The answers of the social bot come from the LLM server (llm/docker/run.bash start). Variables exported
 # in the shell override the file: RASA_<FIELD> (RASA_ROUTES, RASA_EXCLUSIVE, ...: the proxy, otherwise from
 # config/servers.yaml), RASA_BOTS, ACTIONS_PORT, DEMO_LANGUAGE, ARI_EXECUTION_LOCK, MAX_CHAR, DEBUG,
-# KNOWLEDGE_GRAPH_RUNNING, LLM_URL, LLM_TIMEOUT.
+# LLM_URL, LLM_TIMEOUT.
 # status and test use the ports 5002 5003 5004 (RASA_PORTS to change them).
 
 COMMAND=$1
@@ -31,7 +31,7 @@ PORTS=${RASA_PORTS:-5002 5003 5004}
 
 RUN_ARGS=(--network=host -v "$ROOT_DIR":/workspace)
 # only the variables set here: otherwise defaults would hide config/servers.yaml
-for variable in $(compgen -e | grep -E '^(RASA_|ACTIONS_PORT$|DEMO_LANGUAGE$|ARI_EXECUTION_LOCK$|MAX_CHAR$|DEBUG$|KNOWLEDGE_GRAPH_RUNNING$|LLM_URL$|LLM_TIMEOUT$)'); do
+for variable in $(compgen -e | grep -E '^(RASA_|ACTIONS_PORT$|DEMO_LANGUAGE$|ARI_EXECUTION_LOCK$|MAX_CHAR$|DEBUG$|LLM_URL$|LLM_TIMEOUT$|ARI_SERVERS_CONFIG$)'); do
     case "$variable" in RASA_ENV_FILE|RASA_PORTS) ;; *) RUN_ARGS+=(-e "$variable=${!variable}") ;; esac
 done
 ENV_FILE=${RASA_ENV_FILE:-$ROOT_DIR/config/rasa.env}

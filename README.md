@@ -11,6 +11,7 @@ Robot Control (Main-PC) are in `ari_control`.
 |---|---|---|---|
 | Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
 | LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | ChatGPT backend (reference, from the actions of Rasa) with OpenAI RAG; local backend and retriever to port |
+| TTS (Piper, audio of the answers) | [tts/](tts/README.md) | 8020 | Piper on the GPU, client: `TtsNode` of the behaviour trees |
 | RASA (dialogue) | [rasa/](rasa/README.md) | 5002, 5003, 5004 (one per bot) | the 3 bots of PepperDemo and their actions behind the proxy with the lock |
 
 ```
@@ -19,9 +20,40 @@ ari_servers/
 ├── common/ari_servers/   shared code: config.py, http.py (HTTPService), execution.py (lock), latency_log.py
 ├── whisper/              whisper_server/ (package), docker/, conda/, tools/
 ├── llm/                  llm_server/ (package): backends/ (abstract class, ChatGPT, ...), server.py, rag.py; docker/
+├── tts/                  tts_server/ (package, Piper), docker/
 ├── rasa/                 bots/ (social, rock_paper_scissor, connect_four), rasa_proxy/ (package), docker/
 ├── models/  audio_files/  latency_logs/  run/
+└── run_servers.bash      starts, stops and checks the three servers
 ```
+
+## Run the three servers
+[run_servers.bash](run_servers.bash) runs the three servers in Docker on the Spark, in order (Whisper, LLM, RASA: the
+RASA server asks the LLM server), and waits until each one answers. From `ari_servers`:
+```bash
+echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env   # once: key of the LLM server
+bash run_servers.bash build          # once: the images (Whisper, LLM, RASA)
+bash run_servers.bash start          # the three servers; already running ones are left as they are
+bash run_servers.bash status         # container state and /health of every server
+bash run_servers.bash restart        # after a change of the configuration
+bash run_servers.bash stop
+bash run_servers.bash restart llm    # one or more servers: whisper, llm, rasa
+bash run_servers.bash logs rasa      # follows the log of one server
+```
+
+| Configuration file | What | Versioned |
+|---|---|---|
+| [config/servers.yaml](config/servers.yaml) | ports, models, RAG on/off, OpenAI parameters, execution lock of all the servers | yes |
+| [config/rasa.env](config/rasa.env) | language, address of the LLM server, flags of the demo | yes |
+| `config/secrets.env` | `OPENAI_API_KEY=...` | **no** |
+
+`-c <file>` uses another configuration instead of `config/servers.yaml`, e.g. one copy per demo or per machine:
+`bash run_servers.bash -c config/servers_rag.yaml restart`. The file must be inside `ari_servers` (it is mounted in
+the containers). `RASA_ENV_FILE=<file>` does the same for `rasa.env`. A variable exported in the shell overrides the
+files for that run, e.g. `LLM_RAG=true bash run_servers.bash restart llm`. The containers restart with the machine;
+a change of the configuration needs `restart`.
+
+Ready after 15 s (Whisper, model already exported; the first start exports it, minutes), 3 s (LLM), 12 s (RASA).
+Each server has also its own `run.bash` (`whisper/docker`, `llm/docker`, `rasa/docker`), with `test` and `shell`.
 
 ## Configuration
 Every server is a dataclass of options (e.g. `WhisperConfig`), filled from the lowest to the highest priority by:
@@ -60,6 +92,6 @@ Shared folders (the workspace of every server, mounted as `/workspace` in the co
 |---|---|
 | `config/` | `servers.yaml`, `rasa.env`; `secrets.env` with the keys, not versioned |
 | `models/` | models: `silero/silero_vad.onnx` (versioned), `whisper/` (exported at the first start), `rasa/` (trained bots): not versioned |
-| `audio_files/` | the 5 Italian WAV of the tests, their reference transcripts (`references.csv`) and the [report of the Whisper models](audio_files/REPORT_modelli_whisper.md) |
+| `audio_files/` | the 5 Italian WAV of the tests, their reference transcripts (`references.csv`) and the [report of the models](audio_files/REPORT_modelli_whisper.md) (Whisper, LLM, Rasa times) |
 | `latency_logs/` | latency log of the servers (`latency_<date>_<host>.csv`), not versioned |
 | `run/` | execution lock, not versioned |

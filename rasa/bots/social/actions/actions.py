@@ -2,7 +2,7 @@ from itertools import count
 from typing import Any, Text, Dict, List
 #
 from rasa_sdk import Action, Tracker
-from rasa_sdk.events import SlotSet, AllSlotsReset, FollowupAction
+from rasa_sdk.events import SlotSet, AllSlotsReset
 from rasa_sdk.executor import CollectingDispatcher
 import logging
 from .pluralize import pluralize
@@ -25,7 +25,6 @@ from .events import NLPEvent
 # the answers come from the LLM server (llm_client.py): model, RAG and history are configured there
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-KNOWLEDGE_GRAPH_RUNNING = True if os.environ.get('KNOWLEDGE_GRAPH_RUNNING') == "True" else False 
 class ActionGreet(Action):
 
     def __init__(self):
@@ -380,43 +379,6 @@ class ActionObjects(Action):
         return [AllSlotsReset()]
 
 
-class ActionAddInfoKG(Action):
-
-    def __init__(self):
-        super(ActionAddInfoKG, self).__init__()
-        self.language = "Italian"
-        self.TextManager = TextManagerSocial()
-
-    def name(self) -> Text:
-        return "action_add_info_kg"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:  
-        
-        if KNOWLEDGE_GRAPH_RUNNING == False:
-            return [FollowupAction('action_social')]
-        
-        usr_message = tracker.latest_message['text']
-
-        if DEBUG:
-            with open("prompt_personal_request.txt", "w") as f:
-                f.write(usr_message)
-
-        definition = llm_client.chat(tracker.sender_id, usr_message, system=self.TextManager.get_phrase("KG_Prompt"),
-                                     rag=False)
-
-        try:
-            if definition != "":
-                #dispatcher.utter_message(text=f"I know that {definition.lower()} Is it right?")
-                dispatcher.utter_message(text=definition)
-            else:
-                dispatcher.utter_message(text=self.TextManager.get_phrase("So1"))        
-        except Exception as e:
-            dispatcher.utter_message(text=self.TextManager.get_phrase("So2"))
-        return [AllSlotsReset()]
-
-
 # class ActionAskRag(Action):
 
 #     class SocialRunner(Runner):
@@ -437,24 +399,6 @@ class ActionAddInfoKG(Action):
 #             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:  
         
 #         raise NotImplementedError("")
-
-
-# class ActionSplitDecision(Action):
-
-#     def __init__(self):
-#         super(ActionSplitDecision, self).__init__()
-
-#     def name(self) -> Text:
-#         return "ActionSplitDecision"
-    
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#         if KNOWLEDGE_GRAPH_RUNNING:
-#             return [FollowupAction('action_add_info_kg')]
-#         else:
-#             return [FollowupAction('action_social')]
-
 
 
 # class ActionIdentity(Action):

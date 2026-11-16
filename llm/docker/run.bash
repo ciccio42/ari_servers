@@ -27,7 +27,7 @@ SECRETS_FILE=$ROOT_DIR/config/secrets.env
 
 RUN_ARGS=(--gpus=all --network=host -e HF_HOME=/workspace/models/llm/.hf_cache -v "$ROOT_DIR":/workspace)
 # only the variables set here: otherwise defaults would hide config/servers.yaml
-for variable in $(compgen -e | grep -E '^(LLM_|OPENAI_|ARI_EXECUTION_LOCK$)'); do
+for variable in $(compgen -e | grep -E '^(LLM_|OPENAI_|ARI_EXECUTION_LOCK$|ARI_SERVERS_CONFIG$)'); do
     RUN_ARGS+=(-e "$variable=${!variable}")
 done
 [ -f "$SECRETS_FILE" ] && RUN_ARGS+=(--env-file "$SECRETS_FILE")
@@ -37,7 +37,7 @@ check_config() {
     if [ -f "$SECRETS_FILE" ] && grep -n -E "^[A-Za-z_]+=[\"']" "$SECRETS_FILE"; then
         echo "$SECRETS_FILE: write the values without quotes (lines above)" >&2; exit 1
     fi
-    local backend=${LLM_BACKEND:-$(sed -n '/^llm:/,/^[^ #]/s/^  backend: *\([a-z_]*\).*/\1/p' "$ROOT_DIR/config/servers.yaml")}
+    local backend=${LLM_BACKEND:-$(sed -n '/^llm:/,/^[^ #]/s/^  backend: *\([a-z_]*\).*/\1/p' "$ROOT_DIR/${ARI_SERVERS_CONFIG:-config/servers.yaml}")}
     if [ "${backend:-openai}" = openai ] && [ -z "$OPENAI_API_KEY" ] && ! grep -q -s -E '^OPENAI_API_KEY=.+' "$SECRETS_FILE"; then
         echo "OPENAI_API_KEY not set: echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env" >&2
         exit 1

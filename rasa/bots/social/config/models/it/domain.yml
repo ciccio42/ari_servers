@@ -111,4 +111,3 @@ actions:
   - utter_what_games
   - utter_who_mario_vento_is
   - utter_want_play
-  - action_add_info_kg

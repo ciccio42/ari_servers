@@ -49,7 +49,7 @@ esac
 
 RUN_ARGS=("${GPU_ARGS[@]}" --network=host -e HF_HOME=/workspace/models/whisper/.hf_cache -v "$ROOT_DIR":/workspace)
 # only the variables set here: otherwise defaults would hide config/servers.yaml
-for variable in $(compgen -e | grep -E '^(WHISPER_|DEMO_LANGUAGE$|SILERO_VAD_THRESHOLD$|ARI_EXECUTION_LOCK$)'); do
+for variable in $(compgen -e | grep -E '^(WHISPER_|DEMO_LANGUAGE$|SILERO_VAD_THRESHOLD$|ARI_EXECUTION_LOCK$|ARI_SERVERS_CONFIG$)'); do
     [ "$variable" = WHISPER_MODEL_DIR ] || RUN_ARGS+=(-e "$variable=${!variable}")
 done
 if [ -n "$WHISPER_MODEL_DIR" ]; then

@@ -62,8 +62,9 @@ PepperDemo all the users shared one). The history is in memory: a restart of the
 
 RAG with ChatGPT: `llm.rag: true` (or `"rag": true` in the request) makes the backend search the documents of the
 OpenAI vector store before answering (Responses API, file_search); with `false` it answers with Chat Completions.
-The social action of Rasa asks for the default of the server; the questions about the scene and the knowledge
-graph never use it, as in PepperDemo.
+The social action of Rasa asks for the default of the server; the questions about the scene never use it, as in
+PepperDemo. The behaviour trees of ARI (`LLMNode` of `ari_control`, with `LLM_RAG_RUNNING=True`) call `/chat` directly:
+`"rag": true` for the open requests, the camera frame and `"rag": false` for the questions about the scene.
 
 ## Run with Docker (Spark)
 From `ari_servers`:

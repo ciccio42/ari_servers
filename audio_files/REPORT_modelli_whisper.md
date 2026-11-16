@@ -1,8 +1,13 @@
-# Modelli Whisper sulla DGX Spark: tempi e accuratezza
+# Modelli della demo sulla DGX Spark: Whisper e LLM
 
-Test del 2026-11-12 sui 5 file audio di questa cartella. Il modello in uso nella demo è **large-v3-turbo**: è il
-miglior compromesso tra velocità e accuratezza anche rispetto agli altri modelli Whisper. Small e i modelli più
-piccoli sono più veloci, ma sbagliano troppe parole in italiano; medium e large-v3 sono più lenti e non più precisi.
+Test del 2026-11-12, con le frasi del piano di test.
+
+- **Whisper** (trascrizione dei 5 file audio di questa cartella): il modello in uso nella demo, **large-v3-turbo**, è
+  il miglior compromesso tra velocità e accuratezza anche rispetto agli altri modelli Whisper. Small e i modelli più
+  piccoli sono più veloci, ma sbagliano troppe parole in italiano; medium e large-v3 sono più lenti e non più precisi.
+- **LLM** (risposte del bot sociale, [ultima parte](#llm-risposte-del-bot-sociale-chatgpt-con-e-senza-rag)): gpt-4o
+  risponde in 1,3 s senza RAG e in 5,4 s con il RAG sui documenti medici; il RAG cambia le risposte alle domande
+  mediche, che vengono dalle fonti caricate. Rasa aggiunge circa 40 ms, 10–25 ms per le risposte senza LLM.
 
 ## Risultati
 
@@ -116,3 +121,104 @@ python3 whisper/tools/wer.py latency_logs/runs_small.csv --per-file             
 ```
 `bench_http.py` richiede numpy e soundfile (presenti nell'immagine). I risultati di questo test sono in
 `latency_logs/models_2026-11-12/` (non versionata): `runs_<modello>.csv`, `summary_<modello>.txt`, `wer.csv`.
+
+## LLM: risposte del bot sociale (ChatGPT, con e senza RAG)
+
+Le domande del piano mandate al bot sociale di Rasa come le manda il robot: client → proxy Rasa (porta 5002) →
+`action_social` → server LLM (porta 8010) → OpenAI. Un solo utente per giro, che pone le domande in sequenza: l'ultima
+("e quali sono gli effetti collaterali?") verifica che il server tenga lo storico della conversazione.
+
+### Tempi
+
+| | RAG spento | RAG acceso |
+|---|---|---|
+| API di OpenAI | Chat Completions | Responses API con file_search sui documenti |
+| Risposta vista dal client, media | **1,30 s** | **5,41 s** |
+| Dev. std (varianza) | 0,36 s (0,126 s²) | 0,87 s (0,759 s²) |
+| Minimo – massimo | 0,97 – 1,90 s | 4,35 – 6,33 s |
+
+| Domanda | RAG spento | RAG acceso |
+|---|---|---|
+| qual è la ricetta della pizza? | 1,90 s | 5,73 s |
+| cosa sai dirmi dell'università di salerno? | 0,97 s | 6,02 s |
+| quali sono le soglie di emoglobina glicata che indicano un rischio di diabete? | 1,15 s | 4,35 s |
+| chi può prescrivere gli agonisti del GLP-1 secondo la nota AIFA 100? | 1,27 s | 4,64 s |
+| e quali sono gli effetti collaterali? | 1,19 s | 6,33 s |
+
+Quasi tutto il tempo è la risposta di OpenAI (tabella seguente). Il lock dei server non ha mai fatto attendere
+(`queue_s` 0), perché c'era un solo client.
+
+### Tempi del server RASA
+
+Dal latency log: il proxy registra il tempo di ogni risposta di Rasa (`rasa_s`, action compresa), il server LLM il
+tempo della sua risposta (`total_s`); la differenza è il lavoro di Rasa (riconoscimento dell'intent, policy,
+chiamata all'action server, client HTTP dell'action).
+
+| Richieste | n | Risposta di Rasa (`rasa_s`) | di cui server LLM | **di cui Rasa** |
+|---|---|---|---|---|
+| bot sociale con il LLM, RAG spento | 5 | 1,295 s (dev. std 0,356) | 1,253 s | **42 ms** (dev. std 4; 36–46) |
+| bot sociale con il LLM, RAG acceso | 5 | 5,414 s (dev. std 0,868) | 5,375 s | **38 ms** (dev. std 6; 29–44) |
+| bot sociale senza LLM (età, emozione, avvio dei giochi...) | 13 | 25 ms (dev. std 8; 13–43) | – | 25 ms |
+| gioco sasso carta forbice (porta 5003) | 7 | 10 ms (dev. std 1; 9–12) | – | 10 ms |
+| gioco forza quattro (porta 5004) | 6 | 13 ms (dev. std 3; 10–16) | – | 13 ms |
+
+Rasa gira su CPU e pesa al massimo 40 ms per risposta, il 3% della risposta del bot sociale senza RAG e meno
+dell'1% con il RAG. Le richieste senza LLM sono quelle dei test del 2026-11-12 sullo stesso server; il proxy aggiunge
+meno di 1 ms.
+
+### Risposte
+
+| Domanda | RAG spento | RAG acceso |
+|---|---|---|
+| qual è la ricetta della pizza? | Per fare la pizza, mescola 500 g di farina, 325 ml di acqua, 10 g di sale, 3 g di lievito e 1 cucchiaio di olio. Impasta, lascia lievitare per 2 ore, stendi, aggiungi pomodoro e mozzarella, e cuoci a 250°C per 10 minuti. | Per preparare la pizza, mescola farina, acqua, lievito e sale per ottenere l'impasto, lascialo lievitare, poi stendilo e aggiungi il condimento. Cuoci in forno molto caldo finché la pizza è dorata. |
+| cosa sai dirmi dell'università di salerno? | L'Università di Salerno è una delle più antiche d'Europa, con origini che risalgono alla Scuola Medica Salernitana. Oggi offre una vasta gamma di corsi di laurea e ricerca in vari campi, ed è situata nel campus di Fisciano. | L'Università di Salerno è un'istituzione accademica italiana conosciuta per la qualità della sua ricerca e l'offerta formativa. È situata nella regione Campania e offre una vasta gamma di corsi di laurea e post-laurea in diverse discipline. |
+| quali sono le soglie di emoglobina glicata che indicano un rischio di diabete? | Un valore di emoglobina glicata tra 5,7% e 6,4% indica prediabete, mentre un valore pari o superiore a 6,5% suggerisce diabete. | I valori di emoglobina glicata tra 6,0 e 6,49% indicano un rischio elevato di sviluppare il diabete. |
+| chi può prescrivere gli agonisti del GLP-1 secondo la nota AIFA 100? | Secondo la nota AIFA 100, gli agonisti del GLP-1 possono essere prescritti da medici specialisti in endocrinologia, diabetologia e malattie del metabolismo. | Gli agonisti del GLP-1 possono essere prescritti dai medici di medicina generale o dagli specialisti autorizzati dalle Regioni, tramite il sistema Tessera Sanitaria. |
+| e quali sono gli effetti collaterali? | Gli effetti collaterali degli agonisti del GLP-1 includono nausea, vomito, diarrea e perdita di appetito. Possono anche causare ipoglicemia, soprattutto se usati con altri farmaci ipoglicemizzanti. | Gli agonisti del GLP-1 possono causare nausea, vomito, e in alcuni casi pancreatite. Gli effetti sono generalmente lievi e transitori. |
+
+### Conclusioni
+
+1. **Il percorso funziona**: Rasa → server LLM → OpenAI risponde a tutte le domande, in italiano e entro la lunghezza
+   chiesta dal prompt.
+2. **Lo storico funziona**: la domanda di seguito ("e quali sono gli effetti collaterali?") è capita in entrambi i
+   giri come riferita agli agonisti del GLP-1.
+3. **Il RAG cambia le risposte mediche.** Con i documenti le soglie dell'emoglobina glicata (6,0–6,49%) e la nota
+   AIFA 100 (anche i medici di medicina generale) vengono dalle fonti caricate; senza, gpt-4o risponde con la sua
+   conoscenza generale (per le soglie quelle internazionali, 5,7–6,4%). Quale risposta sia corretta per la demo va
+   valutato da chi conosce le fonti.
+4. **Il RAG costa circa 4 s a risposta** e si applica a tutte le domande dell'action, anche a quelle non mediche
+   (pizza, università), che diventano più lente e più generiche.
+5. **Rasa non è un collo di bottiglia**: 10–25 ms per le risposte senza LLM, circa 40 ms in più quando chiama il
+   server LLM. Il tempo del bot sociale è quello di OpenAI (1,3 s senza RAG, 5,4 s con il RAG), contro 0,2 s di
+   Whisper.
+
+### Limiti del test
+
+- Una sola esecuzione per domanda: i tempi di OpenAI variano con il carico del servizio, e le risposte cambiano un
+  po' da una chiamata all'altra (temperatura 0,3 senza RAG, default di OpenAI con il RAG).
+- Non provate le domande sulla scena (`action_gpt_4o`): servono l'immagine della telecamera nel tracker di Rasa, che
+  arriva dal robot.
+- Accuratezza delle risposte mediche non valutata.
+
+### Configurazione
+
+| | |
+|---|---|
+| Server LLM | `llm_server` di ari_servers, immagine `ari_llm_server`, backend `openai` (`ChatGPTBackend`), porta 8010 |
+| Modello | `gpt-4o` (servito da OpenAI come `gpt-4o-2024-08-06`), temperatura 0,3 senza RAG |
+| RAG | `llm.rag: true` solo per il secondo giro (`LLM_RAG=true`): file_search sul vector store `vs_6adf80ee4cf481919b35fecdd7d1efd9` (diabetologia e cardiologia), 5 passaggi per ricerca, ricerca sempre (`tool_choice: required`) |
+| Prompt | "Medical Prompt" di `rasa/bots/social/actions/phrases_rasa.yml`, risposte entro 250 caratteri |
+| Storico | 4 messaggi per conversazione, la domanda compresa |
+| Rasa | `rasa_server` (immagine `ari_rasa_server`), bot sociale in italiano, proxy senza lock (`rasa.exclusive: false`) |
+
+### Come ripetere il test
+
+Da `ari_servers`, con `OPENAI_API_KEY` in `config/secrets.env`:
+```bash
+bash llm/docker/run.bash start                    # RAG come da config/servers.yaml (llm.rag)
+bash rasa/docker/run.bash start
+bash rasa/docker/run.bash test "quali sono le soglie di emoglobina glicata che indicano un rischio di diabete?"
+bash llm/docker/run.bash stop && LLM_RAG=true bash llm/docker/run.bash start   # un giro con il RAG
+```
+I tempi di ogni risposta sono anche nel latency log (`latency_logs/latency_<data>_<host>.csv`, righe
+`rasa_proxy.done` per Rasa, `llm_server.done` e `openai.reply` per il LLM).
