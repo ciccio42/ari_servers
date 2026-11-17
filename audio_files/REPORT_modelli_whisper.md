@@ -120,7 +120,7 @@ python3 whisper/tools/summarize_whisper.py audio_files latency_logs/runs_small.c
 python3 whisper/tools/wer.py latency_logs/runs_small.csv --per-file                   # WER e CER
 ```
 `bench_http.py` richiede numpy e soundfile (presenti nell'immagine). I risultati di questo test sono in
-`latency_logs/models_2026-11-12/` (non versionata): `runs_<modello>.csv`, `summary_<modello>.txt`, `wer.csv`.
+`latency_logs/old/models_2026-11-12/` (non versionata): `runs_<modello>.csv`, `summary_<modello>.txt`, `wer.csv`.
 
 ## LLM: risposte del bot sociale (ChatGPT, con e senza RAG)
 

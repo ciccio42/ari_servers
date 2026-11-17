@@ -6,7 +6,8 @@ One listener per route of RasaProxyConfig.routes (one per bot): every request is
 that port, holding the execution lock of the servers, shared by all the listeners.
 
   GET /health   {"status": "ok", "service": "rasa_proxy_<port>", "upstream": ..., "upstream_ok": ...}
-  any other     forwarded to the bot; 502 if it does not answer
+  any other     forwarded to the bot; 502 if it does not answer. Headers of the reply: X-Queue-S (wait for the
+                lock), X-Rasa-S (answer of the bot), X-Total-S (whole request on this server), in seconds
 
 Run: python -m rasa_proxy [--routes ...] (PYTHONPATH: common and rasa). Standard library only.
 """
@@ -72,6 +73,10 @@ class RasaProxy(HTTPService):
              status=status, queue_s=round(waited, 4), rasa_s=round(t_end - t_forward, 4),
              total_s=round(t_end - request.t_in, 4))
         passed = {k: v for k, v in reply_headers if k.lower() not in HOP_BY_HOP and k.lower() != "content-type"}
+        # times of this server, measured here (perf_counter): the client gets the communication as its round trip
+        # minus X-Total-S, without comparing the clocks of the two machines (as X-*-S of the TTS server)
+        passed.update({"X-Queue-S": f"{waited:.4f}", "X-Rasa-S": f"{t_end - t_forward:.4f}",
+                       "X-Total-S": f"{t_end - request.t_in:.4f}"})
         content_type = next((v for k, v in reply_headers if k.lower() == "content-type"), "application/json")
         request.reply_raw(status, reply, content_type, passed)
         return None  # replied

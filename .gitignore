@@ -13,3 +13,4 @@ rasa/bots/social/*.txt
 config/secrets.env
 # Piper voices (60 MB each), copied from ari_control/ros2_ws/src/ari_tts_action_server/models
 models/piper/*.onnx
+*csv
