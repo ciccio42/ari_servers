@@ -107,6 +107,10 @@ class ActionSocial(Action):
             dispatcher.utter_message(text=self.TextManager.get_phrase("So2"))
         return [AllSlotsReset()]
 
+# value of image_slot when ARI uploaded the image to the LLM server instead of sending its base64 in the slot
+IMAGE_ID_PREFIX = "image_id:"
+
+
 class ActionGPT_4o(Action):
     
     def __init__(self):
@@ -126,7 +130,12 @@ class ActionGPT_4o(Action):
         try:
             if image_base64 is not None:
                 # question about the scene: default system prompt of the LLM server, no documents
-                response = llm_client.chat(tracker.sender_id, usr_message, rag=False, image_base64=image_base64)
+                if image_base64.startswith(IMAGE_ID_PREFIX):
+                    # ARI uploaded the image to the LLM server (POST /image): the slot carries only its id
+                    response = llm_client.chat(tracker.sender_id, usr_message, rag=False,
+                                               image_id=image_base64[len(IMAGE_ID_PREFIX):])
+                else:
+                    response = llm_client.chat(tracker.sender_id, usr_message, rag=False, image_base64=image_base64)
             else: 
                 logging.error("image slot is empty")
                 raise Exception

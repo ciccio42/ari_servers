@@ -28,12 +28,13 @@ def _post(path: str, payload: dict) -> dict:
 
 
 def chat(conversation_id: str, message: str, system: Optional[str] = None, rag: Optional[bool] = None,
-         image_base64: Optional[str] = None) -> str:
+         image_base64: Optional[str] = None, image_id: Optional[str] = None) -> str:
     """Answer of the LLM server to `message`, in the conversation `conversation_id` (it keeps the history).
     system: system prompt of this request (default: the one of the server). rag: search the documents
-    (default: llm.rag of the server). image_base64: a JPEG, for the questions about the scene."""
+    (default: llm.rag of the server). image_base64: a JPEG or WebP, for the questions about the scene; image_id: the
+    same image uploaded by ARI to POST /image of the LLM server (binary, smaller)."""
     payload = {"conversation_id": conversation_id, "message": message}
-    for key, value in (("system", system), ("rag", rag), ("image_base64", image_base64)):
+    for key, value in (("system", system), ("rag", rag), ("image_base64", image_base64), ("image_id", image_id)):
         if value is not None:
             payload[key] = value
     start = time.perf_counter()

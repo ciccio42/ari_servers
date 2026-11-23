@@ -7,8 +7,14 @@ machine (execution lock), during the generation.
 
   GET  /health  {"status": "ok", "service": "llm_server", "backend", "model", "native_rag", "vision", "rag",
                  "loaded", "conversations"}
+  POST /image   body: the image as bytes (Content-Type image/webp, image/jpeg or image/png), not base64: 25 % fewer
+                bytes than inside a JSON. Kept in memory for IMAGE_TTL_S, then forgotten. Optional header X-Image-Id
+                (32 hex characters): the id chosen by the client, so it can send the id elsewhere (e.g. in a slot of
+                Rasa) while the upload is still running. Reply {"image_id", "bytes", "mime", "receive_s",
+                "total_s"}; receive_s is the read of the body (the upload, network)
   POST /chat    conversation with history:
-                  {"conversation_id": "...", "message": "...", "image_base64": "<jpeg>" (optional),
+                  {"conversation_id": "...", "message": "...", "image_id": "<id of POST /image>" or
+                   "image_base64": "<jpeg or webp>" (optional),
                    "system": "..." (optional: default the prompt of llm.system_prompt_file), "rag": true|false
                    (optional: default llm.rag), "temperature", "max_new_tokens" (optional)}
                 one-shot, without history:
@@ -23,7 +29,11 @@ Errors: 400 bad request, 501 backend not implemented or models not loaded, 502 t
 Run: python -m llm_server [--backend ...] [--model ...] [--port ...] (PYTHONPATH: common and llm).
 """
 import argparse
+import re
+import threading
 import time
+import uuid
+from base64 import b64decode, b64encode
 from dataclasses import asdict
 
 from ari_servers import execution
@@ -33,6 +43,52 @@ from ari_servers.latency_log import mark
 
 from . import backends, config, rag
 from .conversation import Conversations
+
+
+IMAGE_TTL_S = 600   # an uploaded image is used by the answer that follows within seconds
+IMAGE_MAX = 32      # images kept at most (the oldest go first)
+IMAGE_TYPES = {"image/webp", "image/jpeg", "image/png"}
+
+
+class ImageStore:
+    """Images uploaded with POST /image, by id, for the requests to /chat that follow (thread safe)."""
+
+    def __init__(self, ttl_s: float = IMAGE_TTL_S, max_images: int = IMAGE_MAX):
+        self.ttl_s, self.max_images = ttl_s, max_images
+        self._images = {}  # id -> (data, mime, time of the upload)
+        self._lock = threading.Lock()
+
+    def _expire(self, now: float):
+        for key in [k for k, (_, _, t) in self._images.items() if now - t > self.ttl_s]:
+            del self._images[key]
+        while len(self._images) > self.max_images:
+            del self._images[min(self._images, key=lambda k: self._images[k][2])]
+
+    def put(self, data: bytes, mime: str, image_id: str = None) -> str:
+        image_id = image_id or uuid.uuid4().hex
+        with self._lock:
+            now = time.monotonic()
+            self._images[image_id] = (data, mime, now)
+            self._expire(now)
+        return image_id
+
+    def get(self, image_id: str):
+        with self._lock:
+            self._expire(time.monotonic())
+            found = self._images.get(image_id)
+        return (found[0], found[1]) if found else None
+
+    def __len__(self):
+        return len(self._images)
+
+
+def image_mime(data: bytes) -> str:
+    """Type of an image from its first bytes (the base64 images of the old clients carry no type)."""
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "image/webp"
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    return "image/jpeg"
 
 
 class LLMService(HTTPService):
@@ -54,12 +110,14 @@ class LLMService(HTTPService):
             if self.retriever:
                 self.retriever.load()
             self.loaded = True
+        self.images = ImageStore()
         self.add_route("POST", "/chat", self.chat)
+        self.add_route("POST", "/image", self.upload_image)
         self.add_route("POST", "/reset", self.reset)
 
     def health(self) -> dict:
         return {**self.backend.describe(), "rag": self.cfg.rag, "loaded": self.loaded,
-                "conversations": len(self.conversations)}
+                "conversations": len(self.conversations), "images": len(self.images)}
 
     # --- requests
 
@@ -67,13 +125,41 @@ class LLMService(HTTPService):
         text = str(data.get("message") or "").strip()
         if not text:
             raise HTTPError(400, "empty request: give message (with conversation_id), messages or prompt")
-        image = data.get("image_base64")
-        if not image:
+        image_id, image = data.get("image_id"), data.get("image_base64")
+        if not image_id and not image:
             return {"role": "user", "content": text}
         if not self.backend.vision:
             raise HTTPError(400, f"backend {self.backend.name} does not accept images")
+        if image_id:
+            found = self.images.get(str(image_id))
+            if found is None:
+                raise HTTPError(400, f"unknown or expired image_id {image_id} (POST /image, kept {IMAGE_TTL_S} s)")
+            raw, mime = found
+            image = b64encode(raw).decode()
+        else:
+            try:
+                mime = image_mime(b64decode(image[:24]))
+            except ValueError:
+                mime = "image/jpeg"
         return {"role": "user", "content": [{"type": "text", "text": text},
-                                            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}"}}]}
+                                            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{image}"}}]}
+
+    def upload_image(self, request) -> dict:
+        mime = (request.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        image_id = (request.headers.get("X-Image-Id") or "").strip().lower() or None
+        if image_id is not None and not re.fullmatch(r"[0-9a-f]{32}", image_id):
+            raise HTTPError(400, "X-Image-Id must be 32 hexadecimal characters")
+        data = request.read_body(self.cfg.max_body_mb * 1024 * 1024)
+        t_received = time.perf_counter()
+        if mime not in IMAGE_TYPES:
+            mime = image_mime(data)
+        image_id = self.images.put(data, mime, image_id)
+        t_end = time.perf_counter()
+        result = {"image_id": image_id, "bytes": len(data), "mime": mime,
+                  "receive_s": round(t_received - request.t_in, 4), "total_s": round(t_end - t_received, 4)}
+        mark("llm_server", "image", client=request.client_address[0], bytes=len(data), mime=mime,
+             receive_s=result["receive_s"], total_s=result["total_s"])
+        return result
 
     def chat(self, request) -> dict:
         data = request.read_json(self.cfg.max_body_mb * 1024 * 1024)

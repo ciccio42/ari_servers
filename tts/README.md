@@ -20,8 +20,8 @@ text and play the WAV, instead of synthesizing it with Piper on the CPU of the r
 | | |
 |---|---|
 | `GET /health` | `{"status": "ok", "service": "tts_server", "voices", "default_voice", "provider", "loaded"}` |
-| `POST /synthesize` | `{"text": "...", "voice": "Italian"}` (`voice` optional: default the first one of `tts.voices`) |
-| reply | `audio/wav` (16 bit mono PCM, 22050 Hz), headers `X-Voice`, `X-Audio-S` (audio length), `X-Queue-S` (wait for the execution lock), `X-Synthesis-S`, `X-Total-S` |
+| `POST /synthesize` | `{"text": "...", "voice": "Italian", "format": "wav"}` (`voice` optional: default the first one of `tts.voices`; `format` optional: `wav` (default) or `opus`) |
+| reply | `audio/wav` (16 bit mono PCM, 22050 Hz) or, with `"format": "opus"`, `audio/ogg` (Ogg Opus 24 kHz, about 32 kbit/s, about 1/10 of the WAV: for slow networks, `AUDIO_CODEC=opus` on ARI; the encoding takes about 25 ms per second of audio, on the CPU, outside the execution lock). Headers `X-Voice`, `X-Audio-Format`, `X-Audio-S` (audio length), `X-Queue-S` (wait for the execution lock), `X-Synthesis-S`, `X-Encode-S` (Opus encoding, 0 for WAV), `X-Total-S` |
 | errors | `400` empty or too long text, unknown voice; `500` synthesis failed |
 
 ```bash

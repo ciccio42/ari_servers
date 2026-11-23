@@ -38,7 +38,8 @@ The backend is stateless: the server keeps the history, adds the system prompt a
 | | |
 |---|---|
 | `GET /health` | `{"status": "ok", "service": "llm_server", "backend", "model", "native_rag", "vision", "rag", "loaded", "conversations"}` |
-| `POST /chat` with history | `{"conversation_id", "message"}`; optional `image_base64` (JPEG), `system` (default: `llm.system_prompt_file`), `rag` (default: `llm.rag`), `temperature`, `max_new_tokens` |
+| `POST /image` | body: the image as bytes (`Content-Type` `image/webp`, `image/jpeg` or `image/png`), optional header `X-Image-Id` (32 hex characters, the id chosen by the client). Kept in memory 600 s. Reply `{"image_id", "bytes", "mime", "receive_s", "total_s"}`. ARI uploads here the camera frame of the questions about the scene, in parallel to the slots of Rasa; `image_slot` holds `image_id:<id>` and the action passes `image_id` to `/chat` |
+| `POST /chat` with history | `{"conversation_id", "message"}`; optional `image_id` (of `POST /image`) or `image_base64` (JPEG or WebP), `system` (default: `llm.system_prompt_file`), `rag` (default: `llm.rag`), `temperature`, `max_new_tokens` |
 | `POST /chat` one-shot | `{"messages": [{"role", "content"}...]}` or `{"prompt", "system"}`: no history |
 | reply | `{"text", "model", "served_model", "rag", "chunks", "conversation_id", "history", "queue_s", "rag_s", "generate_s", "total_s"}` |
 | `POST /reset` | `{"conversation_id"}`: forgets its history |

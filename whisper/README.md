@@ -19,9 +19,9 @@ HTTP server with Whisper (ONNX Runtime, CUDA) and Silero VAD, with the **model a
 | | |
 |---|---|
 | `GET /health` | `{"status": "ok", "service", "model", "model_dir", "language", "vad_threshold", "optimization", "provider"}` |
-| `POST /transcribe` | body: mono float32 little-endian samples at 16 kHz (`Content-Type: application/octet-stream`), or a WAV mono 16 kHz 16-bit (`Content-Type: audio/wav`) |
+| `POST /transcribe` | body: mono audio at 16 kHz in the format of the header `X-Audio-Format`: `f32le` (default, also without the header: raw float32 little-endian), `s16le` (raw int16, half the bytes: default of `whisper_client` on ARI), `ogg` (Ogg Opus, also with `Content-Type: audio/ogg`: for slow networks, `AUDIO_CODEC=opus` on ARI); or a WAV mono 16 kHz 16-bit (`Content-Type: audio/wav`). `GET /health` lists them in `audio_formats` |
 | header `X-VAD-Threshold` | optional, VAD threshold of this request |
-| reply | `{"text", "speech", "samples", "audio_s", "decode_s", "queue_s", "vad_s", "asr_s", "total_s"}`: seconds measured on the server, `decode_s` includes the reception of the body |
+| reply | `{"text", "speech", "samples", "audio_s", "audio_format", "body_bytes", "receive_s", "decode_s", "queue_s", "vad_s", "asr_s", "total_s"}`: seconds measured on the server. `receive_s` is the reception of the body (network: not in `total_s`, which starts after it); `decode_s` the decoding of the format (Opus: about 10-20 ms) |
 | errors | `400` bad audio, `404` unknown path, `500` transcription failed: the server keeps running |
 
 ```bash
