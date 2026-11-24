@@ -32,6 +32,9 @@ PepperDemo; a local model is another implementation of the same abstract class.
 2. Register it in `BACKENDS` (`backends/__init__.py`).
 3. `llm.backend: <name>` in `config/servers.yaml`. The server, its API and the actions of Rasa do not change.
 
+The full checklist (options of a generator of a RAG, dependencies, orchestrator, tests) is in
+[docs/integration.md → A new generation backend](../docs/integration.md#2-a-new-generation-backend-llm-server).
+
 The backend is stateless: the server keeps the history, adds the system prompt and, for the backends without
 `native_rag`, the chunks of its retriever.
 

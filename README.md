@@ -3,7 +3,8 @@
 Network servers of the demos of ARIS: they run on the machine with the GPU (DGX Spark, Jetson, cluster)
 and the robot reaches them over HTTP. The clients of these servers stay in `ari_control`.
 
-Architecture: [ari_demo_arch.png](ari_demo_arch.png). This repository is the **DGX-Spark** box: the HTTP servers, the
+Architecture: [ari_demo_arch.png](ari_demo_arch.png). How the servers communicate and how to add a backend or a RAG:
+[docs/integration.md](docs/integration.md). This repository is the **DGX-Spark** box: the HTTP servers, the
 RAGs with their local models and the rule *no concurrent executions*. Visual-Perception (Jetson), Behavioral-Trees,
 HTTP clients and Robot Control (Main-PC) are in `ari_control`.
 
@@ -31,6 +32,7 @@ ari_servers/
 ├── orchestrator/         orchestrator_server/ (package): one pair LLM + RAG in memory at a time; docker/
 ├── rasa/                 bots/ (social, rock_paper_scissor, connect_four), rasa_proxy/ (package), docker/
 ├── rag_knowledge_base/   knowledge bases of the RAGs (not versioned)
+├── docs/                 integration.md: communication flow, a new backend, a new RAG
 ├── models/  audio_files/  latency_logs/  run/
 └── run_servers.bash      starts, stops and checks all the servers
 ```

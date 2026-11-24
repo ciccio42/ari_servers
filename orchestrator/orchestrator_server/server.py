@@ -26,6 +26,7 @@ Run: python -m orchestrator_server [--port ...] (PYTHONPATH: common and orchestr
 """
 import json
 import logging
+import re
 import subprocess
 import threading
 import time
@@ -65,6 +66,14 @@ class Orchestrator:
 
     def rag_names(self) -> list:
         return sorted(p.name for p in (self.root / "rag").iterdir() if (p / "environment.yml").is_file())
+
+    def backend_names(self) -> list:
+        """The backends of the LLM server: the `name = "..."` of the classes in llm/llm_server/backends (read as text:
+        the orchestrator does not import the LLM server and its libraries)."""
+        names = set()
+        for path in (self.root / "llm" / "llm_server" / "backends").glob("*.py"):
+            names.update(re.findall(r'^\s+name = "([a-z0-9_]+)"', path.read_text(), re.M))
+        return sorted(names - {"abstract"})
 
     def rag_port(self, name: str) -> int:
         return int((read_config_file().get(f"rag_{name}") or {}).get("port", 8030))
@@ -160,8 +169,8 @@ class Orchestrator:
             raise HTTPError(400, f"unknown RAG {rag}: {self.rag_names()}")
         if llm:
             backend, _, model = llm.partition(":")
-            if not model or backend not in ("ollama", "openai", "transformers", "echo"):
-                raise HTTPError(400, f"llm must be <backend>:<model>, backend ollama, openai, transformers or echo "
+            if not model or backend not in self.backend_names():
+                raise HTTPError(400, f"llm must be <backend>:<model>, backend one of {self.backend_names()} "
                                      f"(got {llm!r})")
 
     def load(self, llm: str, rag: str):

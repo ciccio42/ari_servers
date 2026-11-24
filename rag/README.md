@@ -61,10 +61,14 @@ curl -X POST -H 'Content-Type: application/json' localhost:8010/chat \
 ollama rag`). The first start of a RAG downloads its embedding model and reranker in `models/rag/.hf_cache`.
 
 ## A new RAG
-1. `rag/<name>/environment.yml`, `name: rag_<name>`, with the dependencies of the RAG.
-2. `rag/<name>/<name>_rag/`: `config.py` (a dataclass that extends `RagConfig`, section `rag_<name>`, env
+The full checklist (analysis of the original repository, porting, model, tests, docs) is in
+[docs/integration.md → A new RAG](../docs/integration.md#3-a-new-rag). In short:
+1. the knowledge base in `rag_knowledge_base/<name>`, the model of the original on Ollama (`ollama/docker/run.bash pull`);
+2. `rag/<name>/environment.yml`, `name: rag_<name>`, with the dependencies of the RAG;
+3. `rag/<name>/<name>_rag/`: `config.py` (a dataclass that extends `RagConfig`, section `rag_<name>`, env
    `RAG_<NAME>_<FIELD>`), `rag.py` (a subclass of `Rag`), `utils/` (the code of the RAG), `server.py` and
-   `__main__.py` as [department_office](department_office/department_office_rag/server.py).
-3. `config/servers.yaml`: section `rag_<name>` (port, `kb_dir`, generator), `<name>` in `rag_servers`,
-   `<name>=http://localhost:<port>` in `llm.rag_servers`.
-4. `bash rag/docker/run.bash build` (the image gets the new environment), `start <name>`, `bash run_servers.bash restart llm`.
+   `__main__.py` as [department](department/department_rag/server.py);
+4. `config/servers.yaml`: section `rag_<name>` (port, `kb_dir`, generator), `<name>` in `rag_servers`,
+   `<name>=http://localhost:<port>` in `llm.rag_servers`;
+5. `bash rag/docker/run.bash build` (the image gets the new environment), `bash run_servers.bash restart llm`,
+   `bash orchestrator/docker/run.bash load rag=<name>`, then the tests.
