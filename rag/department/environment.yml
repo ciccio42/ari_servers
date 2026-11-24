@@ -1,0 +1,25 @@
+# Conda environment of the department RAG (rag_department), created in the image ari_rag_server by
+# rag/docker/Dockerfile. Only what the retrieval of DiemRAG uses: LangChain (Chroma, Ollama for the domain filter,
+# the rewriting and the router), BGE-M3 and the reranker with sentence-transformers. The answer: LLM server.
+# Versions: new_requirements.txt of DIEM_RAG, torch for CUDA 13 (GB10).
+name: rag_department
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu130
+      - torch==2.12.0
+      - transformers==5.12.0
+      - sentence-transformers==5.5.0
+      - chromadb==1.5.8
+      - langchain==1.3.0
+      - langchain-core==1.4.0
+      - langchain-community==0.4.1
+      - langchain-chroma==1.1.0
+      - langchain-huggingface==1.2.2
+      - langchain-ollama==1.1.0
+      - ollama==0.6.1
+      - numpy==2.2.6
+      - pyyaml==6.0.3

@@ -34,7 +34,7 @@ llm:
   top_k: 4
   # RAG servers (rag/<name>): a request with "rag": "<name>" asks that server for the context and answers with its
   # system prompt and its model (the generator of section rag_<name>, e.g. Ollama with qwen3.6)
-  rag_servers: "department_office=http://localhost:8030, high_level_unisa=http://localhost:8031"
+  rag_servers: "department_office=http://localhost:8030, high_level_unisa=http://localhost:8031, department=http://localhost:8032"
 
 # <TTS_PORT>: text to speech (Piper) for the behaviour trees of ARI: POST /synthesize -> WAV. Env TTS_<FIELD>
 tts:
@@ -69,7 +69,21 @@ ollama:
 
 # RAG servers (rag/<name>, container rag_<name>, image ari_rag_server). They are started by the orchestrator, one at a
 # time with its model; `bash run_servers.bash start rag` starts all of these instead (memory: one qwen3.6 each)
-rag_servers: [department_office, high_level_unisa]
+rag_servers: [department_office, high_level_unisa, department]
+
+# <RAG_PORT>: DIEM department (RAG of the course Generative AI, local version): courses, people, research, calls,
+# Erasmus. Only the retrieval (domain filter, rewriting and router call Ollama); the LLM server generates with
+# generator_backend/generator_model. Env RAG_DEPARTMENT_<FIELD>
+rag_department:
+  port: 8032
+  kb_dir: rag_knowledge_base/department          # vectorstore/ (Chroma, 13 collections)
+  generator_backend: ollama
+  generator_model: qwen3:30b-a3b-instruct-2507-fp16   # Qwen3-30B-A3B-Instruct-2507 of the original, fp16
+  temperature: 0.0
+  max_new_tokens: 4096
+  num_ctx: 16384
+  ollama_url: http://localhost:11500
+  use_history: true                              # the original used an empty history at every request (test)
 
 # <ORCHESTRATOR_PORT>: loads on request one pair LLM + RAG at a time (POST /load {"llm", "rag"}), unloading the previous
 # one: RAG containers and models of Ollama. Env ORCHESTRATOR_<FIELD>

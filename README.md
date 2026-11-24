@@ -12,8 +12,8 @@ HTTP clients and Robot Control (Main-PC) are in `ari_control`.
 | Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
 | LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | backends: ChatGPT (default of the demo, with the OpenAI RAG), Ollama (the RAGs of `rag/`), echo (tests) |
 | TTS (Piper, audio of the answers) | [tts/](tts/README.md) | 8020 | Piper on the GPU, client: `TtsNode` of the behaviour trees |
-| RAG (retrieval of a knowledge base) | [rag/](rag/README.md) | 8030 (`department_office`), 8031 (`high_level_unisa`), one per RAG | one container and one conda environment per RAG, asked by the LLM server |
-| Ollama (local models of the RAGs) | [ollama/docker/](ollama/docker/run.bash) | 11500 (localhost only) | `qwen3.6:35b-a3b-q8_0` (`department_office`), `qwen3.6:35b-a3b` (`high_level_unisa`) |
+| RAG (retrieval of a knowledge base) | [rag/](rag/README.md) | 8030 (`department_office`), 8031 (`high_level_unisa`), 8032 (`department`), one per RAG | one container and one conda environment per RAG, asked by the LLM server |
+| Ollama (local models of the RAGs) | [ollama/docker/](ollama/docker/run.bash) | 11500 (localhost only) | `qwen3.6:35b-a3b-q8_0` (`department_office`), `qwen3.6:35b-a3b` (`high_level_unisa`), `qwen3:30b-a3b-instruct-2507-fp16` (`department`) |
 | RASA (dialogue) | [rasa/](rasa/README.md) | 5002, 5003, 5004 (one per bot) | the 3 bots of PepperDemo and their actions behind the proxy with the lock |
 | Orchestrator (models in memory) | [orchestrator/](orchestrator/README.md) | 8040 | loads on request one pair LLM + RAG at a time (RAG container, model of Ollama), unloading the previous one |
 
@@ -90,7 +90,8 @@ starts all of them, if the memory allows). From `ari_servers`:
 echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env   # once: key of the LLM server
 bash run_servers.bash build          # once: the images (Whisper, LLM, TTS, RASA, RAG with its conda environments, orchestrator)
 bash run_servers.bash start ollama && bash ollama/docker/run.bash pull \
-    && bash ollama/docker/run.bash pull qwen3.6:35b-a3b   # once: the models of the RAGs (38 + 23 GB)
+    && bash ollama/docker/run.bash pull qwen3.6:35b-a3b \
+    && bash ollama/docker/run.bash pull qwen3:30b-a3b-instruct-2507-fp16   # once: the models of the RAGs (38 + 23 + 61 GB)
 bash run_servers.bash start          # all the servers but the RAGs; already running ones are left as they are
 bash orchestrator/docker/run.bash load rag=high_level_unisa   # the pair of the demo: RAG + its model
 bash run_servers.bash status         # container state and /health of every server
@@ -128,6 +129,7 @@ code (`utils/`). Every RAG has its own conda environment (`rag/<name>/environmen
 |---|---|---|---|
 | [department_office](rag/department_office/README.md) | 8030 | resolutions of the Consiglio Didattico di Ingegneria Informatica (rag_unisa, M.S. D'Acunto) | Ollama, `qwen3.6:35b-a3b-q8_0` |
 | [high_level_unisa](rag/high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (high-level-unisa, M.S. Grimaldi, Iannone) | Ollama, `qwen3.6:35b-a3b` |
+| [department](rag/department/README.md) | 8032 | DIEM department: courses, people, research, calls, Erasmus (DIEM_RAG, course Generative AI) | Ollama, `qwen3:30b-a3b-instruct-2507-fp16` |
 
 ```bash
 bash rag/docker/run.bash test department_office "chi era presente nella seduta del 29/09/2025?"   # only retrieval
@@ -190,4 +192,4 @@ Shared folders (the workspace of every server, mounted as `/workspace` in the co
 |---|---|---|
 | `high_level_unisa` | general questions on UNISA (built by M.S. Grimaldi, optimized code by Iannone): `diem_vectorstore/` (Chroma), `anagrafe.json`, `registro_strutture.json`, `posizioni_parent.json` | [rag/high_level_unisa](rag/high_level_unisa/README.md) |
 | `department_office` | department resolutions (built by M.S. D'Acunto): `qdrant/`, `registers.json`, `chunks/` | [rag/department_office](rag/department_office/README.md) |
-| `department` | DIEM department (course Generative AI, local version), Chroma | to port |
+| `department` | DIEM department (course Generative AI, local version): `vectorstore/` (Chroma, 13 collections) | [rag/department](rag/department/README.md) |

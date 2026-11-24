@@ -32,7 +32,7 @@ POST /chat {"rag": "high_level_unisa"} ─► llm_server ─POST /retrieve {ques
 | Here | high-level-unisa (`versione_finale/`) |
 |---|---|
 | `high_level_unisa_rag/rag.py`, `HighLevelUnisaRag` | `DiemRAG.retrieve_and_generate` and `main_chain` of `pipeline.py`, step by step up to the context |
-| `utils/pipeline.py` | `pipeline.py`: relative imports, no `.env`, Ollama clients with `base_url` and `num_ctx`, the pieces of the LCEL chain kept on the instance; the rest unchanged |
+| `utils/pipeline.py` | `pipeline.py`: relative imports, no `.env`, Ollama clients with `base_url` and `num_ctx`, the pieces of the LCEL chain kept on the instance, the cache on disk of BM25 (below); the rest unchanged |
 | `utils/percorso_persona.py`, `percorso_struttura.py`, `modalita_elenco.py`, `verifica_nomi.py` | unchanged |
 | generation (`answer_prompt \| llm`) and history (`RunnableWithMessageHistory`) | LLM server: the same prompt (system, history, `INFORMAZIONI A TUA DISPOSIZIONE`), the history of the conversation of the LLM server |
 | `bot_telegram.py`, tests, judge, `costruzione/` (index, registries, scraping) | not ported: the knowledge base is built there and copied in `rag_knowledge_base/high_level_unisa` |
@@ -42,11 +42,20 @@ repair, page and neighbourhood expansion, chunk filter, summary and XProvence of
 below become the environment variables of `pipeline.py` (`config.py`, `ENVIRONMENT`); the others can still be set
 in the environment of the container.
 
+## Start and cache of BM25
+At the start the RAG loads BGE-M3 (12 s), the reranker (17 s) and, for each of the 4 collections, a BM25 retriever
+over all its chunks and the lowercase words used by the check of the names. Built from Chroma they take about 20 s
+(more with the disk cold: the index is 3.3 GB); the first start writes them in `rag_knowledge_base/high_level_unisa/cache/`
+(4 files, 950 MB) and the next ones read them in 2.5 s. Start measured on the Spark: 57 s building the cache, 40 s
+reading it, same retrieval. A file is valid while its collection has the same chunks (count, first and last id) and
+the same tokenization: after a new index it is built again by itself. `bm25_cache_dir: ""` disables the cache; to
+build it again, delete the folder.
+
 ## Configuration
 Section `rag_high_level_unisa` of `config/servers.yaml`, env `RAG_HIGH_LEVEL_UNISA_<FIELD>`: `kb_dir`,
 `vectorstore`, `generator_model`, `temperature`, `max_new_tokens`, `num_ctx`, `ollama_url`, `thinking`,
 `person_pipeline`, `struct_path`, `struct_attributes`, `list_mode`, `list_mode_top_n`, `name_check`, `rerank_top_n`
 (10), `bm25_k` (30), `context_order` (coda), `domain_guardrail_mode` (permissivo), `benchmark_date` (empty: today in
-the prompt). See [config.py](high_level_unisa_rag/config.py).
+the prompt), `bm25_cache_dir` (`cache`, relative to `kb_dir`; empty: no cache). See [config.py](high_level_unisa_rag/config.py).
 
 Without Docker, in the conda environment: `PYTHONPATH=$PWD/common:$PWD/rag/high_level_unisa python -m high_level_unisa_rag`.

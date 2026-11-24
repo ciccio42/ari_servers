@@ -9,6 +9,7 @@ touched. After the load, the clients use the pair through the LLM server as befo
 |---|---|---|---|
 | RAG (its model) | `{"rag": "high_level_unisa"}` | container `rag_high_level_unisa`, `qwen3.6:35b-a3b` in Ollama (with the `num_ctx` of the RAG) | `POST :8010/chat {"rag": "high_level_unisa", ...}` |
 | RAG | `{"rag": "department_office"}` | container `rag_department_office`, `qwen3.6:35b-a3b-q8_0` | `POST :8010/chat {"rag": "department_office", ...}` |
+| RAG | `{"rag": "department"}` | container `rag_department`, `qwen3:30b-a3b-instruct-2507-fp16` (61 GB) | `POST :8010/chat {"rag": "department", ...}` |
 | local LLM, no RAG | `{"llm": "ollama:qwen3.6:35b-a3b"}` | the model in Ollama, no RAG | `POST :8010/chat {"llm": "ollama:qwen3.6:35b-a3b", ...}` |
 | ChatGPT | `{"llm": "openai:gpt-4o"}` | nothing (the model is at OpenAI): every RAG and local model unloaded | `POST :8010/chat {...}` (default of the LLM server) |
 
@@ -28,9 +29,9 @@ A load: stop the other RAG containers, start Ollama if needed, start the RAG con
 (`loaded`), unload the other models of Ollama, load the model with `keep_alive` (2 h) and the `num_ctx` of the RAG,
 so the first question does not wait for it. One load at a time: a second `POST /load` waits for the first.
 
-Measured on the Spark (2026-11-24): `department_office` 2-8 s (container already built), `high_level_unisa` 141 s
-(BM25 and the common words of the check of the names are built at every start), a local LLM alone 7 s, ChatGPT
-0.6 s. Memory available: 106 GB with ChatGPT, 83 GB with qwen3.6:35b-a3b alone, 59-73 GB with a RAG, 19 GB with
+Measured on the Spark (2026-11-24): `department_office` 2-8 s, `high_level_unisa` about 45 s (BGE-M3 and reranker
+about 30 s, BM25 from its cache on disk 2.5 s, model 6 s; 141 s the first time, with the disk cold and without the
+cache), a local LLM alone 7 s, ChatGPT 0.6 s. Memory available: 106 GB with ChatGPT, 83 GB with qwen3.6:35b-a3b alone, 59-73 GB with a RAG, 19 GB with
 both RAGs loaded together.
 
 ## Run (Spark)

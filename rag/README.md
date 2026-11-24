@@ -24,6 +24,7 @@ one API: `POST /chat` of the LLM server with `"rag": "<name>"`.
 |---|---|---|---|
 | [department_office](department_office/README.md) | 8030 | resolutions of the Consiglio Didattico di Ingegneria Informatica (Qdrant) | `qwen3.6:35b-a3b-q8_0` (Ollama) |
 | [high_level_unisa](high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (Chroma, registries) | `qwen3.6:35b-a3b` (Ollama) |
+| [department](department/README.md) | 8032 | DIEM department: courses, people, research, calls, Erasmus (Chroma, 13 collections) | `qwen3:30b-a3b-instruct-2507-fp16` (Ollama) |
 
 ## API of a RAG server
 | | |
