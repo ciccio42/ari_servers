@@ -9,6 +9,11 @@ one API: `POST /chat` of the LLM server with `"rag": "<name>"`.
                                                          │                                  Qdrant, BGE-M3, reranker,
                                                          │                                  registers (planner: Ollama)
                                                          └── backend ollama ──► ollama_server :11500 (qwen3.6:35b-a3b-q8_0)
+
+ client ──POST /chat {"rag": "high_level_unisa"}──► llm_server :8010 ──POST /retrieve──► rag_high_level_unisa :8031
+                                                         │                                  Chroma, BGE-M3, BM25 ──► vllm_reranker :8002
+                                                         │                                  rewriting, list mode ──► vllm_server :8001
+                                                         └── backend vllm ──► vllm_server :8001 (qwen3.6-nvfp4)
 ```
 
 | Path | Content |
@@ -18,18 +23,19 @@ one API: `POST /chat` of the LLM server with `"rag": "<name>"`.
 | `<name>/<name>_rag/` | the package of the RAG: `server.py` (HTTP server), `rag.py` (class of the RAG), `config.py`, `utils/` (code of the RAG) |
 | `docker/` | image `ari_rag_server` (Ubuntu + Miniforge, one conda environment per RAG), `entrypoint.bash`, `run.bash` |
 | `../ollama/docker/run.bash` | Ollama in Docker, the local models of the RAGs, in `models/ollama` |
+| `../vllm/docker/run.bash` | vLLM in Docker: the engine (`vllm_server`, `qwen3.6-nvfp4`) and the reranker (`vllm_reranker`) of high_level_unisa, models in `models/vllm` |
 | `../rag_knowledge_base/<name>` | knowledge bases (indexes, chunks), not versioned |
 
 | RAG | Port | Knowledge base | Model of the answers |
 |---|---|---|---|
 | [department_office](department_office/README.md) | 8030 | resolutions of the Consiglio Didattico di Ingegneria Informatica (Qdrant) | `qwen3.6:35b-a3b-q8_0` (Ollama) |
-| [high_level_unisa](high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (Chroma, registries) | `qwen3.6:35b-a3b` (Ollama) |
+| [high_level_unisa](high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (Chroma, registries) | `qwen3.6-nvfp4` (vLLM 0.31 with MTP); service `vllm_reranker` |
 | [department](department/README.md) | 8032 | DIEM department: courses, people, research, calls, Erasmus (Chroma, 13 collections) | `qwen3:30b-a3b-instruct-2507-fp16` (Ollama) |
 
 ## API of a RAG server
 | | |
 |---|---|
-| `GET /health` | `{"status": "ok", "service": "rag_<name>", "loaded", "generator", "rag", "kb_dir", ...}` |
+| `GET /health` | `{"status": "ok", "service": "rag_<name>", "loaded", "generator", "rag", "kb_dir", "services", ...}`: `services` lists the other servers the RAG needs (e.g. `["vllm_reranker"]`), started by the orchestrator with the pair |
 | `POST /retrieve` | `{"question", "history"}` → `{"rag", "chunks": [{"text", "source", "score"}], "system", "user", "answer", "drop_patterns", "retrieval_id", "generator": {"backend", "model", "temperature", "max_new_tokens", "options"}, "queue_s", "retrieve_s", ...}` |
 | `POST /postprocess` | `{"retrieval_id", "answer"}` → `{"text", ...}`: the answer corrected by the RAG (only when `/retrieve` gave a `retrieval_id`) |
 
@@ -46,19 +52,27 @@ during the generation, after the retrieval: neither waits for the other.
 ## Run (Spark)
 From `ari_servers`:
 ```bash
+# once: the models of the generators
 bash ollama/docker/run.bash start                 # Ollama, container ollama_server (127.0.0.1:11500)
-bash ollama/docker/run.bash pull                  # once: qwen3.6:35b-a3b-q8_0, about 38 GB in models/ollama
+bash ollama/docker/run.bash pull                  # qwen3.6:35b-a3b-q8_0 (department_office), 38 GB in models/ollama
+bash ollama/docker/run.bash pull qwen3:30b-a3b-instruct-2507-fp16   # department, 61 GB
+docker pull vllm/vllm-openai:v0.31.0
+bash vllm/docker/run.bash download engine         # high_level_unisa: Qwen3.6-35B-A3B-NVFP4, 22 GB in models/vllm
 bash rag/docker/run.bash build                    # once: image ari_rag_server, every rag/*/environment.yml
-bash rag/docker/run.bash start                    # the RAGs of rag_servers (servers.yaml), container rag_<name>
-bash rag/docker/run.bash status
-bash rag/docker/run.bash test department_office "chi era presente nella seduta del 29/09/2025?"   # only retrieval
-bash rag/docker/run.bash logs department_office
-bash run_servers.bash restart llm                 # the LLM server reads llm.rag_servers at the start
+
+# one pair at a time, with the orchestrator: the RAG container, its generator and its services
+bash orchestrator/docker/run.bash load rag=high_level_unisa
+bash orchestrator/docker/run.bash status
+bash rag/docker/run.bash test high_level_unisa "chi è il rettore?"   # only retrieval
+bash rag/docker/run.bash logs high_level_unisa
 curl -X POST -H 'Content-Type: application/json' localhost:8010/chat \
-  -d '{"conversation_id": "test", "message": "quali studenti hanno chiesto il passaggio di corso nel 2025?", "rag": "department_office"}'
+  -d '{"conversation_id": "test", "message": "chi è il rettore?", "rag": "high_level_unisa"}'
 ```
-`run_servers.bash` starts them too, in the order whisper, ollama, llm, tts, RAGs, rasa (`bash run_servers.bash start
-ollama rag`). The first start of a RAG downloads its embedding model and reranker in `models/rag/.hf_cache`.
+By hand, without the orchestrator (tests): `bash rag/docker/run.bash start|stop <name>`, `bash vllm/docker/run.bash
+start|stop engine|reranker`; `bash run_servers.bash start rag` starts every RAG of `rag_servers` (if the memory
+allows). After a change of `llm.rag_servers`: `bash run_servers.bash restart llm`. The first start of a RAG downloads
+its embedding model (and its reranker, when local) in `models/rag/.hf_cache`; the first start of the vLLM engine
+compiles (minutes; caches in the Docker volume `ari-vllm-cache-031`).
 
 ## A new RAG
 The full checklist (analysis of the original repository, porting, model, tests, docs) is in

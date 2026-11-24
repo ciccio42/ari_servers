@@ -5,8 +5,9 @@ from .echo import EchoBackend
 from .ollama import OllamaBackend
 from .openai_chat import ChatGPTBackend
 from .transformers_local import TransformersBackend
+from .vllm import VllmBackend
 
-BACKENDS = {backend.name: backend for backend in (ChatGPTBackend, OllamaBackend, TransformersBackend, EchoBackend)}
+BACKENDS = {backend.name: backend for backend in (ChatGPTBackend, OllamaBackend, VllmBackend, TransformersBackend, EchoBackend)}
 
 
 def create(cfg, options: dict = None) -> ChatBackend:

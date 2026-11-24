@@ -1,6 +1,4 @@
-# Copied unchanged from versione_finale/percorso_struttura.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa).
-# percorso_struttura.py - versione finale (14/10/2026): era struttura_lookup.py (579da739). Cambiano solo il
-# percorso predefinito del registro, ora dati/registro_strutture.json, e i nomi dei moduli citati nei commenti.
+# Copied unchanged from struttura_lookup.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa), the module of the final configuration (doc/resoconto_attivita_5.pdf, test_baseline/sistema.sh).
 # -*- coding: utf-8 -*-
 """Riconoscitore deterministico e schede del percorso «struttura» (25/09/2026).
 
@@ -8,7 +6,7 @@ Dal 07/10/2026 anche le domande su un dato di UNA struttura: capo ed email di un
 della Direzione Generale, distretto di un dipartimento (si veda «attributi di una struttura» piu' sotto).
 Con Registro(..., attributi=False) il riconoscitore e' quello del 25/09/2026.
 
-Gemello di percorso_persona.py: nessuna chiamata a un modello. Tre funzioni:
+Gemello di anagrafe_lookup.py: nessuna chiamata a un modello. Tre funzioni:
   - `Registro.riconosci(domanda)` dice se la domanda chiede di ELENCARE o CONTARE i componenti di
     una struttura del registro, e quale operazione;
   - `Registro.scheda(esito)` scrive il testo da passare al modello, con i conteggi gia' fatti;
@@ -36,7 +34,7 @@ import re
 import unicodedata
 from pathlib import Path
 
-REGISTRO = Path(__file__).resolve().parent / "dati" / "registro_strutture.json"
+REGISTRO = Path.home() / "diem_rag_spike" / "registro_strutture.json"
 VUOTE = {"di", "del", "della", "dello", "dei", "degli", "delle", "dell", "e", "ed", "per", "il", "la",
          "lo", "l", "i", "gli", "le", "a", "al", "alla", "all", "in", "d"}
 ROMANI = {"i": "I", "ii": "II", "iii": "III", "iv": "IV", "v": "V", "vi": "VI", "vii": "VII"}
@@ -113,7 +111,7 @@ class Registro:
         self.alias = sorted(((parole(a), i) for i, u in self.uffici.items() for a in u.get("alias", []) if a),
                             key=lambda x: -len(x[0]))
         self.alias = [(a, i) for a, i in self.alias if len(a) >= 2]
-        # attributi di una struttura: spenti, nulla cambia rispetto a percorso_struttura.py
+        # attributi di una struttura: spenti, nulla cambia rispetto a struttura_lookup.py
         self.attributi = attributi
         # i dipartimenti dei distretti, per nome (senza sigla, parti fra virgolette o parentesi e la parola
         # «dipartimento») e per sigla; i nomi piu' lunghi prima, perche' vinca il piu' specifico

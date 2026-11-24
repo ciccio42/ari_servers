@@ -16,6 +16,7 @@ PepperDemo; a local model is another implementation of the same abstract class.
 | `llm_server/backends/openai_chat.py` | `ChatGPTBackend` (`openai`): the class ChatGpt of the actions, the **reference implementation**. Text and images with Chat Completions, RAG with the Responses API and file_search, new attempt after server errors |
 | `llm_server/backends/transformers_local.py` | `TransformersBackend` (`transformers`): local model on the GPU. TODO: port `chatmodel.py` of PepperDemo |
 | `llm_server/backends/ollama.py` | `OllamaBackend` (`ollama`): a model of Ollama (`ollama/docker/run.bash`), native API with `num_ctx`; the generator of the RAG servers |
+| `llm_server/backends/vllm.py` | `VllmBackend` (`vllm`): a model served by vLLM (`vllm/docker/run.bash`), OpenAI API `/v1/chat/completions`, `chat_template_kwargs.enable_thinking`; the generator of high_level_unisa (`qwen3.6-nvfp4`) |
 | `llm_server/backends/echo.py` | `EchoBackend` (`echo`): answers with the request, for the tests without key or GPU |
 | `llm_server/backends/__init__.py` | `BACKENDS`: the registry, `llm.backend` picks one |
 | `llm_server/conversation.py` | history of every conversation (window of `history_length` messages) |
@@ -64,6 +65,7 @@ PepperDemo all the users shared one). The history is in memory: a restart of the
 | `config/servers.yaml`, section `llm` | `backend` (`openai`, `transformers`, `echo`), `model` (`gpt-4o`), `temperature`, `timeout`, `system_prompt_file`, `max_char`, `history_length`, **`rag`** (default of the requests), the retriever of the local backends |
 | `config/servers.yaml`, `llm.rag_servers`, `llm.rag_timeout` | the RAG servers (`<name>=<url>, ...`) and the seconds of their retrieval |
 | `config/servers.yaml`, section `ollama` | backend `ollama`: `url`, `num_ctx`, `keep_alive`, `think` (a RAG server can give its own) |
+| `config/servers.yaml`, section `vllm` | backend `vllm`: `url`, `enable_thinking` (a RAG server can give its own); the other keys are the settings of the vLLM engine, read by `vllm/docker/run.bash` |
 | `config/servers.yaml`, section `openai` | parameters of ChatGPT: `vector_store_id` and the file_search settings of the RAG, `reasoning_effort`, `rag_model`, `max_retries`... |
 | `config/secrets.env` (not versioned) | `OPENAI_API_KEY=sk-...` |
 | environment | `LLM_<FIELD>` and `OPENAI_<FIELD>` override the YAML file, e.g. `LLM_RAG=true`, `LLM_BACKEND=echo` |
@@ -77,7 +79,8 @@ PepperDemo. The behaviour trees of ARI (`LLMNode` of `ari_control`, with `LLM_RA
 ## RAG servers
 `"rag": "<name>"` (a name of `llm.rag_servers`, e.g. `department_office=http://localhost:8030`) asks the RAG server
 `<name>` for the context of the question (`POST /retrieve`, see [rag/README.md](../rag/README.md)), then answers with
-the system prompt and the **model of that RAG** (its `generator`: e.g. backend `ollama`, `qwen3.6:35b-a3b-q8_0`), not
+the system prompt and the **model of that RAG** (its `generator`: e.g. backend `ollama`, `qwen3.6:35b-a3b-q8_0`, or
+backend `vllm`, `qwen3.6-nvfp4` for high_level_unisa), not
 with `llm.backend`. The backend of a RAG is created at its first request and kept. The history of the conversation
 holds the questions, not the documents. The reply has also `rag_info` (filters, calls of the registers, sources);
 `rag_s` is the time of the RAG server, its queue included. `"rag": true/false` work as before.

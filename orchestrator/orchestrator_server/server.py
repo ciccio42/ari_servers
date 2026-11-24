@@ -2,22 +2,25 @@
 and unloads the previous one, so only one pair at a time takes the memory of the GPU.
 
 A pair is an LLM, a RAG or both:
-  llm  "<backend>:<model>" of the LLM server: "ollama:qwen3.6:35b-a3b" (loaded in Ollama), "openai:gpt-4o" (nothing to
-       load: the model runs at OpenAI)
+  llm  "<backend>:<model>" of the LLM server: "ollama:qwen3.6:35b-a3b" (loaded in Ollama), "vllm:qwen3.6-nvfp4" (the
+       container of vLLM, vllm/docker/run.bash), "openai:gpt-4o" (nothing to load: the model runs at OpenAI)
   rag  the name of a RAG server (rag/<name>): its container is started; without "llm" the pair uses the generator of
-       the RAG (its /health), which is loaded in Ollama with the options of the RAG (num_ctx)
+       the RAG (its /health), which is loaded in Ollama with the options of the RAG (num_ctx) or started on vLLM; the
+       other servers the RAG declares in "services" of its /health (e.g. vllm_reranker) are started too
 Loading a pair: stop the RAG containers of the other RAGs, unload the other models of Ollama, start the RAG container
-and wait for its /health, load the model in Ollama (keep_alive). Whisper, TTS, RASA and the LLM server are not
+and wait for its /health, load the model in Ollama (keep_alive) or start vLLM and wait until it serves the model; vLLM
+is stopped for every pair that does not use it. Whisper, TTS, RASA and the LLM server are not
 touched. After the load the clients use the pair through the LLM server: POST /chat with "rag": "<rag>", or with
 "llm": "<llm>" for a pair without RAG.
 
   GET  /health   {"status": "ok", "service": "orchestrator", "state", "active"}
   GET  /status   {"state": "idle|loading|ready|failed", "active": {"llm", "rag"}, "requested", "error", "load_s",
-                  "ollama": [models in memory], "rags": {name: {"running", "ready"}}, "llm_server": ok}
+                  "ollama": [models in memory], "vllm": [models served] or null, "rags": {name: {"running", "ready"}},
+                  "llm_server": ok}
   POST /load     {"llm": "...", "rag": "...", "wait": true}: loads the pair. wait=false replies at once (state
                  loading, then GET /status). The same pair already ready: nothing to do. One load at a time: a
                  second request waits for the first
-  POST /unload   {}: stops every RAG container and unloads every model of Ollama
+  POST /unload   {}: stops every RAG container, vLLM and the services, unloads every model of Ollama
 Errors: 400 bad request (unknown RAG, backend...), 409 a load is running and wait=false, 502 the load failed.
 
 The containers are started and stopped with the run.bash of the servers (rag/docker/run.bash,
@@ -99,6 +102,79 @@ class Orchestrator:
             return http_json(f"http://localhost:{self.rag_port(name)}/health", timeout=3)
         except (OSError, ValueError):
             return None
+
+    def vllm_url(self) -> str:
+        return str((read_config_file().get("vllm") or {}).get("url", "http://localhost:8001")).rstrip("/")
+
+    def vllm_models(self):
+        """Models served by vLLM, None if it does not answer (container stopped or still starting)."""
+        try:
+            return [m["id"] for m in http_json(f"{self.vllm_url()}/v1/models").get("data", [])]
+        except (OSError, ValueError, KeyError):
+            return None
+
+    def stop_vllm(self):
+        if self.container_running("vllm_server") or self.vllm_models() is not None:
+            log.info("stopping vLLM")
+            self.script("vllm/docker/run.bash", "stop", "engine")
+
+    # services a RAG can declare in its /health ("services"): name -> (run.bash, its service, container, address)
+    SERVICES = {"vllm_reranker": ("vllm/docker/run.bash", "reranker", "vllm_reranker", "vllm_reranker")}
+
+    def service_url(self, name: str) -> str:
+        section = self.SERVICES[name][3]
+        return str((read_config_file().get(section) or {}).get("url", "http://localhost:8002")).rstrip("/")
+
+    def service_ready(self, name: str) -> bool:
+        try:
+            return bool(http_json(f"{self.service_url(name)}/v1/models").get("data"))
+        except (OSError, ValueError):
+            return False
+
+    def stop_services(self, keep=()):
+        for name, (script, service, container, _) in self.SERVICES.items():
+            if name not in keep and self.container_running(container):
+                log.info("stopping %s", name)
+                self.script(script, "stop", service)
+
+    def start_service(self, name: str):
+        if name not in self.SERVICES:
+            raise LoadError(f"unknown service {name} declared by the RAG: {sorted(self.SERVICES)}")
+        script, service, container, _ = self.SERVICES[name]
+        if self.service_ready(name):
+            return
+        if not self.container_running(container):
+            log.info("starting %s", name)
+            subprocess.run(["docker", "rm", "-f", container], capture_output=True)  # a stopped container
+            self.script(script, "start", service)
+        start = time.monotonic()
+        while time.monotonic() - start < self.cfg.vllm_timeout:
+            if self.service_ready(name):
+                return
+            if not self.container_running(container):
+                raise LoadError(f"{container} stopped while starting: bash {script} logs {service}")
+            time.sleep(3)
+        raise LoadError(f"{name} not ready after {self.cfg.vllm_timeout:.0f} s: bash {script} logs {service}")
+
+    def start_vllm(self, model: str):
+        """Starts vLLM (if needed) and waits until it serves the model: minutes (compile caches in ari-vllm-cache)."""
+        if model in (self.vllm_models() or []):
+            return
+        if not self.container_running("vllm_server"):
+            log.info("starting vLLM for %s", model)
+            subprocess.run(["docker", "rm", "-f", "vllm_server"], capture_output=True)  # a stopped container
+            self.script("vllm/docker/run.bash", "start", "engine")
+        start = time.monotonic()
+        while time.monotonic() - start < self.cfg.vllm_timeout:
+            served = self.vllm_models()
+            if served is not None:
+                if model in served:
+                    return
+                raise LoadError(f"vLLM serves {served}, not {model}: served_model in the section vllm of servers.yaml")
+            if not self.container_running("vllm_server"):
+                raise LoadError("vllm_server stopped while starting: bash vllm/docker/run.bash logs")
+            time.sleep(5)
+        raise LoadError(f"vLLM not ready after {self.cfg.vllm_timeout:.0f} s: bash vllm/docker/run.bash logs")
 
     def ollama_models(self):
         """Models in memory in Ollama, None if it does not answer."""
@@ -184,24 +260,36 @@ class Orchestrator:
             start = time.monotonic()
             mark("orchestrator", "load", llm=llm, rag=rag)
             try:
-                options = {}
-                # first free the memory: the other RAGs and the other models
+                options, services = {}, []
+                # first free the memory: the other RAGs, and vLLM when the pair does not use it
                 self.stop_rags(keep=rag)
-                if rag or llm.startswith("ollama:"):
-                    self.ensure_ollama()
-                keep = llm.partition(":")[2] if llm.startswith("ollama:") else ""
+                if not rag:
+                    self.stop_services()
+                if llm and not llm.startswith("vllm:"):
+                    self.stop_vllm()
                 if rag:
                     health = self.start_rag(rag)
+                    services = list(health.get("services") or [])
+                    self.stop_services(keep=services)
                     generator = health.get("generator") or {}
                     pair_llm = f"{generator.get('backend')}:{generator.get('model')}"
                     if llm and llm != pair_llm:
                         raise LoadError(f"RAG {rag} answers with {pair_llm}, not {llm}: give only rag, or change "
                                         f"generator_model in rag_{rag} of servers.yaml")
                     llm, options = pair_llm, generator.get("options") or {}
-                    keep = llm.partition(":")[2] if llm.startswith("ollama:") else ""
-                self.unload_models(keep=keep)
-                if llm.startswith("ollama:"):
-                    self.load_model(keep, options)
+                backend, _, model = llm.partition(":")
+                if backend != "vllm":
+                    self.stop_vllm()
+                if backend == "ollama":
+                    self.ensure_ollama()
+                if self.ollama_models() is not None:
+                    self.unload_models(keep=model if backend == "ollama" else "")
+                if backend == "ollama":
+                    self.load_model(model, options)
+                elif backend == "vllm":
+                    self.start_vllm(model)
+                for name in services:
+                    self.start_service(name)
             except LoadError as e:
                 with self._state_lock:
                     self.state, self.error, self.load_s = "failed", str(e), round(time.monotonic() - start, 1)
@@ -216,13 +304,22 @@ class Orchestrator:
     def _still_loaded(self) -> bool:
         """The active pair is still in memory (Ollama unloads a model after keep_alive, a container can stop)."""
         llm, rag = self.active["llm"], self.active["rag"]
-        if rag and not (self.rag_health(rag) or {}).get("loaded"):
-            return False
-        return not llm.startswith("ollama:") or llm.partition(":")[2] in (self.ollama_models() or [])
+        if rag:
+            health = self.rag_health(rag) or {}
+            if not health.get("loaded") or not all(self.service_ready(n) for n in health.get("services") or []):
+                return False
+        backend, _, model = llm.partition(":")
+        if backend == "ollama":
+            return model in (self.ollama_models() or [])
+        if backend == "vllm":
+            return model in (self.vllm_models() or [])
+        return True
 
     def unload(self):
         with self._load_lock:
             self.stop_rags()
+            self.stop_services()
+            self.stop_vllm()
             if self.ollama_models() is not None:
                 self.unload_models()
             with self._state_lock:
@@ -240,7 +337,9 @@ class Orchestrator:
             llm_server = False
         with self._state_lock:
             return {"state": self.state, "active": dict(self.active), "requested": self.requested, "error": self.error,
-                    "load_s": self.load_s, "ollama": self.ollama_models(), "rags": rags, "llm_server": llm_server}
+                    "load_s": self.load_s, "ollama": self.ollama_models(), "vllm": self.vllm_models(),
+                    "services": {name: self.service_ready(name) for name in self.SERVICES}, "rags": rags,
+                    "llm_server": llm_server}
 
 
 class OrchestratorService(HTTPService):

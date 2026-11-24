@@ -67,6 +67,40 @@ ollama:
   keep_alive: 2h
   think: false
 
+# vLLM engine (vllm/docker/run.bash, container vllm_server): the model of high_level_unisa with the final
+# configuration of high-level-unisa (doc/resoconto_attivita_5.pdf, test_baseline/sistema.sh), started and stopped by
+# the orchestrator. Backend vllm of the LLM server. Env VLLM_<FIELD>
+vllm:
+  url: http://localhost:8001
+  image: vllm/vllm-openai:v0.31.0                # 0.31: stable with the MTP in the measures of the report
+  cache_volume: ari-vllm-cache-031               # compile caches (Docker volume)
+  model: nvidia/Qwen3.6-35B-A3B-NVFP4            # Hugging Face, downloaded in models/vllm (run.bash download)
+  revision: 1355db6a052410cfd62085d94b58866fd0f2c3c5
+  served_model: qwen3.6-nvfp4
+  gpu_memory_utilization: 0.40                   # of the WHOLE memory (CPU and GPU): about 49 GB; 0.60 no faster
+  max_model_len: 131072
+  max_num_seqs: 16                               # requests together: same throughput as 32, 95th percentile -18%
+  max_num_batched_tokens: 8192                   # tokens per step: 4096 and 16384 give no more throughput
+  speculative_config: {"method": "mtp", "num_speculative_tokens": 3, "moe_backend": "triton"}   # MTP: -19% per question
+  prefix_caching: true
+  reserve_gb: 26                                 # start needs gpu_memory_utilization x total + reserve_gb available
+  enable_thinking: false
+
+# vLLM reranker (vllm/docker/run.bash ... reranker, container vllm_reranker): bge-reranker-v2-m3 for high_level_unisa
+# (vllm-reranker-031-kv05g of the report: vLLM 0.31, fixed cache of 0.5 GB, about 6.2 GB in all)
+vllm_reranker:
+  url: http://localhost:8002                     # the RAG calls <url>/rerank
+  image: vllm/vllm-openai:v0.31.0
+  cache_volume: ari-vllm-cache-031
+  model: BAAI/bge-reranker-v2-m3                 # in models/rag/.hf_cache (downloaded by the RAG servers)
+  hf_home: models/rag/.hf_cache
+  served_model: bge-reranker-v2-m3
+  gpu_memory_utilization: 0.05
+  kv_cache_memory_bytes: 536870912
+  max_model_len: 8192
+  max_num_seqs: 256
+  min_free_gb: 20
+
 # RAG servers (rag/<name>, container rag_<name>, image ari_rag_server). They are started by the orchestrator, one at a
 # time with its model; `bash run_servers.bash start rag` starts all of these instead (memory: one qwen3.6 each)
 rag_servers: [department_office, high_level_unisa, department]
@@ -116,12 +150,20 @@ rag_department_office:
 rag_high_level_unisa:
   port: 8031
   kb_dir: rag_knowledge_base/high_level_unisa    # diem_vectorstore/, anagrafe.json, registro_strutture.json
-  generator_backend: ollama
-  generator_model: qwen3.6:35b-a3b               # the model of the evaluations of high-level-unisa
+  # vLLM with the settings of avvia_vllm.sh of high-level-unisa (section vllm): also the rewriting and the list mode.
+  # ollama / qwen3.6:35b-a3b: the model of the evaluations of versione_finale (Q4), on Ollama
+  generator_backend: vllm
+  generator_model: qwen3.6-nvfp4
   temperature: 0.0
   max_new_tokens: 4096
-  num_ctx: 32768                                 # the longest prompt measured: 17953 tokens
+  num_ctx: 32768                                 # Ollama only; the longest prompt measured: 17953 tokens
   ollama_url: http://localhost:11500
+  vllm_url: http://localhost:8001
+  # retrieval of the final configuration (PIPELINE_ENV of sistema.sh)
+  reranker_backend: vllm                         # vllm_reranker above; locale: CrossEncoder in the RAG
+  reranker_url: http://localhost:8002/rerank
+  bm25_engine: sparso
+  rerank_candidates: 35
 
 # <RASA_PORT>: dialogue. The clients reach this proxy on the ports of today, one per bot; it forwards to the bot
 # (rasa run --enable-api, internal port) taking the execution lock. Env RASA_<FIELD>

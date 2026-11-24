@@ -1,15 +1,17 @@
-# Copied from versione_finale/pipeline.py of the RAG repository high-level-unisa (DiemRAG) for ari_servers:
-# relative imports, no .env (the paths, the model and the switches come from the environment set by
-# ../rag.py from config/servers.yaml), the Ollama clients with base_url and num_ctx, and the pieces of the
-# LCEL chain kept on the instance (_build_pipeline, end) so that ../rag.py runs the retrieval without the
-# generation, which is done by the LLM server, and the cache on disk of BM25 and of the lowercase words
-# (BM25_CACHE_DIR, _retrieve_vectorstore). Everything else is unchanged.
-# pipeline.py - la pipeline della spike nella versione finale (14/10/2026). E' la pipeline del bot,
-# diem_RAG_routered.py (87107e22): soluzione ibrida per gli elenchi, dati delle singole strutture, percorso persona
-# corretto, verifica dei nomi. Cambiano solo percorsi e nomi dei moduli: l'indice resta
-# ~/diem_rag_spike/diem_vectorstore (VECTORSTORE_DIR per usarne un altro), anagrafe, registro e posizioni stanno in
-# dati/, il .env e' quello di ~/diem_rag_spike; anagrafe_lookup -> percorso_persona, struttura_lookup ->
-# percorso_struttura. Gli interruttori delle prove non adottate restano spenti per difetto, come nel bot.
+# Copied from test_baseline/diem_RAG_routered_prova_elenchi_ottimizzazioni_reranker_cronologia.py of the RAG
+# repository high-level-unisa: the pipeline of the final configuration (doc/resoconto_attivita_5.pdf, sistema.sh),
+# for ari_servers: relative imports, no .env (paths, models and switches from the environment set by ../rag.py
+# from config/servers.yaml), the Ollama clients with base_url and num_ctx (generator_backend ollama only), the
+# pieces of the LCEL chain kept on the instance (_build_pipeline, end) so that ../rag.py runs the retrieval
+# without the generation, which is done by the LLM server. Everything else is unchanged.
+# diem_RAG_routered_prova_elenchi_ottimizzazioni_reranker_cronologia.py (10/11/2026): COPIA di
+# diem_RAG_routered_prova_elenchi_ottimizzazioni_reranker.py (invariato) con una sola differenza: la riscrittura
+# della domanda avviene PRIMA dei percorsi persona e struttura, che ricevono la domanda riscritta. Senza
+# cronologia la riscrittura e' saltata e il comportamento e' identico all'originale. Creata da
+# crea_pipeline_cronologia_1011.py.
+# diem_RAG_routered_prova_elenchi_ottimizzazioni_reranker.py (08/10/2026): COPIA DI PROVA di diem_RAG_routered_prova_elenchi.py con le varianti piu' leggere del recupero
+# (ottimizzazioni_recupero.py, da tenere accanto): RERANKER_FP16, RERANKER_MAX_LEN, RERANKER_BACKEND=vllm,
+# BM25_MOTORE=sparso, VECTOR_K, RERANK_CANDIDATI (13/10/2026), RERANK_CANDIDATI_ELENCHI (14/10/2026). Senza variabili si comporta come diem_RAG_routered_prova_elenchi.py. Il file originale non e' toccato.
 from datetime import datetime
 import json
 import os
@@ -18,6 +20,7 @@ import time
 from pathlib import Path
 import logging
 from typing import Tuple, List, Dict, Any
+import threading
 
 import numpy as np
 from langchain_chroma import Chroma
@@ -33,8 +36,15 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.retrievers import BM25Retriever
 from langchain_classic.retrievers import EnsembleRetriever
 import chromadb
-from collections import Counter
+from collections import Counter, OrderedDict
 from .verifica_nomi import conta_minuscole, parole_comuni, verifica_nomi
+# Varianti piu' leggere di reranker e BM25 (08/10/2026, ottimizzazioni_recupero.py), tutte spente per difetto. Se il
+# modulo non c'e' (copia della pipeline senza il file accanto) si resta al comportamento di prima.
+try:
+    from .ottimizzazioni_recupero import BM25_MOTORE, crea_bm25, crea_reranker, descrizione as _descrizione_recupero
+except ImportError:
+    BM25_MOTORE, crea_bm25, crea_reranker, _descrizione_recupero = "langchain", None, None, None
+from .modalita_elenco import classifica
 
 # Configure the system logger for event tracking 
 logging.basicConfig(
@@ -53,10 +63,9 @@ logging.getLogger("chromadb").setLevel(logging.WARNING)
 
 # Define absolute paths for the persistent vector storage infrastructure
 BASE_DIR = Path(__file__).resolve().parent
-# la cartella del progetto (~/diem_rag_spike): l'indice e il .env restano li'
-PROGETTO_DIR = BASE_DIR.parent
-# VECTORSTORE_DIR: cartella dell'indice, relativa a PROGETTO_DIR o assoluta; senza la variabile e' quella in uso
-PERSIST_DIRECTORY = PROGETTO_DIR / os.getenv("VECTORSTORE_DIR", "diem_vectorstore")
+# VECTORSTORE_DIR (prova del 01/10/2026): cartella dell'indice, relativa a BASE_DIR o assoluta;
+# senza la variabile e' quella in uso. Serve a misurare su una COPIA dell'indice.
+PERSIST_DIRECTORY = BASE_DIR / os.getenv("VECTORSTORE_DIR", "diem_vectorstore")
 
 # Defines the semantic domain for each vector collection to condition the routing logic
 ROUTER_COLLECTION_DESCRIPTIONS = """
@@ -99,14 +108,22 @@ HF_MODEL_ID = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 # esecuzione lunga; se non c'è più, tornare a llama3.1:8b (validato e comunque disponibile).
 LLM_BACKEND = os.getenv("LLM_BACKEND", "ollama")
 OLLAMA_MODEL_ID = os.getenv("OLLAMA_MODEL_ID", "qwen3.6:35b-a3b")
-# ari_servers: the Ollama server of ollama/docker/run.bash, and the same num_ctx for every request of the model
-# (a different num_ctx makes Ollama load the model again)
+# ari_servers: the Ollama server of ollama/docker/run.bash (generator_backend ollama)
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11500")
 # Il modello supporta il "thinking" (ragionamento nascosto prima della risposta finale),
 # non toccato finora - resta al default di Ollama per questo tag (verosimilmente attivo).
 # Configurabile per testare l'impatto sui tempi di risposta senza cambiare il default
 # usato per tutti i test già documentati.
 OLLAMA_ENABLE_THINKING = os.getenv("OLLAMA_ENABLE_THINKING", "true").lower() == "true" # AV: Ho notato che ho dovuto mettere a false il valore letto di default se no partiva il reasoning
+
+# Backend vLLM (dal 07/10/2026): LLM_BACKEND=vllm manda le richieste al server vLLM nel container
+# Docker "vllm-rag" (vedi avvia_vllm.sh), con API compatibile OpenAI. Stesso modello di partenza
+# (Qwen3.6-35B-A3B, quantizzazione NVFP4 invece della Q4 di Ollama). Il thinking segue la stessa
+# variabile OLLAMA_ENABLE_THINKING, cosi' i due backend si confrontano a parita' di impostazioni.
+# Con vLLM num_ctx/num_batch non servono: il contesto massimo e' quello del server (--max-model-len)
+# e le richieste piu' lunghe vengono rifiutate con un errore, non tagliate in silenzio.
+VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", "http://127.0.0.1:8001/v1")
+VLLM_MODEL_ID = os.getenv("VLLM_MODEL_ID", "qwen3.6-nvfp4")
 
 # Contextual compression post-rerank (una delle 5 aggiunte di qualità dell'architettura v2,
 # anticipata qui dietro flag, disattivata di default per non introdurre rischio prima della
@@ -199,6 +216,24 @@ BM25_NORMALIZE_TOKENS = os.getenv("BM25_NORMALIZE_TOKENS", "true").lower() in ("
 # significativa (McNemar p=0,30) e il guadagno sulla categoria dei delegati regge in entrambi i
 # casi; con 30 sparisce anche la regressione sui professori emeriti. Da qui la scelta di 30.
 BM25_K = int(os.getenv("BM25_K", "30"))
+# Profondita' del ramo vettoriale per collezione (08/10/2026: prima fisso a 20 nel codice, ora regolabile per provare
+# meno candidati al reranker; il default resta 20).
+VECTOR_K = int(os.getenv("VECTOR_K", "20"))
+# Candidati passati al reranker (13/10/2026): per ogni collezione si tengono solo i primi RERANK_CANDIDATI della lista
+# fusa (ricerca vettoriale + BM25, nell'ordine della reciprocal rank fusion), invece di tutti (~46 per collezione,
+# ~185 a domanda). 0 (predefinito) = tutti, come prima.
+# 14/10/2026: per le domande di ELENCO (modalita' elenco) vale invece RERANK_CANDIDATI_ELENCHI, predefinito 0 = tutti:
+# un elenco sparso su molti documenti ha bisogno anche dei candidati "di coda", e alla risposta ne passano 20, non 10.
+RERANK_CANDIDATI = int(os.getenv("RERANK_CANDIDATI", "0") or 0)
+RERANK_CANDIDATI_ELENCHI = int(os.getenv("RERANK_CANDIDATI_ELENCHI", "0") or 0)
+
+
+def _candidati(retriever, testo, limite=None):
+    """i documenti di una collezione per una ricerca, limitati ai primi 'limite' (RERANK_CANDIDATI se non indicato;
+    0 = tutti)"""
+    limite = RERANK_CANDIDATI if limite is None else limite
+    docs = retriever.invoke(testo)
+    return docs[:limite] if limite > 0 else docs
 
 # Modalita' del filtro di dominio.
 #   "permissivo" (predefinita): resta attivo il solo pre-filtro a regole sui saluti; tutto il
@@ -271,37 +306,25 @@ OLLAMA_NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "0"))
 ENABLE_PERSON_PIPELINE = os.getenv("ENABLE_PERSON_PIPELINE", "true").lower() in ("1", "true", "yes")
 PERSON_FAST_PATH = os.getenv("PERSON_FAST_PATH", "true").lower() in ("1", "true", "yes")
 PERSON_CONTEXT_BOOST = os.getenv("PERSON_CONTEXT_BOOST", "true").lower() in ("1", "true", "yes")
-ANAGRAFE_PATH = Path(os.getenv("ANAGRAFE_PATH", str(BASE_DIR / "dati" / "anagrafe.json")))
+ANAGRAFE_PATH = Path(os.getenv("ANAGRAFE_PATH", str(Path(__file__).resolve().parent / "anagrafe.json")))
 # Percorso «struttura» (25/09/2026): domande che chiedono di ELENCARE o CONTARE i componenti di
 # una struttura amministrativa - aree e loro uffici, uffici che dipendono da un coordinamento,
 # personale di un ufficio, unita' in staff alla Direzione Generale, dipartimenti di un distretto -
 # servite da un registro costruito in ingestione (costruisci_registro_strutture.py, solo dalle
 # fonti) invece che dalla ricerca, che quegli elenchi non li riporta interi. Stesso meccanismo del
-# percorso persona, che ha la precedenza: riconoscimento a regole (percorso_struttura.py), veloce
+# percorso persona, che ha la precedenza: riconoscimento a regole (struttura_lookup.py), veloce
 # solo se la domanda chiede cio' che la scheda contiene, altrimenti scheda in testa al contesto.
 # ACCESO per difetto dal 25/09/2026, dopo la misura sulle 429 domande mai viste: sulle 34
 # intercettate riuscite da 16 a 29 (corrette da 8 a 25), saldo passa/non passa +13, p = 0,001,
 # tre letture del giudice a bracci alternati; tutte le altre domande identiche a interruttore
 # spento (verificato su 30 domande: fonti e contesto identici). ENABLE_STRUCT_PATH=false lo spegne.
-ENABLE_STRUCT_PATH = os.getenv("ENABLE_STRUCT_PATH", "true").lower() in ("1", "true", "yes")
-# Dati di UNA struttura (07/10/2026, percorso_struttura.py): capo ed email di uffici, aree e Direzione Generale,
-# distretto di un dipartimento, con la scheda del registro in testa al contesto recuperato (mai il percorso
-# veloce); si intercetta solo cio' che il registro sa. ACCESO per difetto dal 07/10/2026, dopo la misura del
-# 06-07/10 (ibrido, tre letture a bracci alternati): sulle 148 domande dei banchi intercettate riuscite da 132 a
-# 145 (+13/-0, p < 0,001; sulle 429 +9/-0, p = 0,004), 30 domande di controllo con risposte identiche, 44 domande
-# nuove su strutture mai nominate nei banchi con il dato giusto da 42 a 44. ENABLE_STRUCT_ATTRIBUTES=false lo spegne.
-ENABLE_STRUCT_ATTRIBUTES = os.getenv("ENABLE_STRUCT_ATTRIBUTES", "true").lower() in ("1", "true", "yes")
 # Modalita' elenco (30/09/2026, modalita_elenco.py): per le domande di elenco di entita' il recupero
 # usa, oltre alla domanda, 3 ricerche orientate alla FONTE scritte dal modello (il documento in cui
 # l'elenco e' scritto per intero); i candidati di tutte le ricerche, senza doppioni, si riordinano
 # rispetto alla domanda e se ne passano LIST_MODE_TOP_N. Stima del 30/09 (stima_multiquery.py, solo
 # recupero): voci degli elenchi nel contesto 86,2% -> 92,9% sulle 613, 87,0% -> 91,2% sulle 429.
-# Configurazione IBRIDA scelta con i relatori (06/10/2026): percorso struttura dove il riconoscitore prende la
-# domanda, modalita' elenco sulle altre domande di elenco, catena normale per il resto. Giro del 05/10 sui banchi
-# ripuliti (1.030 domande, tre letture a bracci alternati): ibrido 917 riuscite (89,0%) contro 910 (88,3%) del solo
-# percorso struttura, +10/-3; tempo medio 9,0 s contro 7,8 (sulle domande di elenco circa il doppio).
-# ACCESA per difetto dal 08/10/2026; ENABLE_LIST_MODE=false la spegne e il recupero torna identico a prima.
-ENABLE_LIST_MODE = os.getenv("ENABLE_LIST_MODE", "true").lower() in ("1", "true", "yes")
+# Spento per difetto: a interruttore spento il recupero e' identico a prima.
+ENABLE_LIST_MODE = os.getenv("ENABLE_LIST_MODE", "false").lower() in ("1", "true", "yes")
 LIST_MODE_TOP_N = int(os.getenv("LIST_MODE_TOP_N", "20"))
 # Verifica dei nomi (02/10/2026, verifica_nomi.py): dopo la generazione, un nome della risposta che non compare
 # nel contesto e ha nel contesto un solo nome quasi identico (Egizio -> EGIZIANO, Piemento -> Piemonte) prende la
@@ -310,8 +333,24 @@ LIST_MODE_TOP_N = int(os.getenv("LIST_MODE_TOP_N", "20"))
 # corretta dalla stessa generazione: riuscite +7/-0 e corrette +9/-0 sulle risposte cambiate, tempi invariati.
 # ACCESA per difetto dal 05/10/2026; ENABLE_NAME_CHECK=false la spegne.
 ENABLE_NAME_CHECK = os.getenv("ENABLE_NAME_CHECK", "true").lower() in ("1", "true", "yes")
+# Ragionamento mirato (05/10/2026): il ragionamento del modello, spento dal luglio 2026 per la latenza (sezione
+# 3.5: 76 s contro 7,6 di media, ma -8,6 punti), si accende solo per le domande dei tipi in RAGIONAMENTO_TIPI
+# secondo classifica() di modalita_elenco.py (PUNTUALE, INSIEME, SPIEGAZIONE, NON CLASSIFICATA), con un modello
+# dedicato e un tetto di token piu' alto, perche' il ragionamento non consumi la risposta. Il testo del
+# ragionamento non entra nella risposta. Spento per difetto.
+ENABLE_RAGIONAMENTO_MIRATO = os.getenv("ENABLE_RAGIONAMENTO_MIRATO", "false").lower() in ("1", "true", "yes")
+RAGIONAMENTO_TIPI = {s.strip().upper() for s in os.getenv("RAGIONAMENTO_TIPI", "INSIEME").split(",") if s.strip()}
+RAGIONAMENTO_NUM_PREDICT = int(os.getenv("RAGIONAMENTO_NUM_PREDICT", "16384"))
+ENABLE_STRUCT_PATH = os.getenv("ENABLE_STRUCT_PATH", "true").lower() in ("1", "true", "yes")
+# Dati di UNA struttura (07/10/2026, struttura_lookup.py): capo ed email di uffici, aree e Direzione Generale,
+# distretto di un dipartimento, con la scheda del registro in testa al contesto recuperato (mai il percorso
+# veloce); si intercetta solo cio' che il registro sa. ACCESO per difetto dal 07/10/2026, dopo la misura del
+# 06-07/10 (ibrido, tre letture a bracci alternati): sulle 148 domande dei banchi intercettate riuscite da 132 a
+# 145 (+13/-0, p < 0,001; sulle 429 +9/-0, p = 0,004), 30 domande di controllo con risposte identiche, 44 domande
+# nuove su strutture mai nominate nei banchi con il dato giusto da 42 a 44. ENABLE_STRUCT_ATTRIBUTES=false lo spegne.
+ENABLE_STRUCT_ATTRIBUTES = os.getenv("ENABLE_STRUCT_ATTRIBUTES", "true").lower() in ("1", "true", "yes")
 REGISTRO_STRUTTURE_PATH = Path(os.getenv("REGISTRO_STRUTTURE_PATH",
-                                         str(BASE_DIR / "dati" / "registro_strutture.json")))
+                                         str(Path(__file__).resolve().parent / "registro_strutture.json")))
 PAGE_EXPANSION_MIN_CHUNKS = int(os.getenv("PAGE_EXPANSION_MIN_CHUNKS", "2"))
 PAGE_EXPANSION_MAX_CHARS = int(os.getenv("PAGE_EXPANSION_MAX_CHARS", "24000"))
 PAGE_EXPANSION_MAX_CONTEXT = int(os.getenv("PAGE_EXPANSION_MAX_CONTEXT", "60000"))
@@ -325,7 +364,7 @@ PAGE_EXPANSION_MAX_CONTEXT = int(os.getenv("PAGE_EXPANSION_MAX_CONTEXT", "60000"
 ENABLE_VICINATO = os.getenv("ENABLE_VICINATO", "false").lower() in ("1", "true", "yes")
 VICINATO_RAGGIO = int(os.getenv("VICINATO_RAGGIO", "1"))
 POSIZIONI_PATH = Path(os.getenv("POSIZIONI_PATH",
-                                str(BASE_DIR / "dati" / "posizioni_parent.json")))
+                                str(Path(__file__).resolve().parent / "posizioni_parent.json")))
 
 
 # Parole grammaticali italiane, tolte da query e documenti prima del calcolo BM25. Senza questo
@@ -349,60 +388,6 @@ def _bm25_tokenizer(text: str) -> list:
     maiuscolo e l'ultima parola di qualunque domanda che finisca con un punto interrogativo — e
     che lascia pesare le parole comuni piu' dei termini distintivi."""
     return [w for w in re.findall(r"\w+", text.lower()) if w not in _BM25_STOPWORD]
-
-# ari_servers: cache on disk of the BM25 retrievers and of the lowercase words of every collection (verifica dei nomi),
-# built at the first start and read at the next ones instead of reading every chunk from Chroma again. One file per
-# collection, valid while the collection keeps the same chunks (count, first and last id) and the same tokenization.
-# Empty: no cache.
-BM25_CACHE_DIR = os.getenv("BM25_CACHE_DIR", "").strip()
-BM25_CACHE_VERSION = 1
-
-
-def _bm25_cache_key(raw_collection, total: int) -> dict:
-    """What the cached retriever depends on: the chunks of the collection and the tokenization."""
-    first = raw_collection.get(limit=1, offset=0, include=[])["ids"] if total else []
-    last = raw_collection.get(limit=1, offset=total - 1, include=[])["ids"] if total else []
-    return {"version": BM25_CACHE_VERSION, "count": total, "first": first, "last": last,
-            "normalize": BM25_NORMALIZE_TOKENS, "stopwords": len(_BM25_STOPWORD)}
-
-
-def _bm25_cache_read(collection_name: str, key: dict):
-    if not BM25_CACHE_DIR:
-        return None
-    import pickle
-    path = Path(BM25_CACHE_DIR) / f"bm25_{collection_name}.pkl"
-    if not path.is_file():
-        return None
-    try:
-        with open(path, "rb") as f:
-            cached = pickle.load(f)
-    except Exception as e:
-        logger.warning(f"[BM25] cache {path} not read ({e}): built again")
-        return None
-    if cached.get("key") != key:
-        logger.info(f"[BM25] cache {path} of another index: built again")
-        return None
-    return cached
-
-
-def _bm25_cache_write(collection_name: str, key: dict, retriever, minuscole) -> None:
-    if not BM25_CACHE_DIR:
-        return
-    import pickle
-    folder = Path(BM25_CACHE_DIR)
-    path = folder / f"bm25_{collection_name}.pkl"
-    try:
-        folder.mkdir(parents=True, exist_ok=True)
-        os.chmod(folder, 0o777)   # written by root in the container, removable from the host
-        tmp = path.with_suffix(".tmp")
-        with open(tmp, "wb") as f:
-            pickle.dump({"key": key, "retriever": retriever, "minuscole": minuscole}, f, protocol=5)
-        os.chmod(tmp, 0o666)
-        os.replace(tmp, path)
-        logger.info(f"[BM25] cache written: {path} ({path.stat().st_size / 1e6:.0f} MB)")
-    except Exception as e:
-        logger.warning(f"[BM25] cache {path} not written: {e}")
-
 
 ENABLE_CONTEXTUAL_COMPRESSION = os.getenv("ENABLE_CONTEXTUAL_COMPRESSION", "false").lower() in ("1", "true", "yes")
 
@@ -564,6 +549,61 @@ def data_odierna() -> str:
     return datetime.now().strftime("%d/%m/%Y")
 
 
+class _CachedQueryEmbeddings:
+    """Avvolge l'embedder (HuggingFaceEmbeddings) per non ricalcolare l'embedding della stessa
+    query piu' volte di seguito.
+
+    Perche' serve: ogni collezione ha il proprio VectorStoreRetriever, e ciascuno richiama
+    internamente `embedding_function.embed_query(q)` quando interrogato - con 4 collezioni,
+    _retrieve_and_format embeddava la STESSA domanda 4 volte, sulla stessa GPU, per lo stesso
+    identico risultato. Misurato (02/10/2026): tentare di parallelizzare le 4 chiamate a
+    `retriever.invoke()` con un ThreadPoolExecutor non ha aiutato - anzi, il retrieval e'
+    risultato PIU' lento (rapporto a 4 utenti 2,16x contro 2,07x della baseline sequenziale) -
+    perche' il costo non era I/O parallelizzabile: la ricerca lessicale BM25 e' Python puro
+    (vincolato dal GIL, i thread non la accelerano) e le 4 chiamate GPU ridondanti, lanciate
+    "insieme" da piu' thread, si sono probabilmente intralciate a vicenda sulla GPU invece di
+    sovrapporsi in modo utile. La vera redundanza da eliminare non e' la sequenzialita' delle
+    chiamate, ma il fatto che siano 4 chiamate identiche quando basterebbe farne 1.
+
+    Cache LRU di piccola taglia (non un singolo slot): piu' utenti concorrenti possono avere
+    domande diverse in corso nello stesso momento (il test di concorrenza usa thread paralleli
+    per utente), quindi la cache deve poter tenere piu' query distinte senza che si scaccino a
+    vicenda prima di essere riusate dalle 4 collezioni della stessa domanda. Protetta da lock
+    perche' e' condivisa fra i thread degli utenti simulati.
+    """
+
+    def __init__(self, embedder, maxsize: int = 32):
+        self._embedder = embedder
+        self._maxsize = maxsize
+        self._cache = OrderedDict()
+        self._lock = threading.Lock()
+
+    def embed_query(self, text: str):
+        with self._lock:
+            vettore = self._cache.get(text)
+            if vettore is not None:
+                self._cache.move_to_end(text)
+                return vettore
+        vettore = self._embedder.embed_query(text)
+        with self._lock:
+            self._cache[text] = vettore
+            self._cache.move_to_end(text)
+            while len(self._cache) > self._maxsize:
+                self._cache.popitem(last=False)
+        return vettore
+
+    def embed_documents(self, texts):
+        # Usato solo in fase di costruzione degli indici (un batch enorme e irripetuto, mai la
+        # stessa query due volte): nessun bisogno di cache, si delega e basta.
+        return self._embedder.embed_documents(texts)
+
+    def __getattr__(self, name):
+        # Delega qualunque altro attributo o metodo (es. usato da altre librerie che
+        # ispezionano l'embedder) all'oggetto originale, cosi' questo wrapper resta
+        # trasparente ovunque non ci sia una query da mettere in cache.
+        return getattr(self._embedder, name)
+
+
 class DiemRAG:
     """
     DIEM RAG engine implementing an LCEL-based architecture.
@@ -587,6 +627,12 @@ class DiemRAG:
                 model_kwargs={"device": "cuda"},
                 encode_kwargs={"normalize_embeddings": True},
             )
+            # Cache dell'embedding di query (vedi _CachedQueryEmbeddings sopra): evita di
+            # ricalcolare 4 volte lo stesso embedding quando _retrieve_and_format interroga le
+            # 4 collezioni con la stessa domanda. Va fatto qui, prima che _retrieve_vectorstore
+            # costruisca i Chroma con questo embedder: tutte le collezioni condividono la stessa
+            # istanza (e quindi la stessa cache).
+            self.embedding_model = _CachedQueryEmbeddings(self.embedding_model)
             
             # Binding to the persistent ChromaDB instance and dynamically loading all collections for retrieval
             self.client = chromadb.PersistentClient(path=str(PERSIST_DIRECTORY))
@@ -610,7 +656,7 @@ class DiemRAG:
             self.anagrafe = None
             if ENABLE_PERSON_PIPELINE:
                 try:
-                    from .percorso_persona import Anagrafe
+                    from .anagrafe_lookup import Anagrafe
                     self.anagrafe = Anagrafe(ANAGRAFE_PATH)
                     logger.info(f"[PERSONE] Anagrafe caricata: {len(self.anagrafe.persone)} persone")
                 except Exception as e:
@@ -621,7 +667,7 @@ class DiemRAG:
             self.registro_strutture = None
             if ENABLE_STRUCT_PATH:
                 try:
-                    from .percorso_struttura import Registro
+                    from .struttura_lookup import Registro
                     self.registro_strutture = Registro(REGISTRO_STRUTTURE_PATH, attributi=ENABLE_STRUCT_ATTRIBUTES)
                     logger.info(f"[STRUTTURA] Registro caricato: {len(self.registro_strutture.aree)} aree, "
                                 f"{len(self.registro_strutture.uffici)} uffici, "
@@ -648,7 +694,11 @@ class DiemRAG:
             logger.info("Reranker initialization...")
             
             # Cross-Encoder weights loading for semantic re-ranking
-            self.reranker = CrossEncoder("BAAI/bge-reranker-v2-m3")
+            self.reranker = crea_reranker() if crea_reranker else CrossEncoder("BAAI/bge-reranker-v2-m3")
+            if _descrizione_recupero:
+                logger.info(f"[RECUPERO] {_descrizione_recupero()}, VECTOR_K {VECTOR_K}, BM25_K {BM25_K}, "
+                            f"RERANK_CANDIDATI {RERANK_CANDIDATI or 'tutti'} "
+                            f"(elenchi {RERANK_CANDIDATI_ELENCHI or 'tutti'})")
 
             logger.info(f"LLM initialization (backend={LLM_BACKEND})...")
 
@@ -678,6 +728,38 @@ class DiemRAG:
                     base_url=OLLAMA_BASE_URL, num_ctx=OLLAMA_NUM_CTX or None,
                     model=OLLAMA_MODEL_ID, temperature=0, num_predict=300, reasoning=False,
                 ) if ENABLE_LIST_MODE else None
+                # Ragionamento mirato: stesso modello (Ollama non lo ricarica), ragionamento acceso e tetto di
+                # token alto: ragionamento e risposta stanno nello stesso budget.
+                self.llm_ragionamento = ChatOllama(
+                    base_url=OLLAMA_BASE_URL, num_ctx=OLLAMA_NUM_CTX or None,
+                    model=OLLAMA_MODEL_ID, temperature=0, num_predict=RAGIONAMENTO_NUM_PREDICT, reasoning=True,
+                ) if ENABLE_RAGIONAMENTO_MIRATO else None
+
+            elif LLM_BACKEND == "vllm":
+                # import qui dentro: chi usa Ollama non ha bisogno del pacchetto langchain-openai
+                from langchain_openai import ChatOpenAI
+
+                def _chat_vllm(max_token: int, thinking: bool) -> "ChatOpenAI":
+                    return ChatOpenAI(
+                        base_url=VLLM_BASE_URL, api_key="EMPTY", model=VLLM_MODEL_ID,
+                        temperature=0, max_tokens=max_token, timeout=900, max_retries=0,
+                        # nell'ultimo pezzo dello streaming: token del prompt e della risposta
+                        stream_usage=True,
+                        extra_body={"chat_template_kwargs": {"enable_thinking": thinking}},
+                    )
+
+                self.llm = _chat_vllm(4096, OLLAMA_ENABLE_THINKING)
+                self.llm_filtro = _chat_vllm(4, False) if ENABLE_CHUNK_FILTER else None
+                self.llm_riassunto = _chat_vllm(512, False) if RIASSUNTO_MODO in ("tutti", "scartati") else None
+                # Modalita' elenco: come con Ollama, 3 righe di ricerca, niente ragionamento.
+                self.llm_elenco = _chat_vllm(300, False) if ENABLE_LIST_MODE else None
+                # Ragionamento mirato: NON supportato con vLLM (il server non e' avviato con un reasoning parser, quindi
+                # il ragionamento finirebbe dentro la risposta). Provato e non adottato: con vLLM resta spento.
+                self.llm_ragionamento = None
+                if ENABLE_RAGIONAMENTO_MIRATO:
+                    logger.warning("[VLLM] ENABLE_RAGIONAMENTO_MIRATO ignorato: non supportato con il backend vLLM")
+                logger.info(f"[VLLM] server {VLLM_BASE_URL}, modello {VLLM_MODEL_ID}, "
+                            f"thinking={OLLAMA_ENABLE_THINKING}")
 
             else:
                 hf_pipeline = HuggingFacePipeline.from_model_id(
@@ -713,17 +795,26 @@ class DiemRAG:
                         base_url=OLLAMA_BASE_URL, num_ctx=OLLAMA_NUM_CTX or None,
                         model=OLLAMA_MODEL_ID, temperature=0, num_predict=4, reasoning=False,
                     )
-                if OLLAMA_NUM_BATCH or OLLAMA_NUM_CTX:
-                    # il client costruisce da se' il dizionario delle opzioni, ma se gliene si
-                    # passa uno lo usa al posto del suo: va quindi ricostruito per intero,
-                    # altrimenti si perdono temperatura e lunghezza massima della risposta
-                    opzioni = {"temperature": 0, "num_predict": 4096}
-                    if OLLAMA_NUM_CTX:
-                        opzioni["num_ctx"] = OLLAMA_NUM_CTX
-                    if OLLAMA_NUM_BATCH:
-                        opzioni["num_batch"] = OLLAMA_NUM_BATCH
-                    self.llm = self.llm.bind(options=opzioni)
-                    logger.info(f"[OLLAMA] Opzioni esplicite: {opzioni}")
+            # FUORI da `if ENABLE_XPROVENCE:` (corretto il 05/10/2026 in diem_RAG_routered.py, riportato qui il
+            # 07/10): con il blocco indentato dentro l'if, con ENABLE_XPROVENCE=false (default) num_ctx/num_batch
+            # non venivano mai applicati. Il modello della modalita' elenco riceve lo stesso num_ctx: con un
+            # contesto diverso fra due richieste Ollama ricaricherebbe il modello a ogni domanda di elenco.
+            if LLM_BACKEND == "ollama" and (OLLAMA_NUM_BATCH or OLLAMA_NUM_CTX):
+                # il client costruisce da se' il dizionario delle opzioni, ma se gliene si
+                # passa uno lo usa al posto del suo: va quindi ricostruito per intero,
+                # altrimenti si perdono temperatura e lunghezza massima della risposta
+                opzioni = {"temperature": 0, "num_predict": 4096}
+                if OLLAMA_NUM_CTX:
+                    opzioni["num_ctx"] = OLLAMA_NUM_CTX
+                if OLLAMA_NUM_BATCH:
+                    opzioni["num_batch"] = OLLAMA_NUM_BATCH
+                self.llm = self.llm.bind(options=opzioni)
+                if self.llm_ragionamento is not None:
+                    self.llm_ragionamento = self.llm_ragionamento.bind(
+                        options=dict(opzioni, num_predict=RAGIONAMENTO_NUM_PREDICT))
+                if self.llm_elenco is not None:
+                    self.llm_elenco = self.llm_elenco.bind(options=dict(opzioni, num_predict=300))
+                logger.info(f"[OLLAMA] Opzioni esplicite: {opzioni}")
             
             # In-memory dictionary for conversational state management
             self.chat_histories = {}
@@ -789,26 +880,13 @@ class DiemRAG:
                 embedding_function=self.embedding_model,
                 persist_directory=str(vs_dir),
             )
-            vector_retriever = vectorstore.as_retriever(search_kwargs={"k": 20})
-
-            # ari_servers: the BM25 retriever and the lowercase words from the cache on disk, when it is of this index
-            raw_collection = vectorstore._collection
-            total = raw_collection.count()
-            cache_key = _bm25_cache_key(raw_collection, total) if BM25_CACHE_DIR else None
-            cached = _bm25_cache_read(collection_name, cache_key) if cache_key else None
-            if cached is not None:
-                if ENABLE_NAME_CHECK and getattr(self, "_minuscole", None) is not None:
-                    self._minuscole.update(cached["minuscole"])
-                bm25_retriever = cached["retriever"]
-                bm25_retriever.k = BM25_K
-                logger.info(f"[BM25] {collection_name}: {total} chunks from the cache")
-                return EnsembleRetriever(
-                    retrievers=[vector_retriever, bm25_retriever], weights=[0.5, 0.5]
-                )
+            vector_retriever = vectorstore.as_retriever(search_kwargs={"k": VECTOR_K})
 
             # Carica tutti i child chunk della collezione per costruire l'indice BM25.
             # Paginato: un singolo .get() senza limit su collezioni grandi (>~100k righe)
             # supera il limite di variabili SQL di sqlite lato chromadb.
+            raw_collection = vectorstore._collection
+            total = raw_collection.count()
             batch_size = 5000
             all_documents, all_metadatas = [], []
             for offset in range(0, total, batch_size):
@@ -822,18 +900,19 @@ class DiemRAG:
                 Document(page_content=doc, metadata=meta)
                 for doc, meta in zip(all_documents, all_metadatas)
             ]
-            minuscole = conta_minuscole(all_documents)
             if ENABLE_NAME_CHECK and getattr(self, "_minuscole", None) is not None:
-                self._minuscole.update(minuscole)
-            if BM25_NORMALIZE_TOKENS:
+                self._minuscole.update(conta_minuscole(all_documents))
+            if BM25_MOTORE == "sparso" and crea_bm25:
+                # stessa formula e stessa tokenizzazione, calcolo su matrice sparsa (ottimizzazioni_recupero.py)
+                bm25_retriever = crea_bm25(bm25_docs, _bm25_tokenizer if BM25_NORMALIZE_TOKENS else None, BM25_K)
+            elif BM25_NORMALIZE_TOKENS:
                 bm25_retriever = BM25Retriever.from_documents(
                     bm25_docs, preprocess_func=_bm25_tokenizer
                 )
+                bm25_retriever.k = BM25_K
             else:
                 bm25_retriever = BM25Retriever.from_documents(bm25_docs)
-            bm25_retriever.k = BM25_K
-            if cache_key:
-                _bm25_cache_write(collection_name, cache_key, bm25_retriever, minuscole)
+                bm25_retriever.k = BM25_K
 
             return EnsembleRetriever(
                 retrievers=[vector_retriever, bm25_retriever], weights=[0.5, 0.5]
@@ -853,12 +932,8 @@ class DiemRAG:
             return None
         t0 = time.perf_counter()
         try:
-            from .percorso_persona import classifica, percorso_veloce, scheda
-            # i nomi delle strutture che la domanda nomina (08/10/2026): una parola che fa parte di uno di essi
-            # non e' il nome di una persona («Protezione Dati», «Adolfo Zambelli» nel nome di un dipartimento)
-            strutture = (self.registro_strutture.strutture_nominate(domanda)
-                         if getattr(self, "registro_strutture", None) else ())
-            tipo, nomi = classifica(domanda, strutture)
+            from .anagrafe_lookup import classifica, percorso_veloce, scheda
+            tipo, nomi = classifica(domanda)
             if tipo != "persona":
                 return None
             # la domanda serve a distinguere gli omonimi: l'anagrafe ha una scheda per pagina
@@ -896,7 +971,7 @@ class DiemRAG:
             return None
         t0 = time.perf_counter()
         try:
-            from .percorso_struttura import OPS_ATTRIBUTO, fonti_della_scheda, percorso_veloce
+            from .struttura_lookup import OPS_ATTRIBUTO, fonti_della_scheda, percorso_veloce
             esito, motivo = self.registro_strutture.riconosci(domanda)
             if not esito:
                 return None
@@ -1278,7 +1353,20 @@ class DiemRAG:
                 ]
 
             t0 = time.perf_counter()
-            combined_docs = [doc for retriever in active_retrievers for doc in retriever.invoke(q)]
+            # Le collezioni restano interrogate in sequenza (non con un ThreadPoolExecutor:
+            # provato il 02/10/2026, il retrieval e' risultato PIU' lento, non piu' veloce - si
+            # veda il commento di _CachedQueryEmbeddings sopra per il perche'). Il risparmio
+            # reale non viene dal come vengono fatte le chiamate, ma dal non ripeterle: le 4
+            # collezioni condividono lo stesso embedder (self.embedding_model, avvolto nella
+            # cache), quindi la query viene embeddata una sola volta invece di 4, qualunque sia
+            # l'ordine delle chiamate.
+            # domanda di elenco? (riconoscimento a regole, senza modello: si sa gia' prima del recupero)
+            domanda_elenco = False
+            if ENABLE_LIST_MODE and getattr(self, "llm_elenco", None) is not None:
+                from .modalita_elenco import e_elenco
+                domanda_elenco = e_elenco(q)
+            limite = RERANK_CANDIDATI_ELENCHI if domanda_elenco else RERANK_CANDIDATI
+            combined_docs = [doc for retriever in active_retrievers for doc in _candidati(retriever, q, limite)]
             logger.info(
                 f"Retrieved (Pre-Reranking): {len(combined_docs)} documents (combined from {len(active_retrievers)} target retrievers)"
             )
@@ -1294,7 +1382,7 @@ class DiemRAG:
                     t0 = time.perf_counter()
                     sotto = ricerche(self.llm_elenco.invoke(PROMPT_ELENCO.format(domanda=q)).content)
                     for s in sotto:
-                        combined_docs += [doc for retriever in active_retrievers for doc in retriever.invoke(s)]
+                        combined_docs += [doc for retriever in active_retrievers for doc in _candidati(retriever, s, limite)]
                     combined_docs = unici(combined_docs)
                     top_n = LIST_MODE_TOP_N
                     logger.info(f"[ELENCO] ricerche: {sotto}; candidati unici {len(combined_docs)}, "
@@ -1730,12 +1818,103 @@ class DiemRAG:
         )
 
         # La generazione e' identica per i due percorsi, quindi vive in un pezzo riusabile.
-        genera_una = answer_prompt | self.llm | StrOutputParser()
+        #
+        # Reintrodotta il 05/10/2026 la misura di TTFT e TPOT (presente nel giro di baseline_latenza_630,
+        # persa in una modifica successiva). La risposta viene generata in STREAMING invece che con
+        # .invoke(): il testo finale e' identico (concatenazione dei pezzi = quello che restituiva
+        # StrOutputParser), ma cosi' si vede quando arriva il primo pezzo.
+        #
+        # Righe scritte nel log (tutte in secondi, nel formato "[TIMING] <nome>: <valore>s" letto da
+        # analyze_timing.py e analizza_stadi_per_livello.py):
+        #   - Generazione risposta: tempo totale della chiamata, come prima (confrontabile coi giri A-D).
+        #   - TTFT: tempo dall'invio della richiesta al primo pezzo di testo, misurato DAL CLIENT. E'
+        #     la latenza percepita dall'utente (e dal robot): include l'eventuale attesa in coda su
+        #     Ollama quando piu' utenti chiedono insieme.
+        #   - TTFT (server): load_duration + prompt_eval_duration riportati da Ollama. Parte da quando
+        #     il server inizia davvero a lavorare sulla richiesta, quindi NON include la coda.
+        #   - Attesa in coda (stima): TTFT - TTFT (server) - TPOT (il primo token generato e la rete
+        #     sono dentro il TTFT del client ma non in quello del server). E' la misura diretta della
+        #     serializzazione: a 1 utente deve stare vicino a 0, se cresce con gli utenti le richieste
+        #     si accodano.
+        #   - TPOT: eval_duration / eval_count riportati da Ollama (tempo medio per token generato,
+        #     senza coda e senza prompt).
+        # Con il backend HF (niente metadati di Ollama) vengono scritti solo Generazione risposta e TTFT.
+        # Con il backend vLLM (dal 07/10/2026) il server non riporta i propri tempi: si scrivono
+        # Generazione risposta, TTFT (client, coda compresa), TPOT misurato dal client
+        # ((fine - primo token) / (token generati - 1)) e i contatori [TOKENS]. Mancano TTFT (server)
+        # e Attesa in coda, che con vLLM non si possono separare dal client.
+        def genera_misurata(x: dict, suffisso: str = "") -> str:
+            messaggi = answer_prompt.invoke(x)
+            t0 = time.perf_counter()
+            t_primo = None
+            parti = []
+            meta = {}
+            for chunk in self.llm.stream(messaggi):
+                testo = chunk.content if isinstance(chunk.content, str) else str(chunk.content or "")
+                if testo:
+                    if t_primo is None:
+                        t_primo = time.perf_counter()
+                    parti.append(testo)
+                # l'ultimo pezzo inviato da Ollama ("done") porta i contatori della richiesta
+                rm = getattr(chunk, "response_metadata", None) or {}
+                if rm.get("eval_count") is not None:
+                    meta = rm
+                # vLLM (API OpenAI): i contatori arrivano in usage_metadata dell'ultimo pezzo
+                um = getattr(chunk, "usage_metadata", None)
+                if um and um.get("output_tokens") is not None:
+                    meta = {"usage": um}
+            t_fine = time.perf_counter()
+
+            logger.info(f"[TIMING] Generazione risposta{suffisso}: {t_fine - t0:.2f}s")
+            ttft = (t_primo - t0) if t_primo is not None else None
+            if ttft is not None:
+                logger.info(f"[TIMING] TTFT{suffisso}: {ttft:.3f}s")
+
+            n_out = meta.get("eval_count") or 0
+            eval_ns = meta.get("eval_duration") or 0
+            if n_out > 0 and eval_ns > 0:
+                tpot = eval_ns / n_out / 1e9
+                ttft_server = ((meta.get("load_duration") or 0) + (meta.get("prompt_eval_duration") or 0)) / 1e9
+                logger.info(f"[TIMING] TPOT{suffisso}: {tpot:.4f}s")
+                logger.info(f"[TIMING] TTFT (server){suffisso}: {ttft_server:.3f}s")
+                if ttft is not None:
+                    logger.info(f"[TIMING] Attesa in coda (stima){suffisso}: {max(0.0, ttft - ttft_server - tpot):.3f}s")
+                # contatori di token: non sono tempi, quindi fuori dal formato [TIMING]
+                logger.info(f"[TOKENS]{suffisso} prompt={meta.get('prompt_eval_count')} output={n_out}")
+            elif "usage" in meta:
+                n_out = meta["usage"].get("output_tokens") or 0
+                if t_primo is not None and n_out > 1:
+                    logger.info(f"[TIMING] TPOT{suffisso}: {(t_fine - t_primo) / (n_out - 1):.4f}s")
+                logger.info(f"[TOKENS]{suffisso} prompt={meta['usage'].get('input_tokens')} output={n_out}")
+            return "".join(parti)
+
+        # Ragionamento mirato (ENABLE_RAGIONAMENTO_MIRATO): per i tipi di domanda in RAGIONAMENTO_TIPI la risposta
+        # si genera con il modello che ragiona. Spento, genera_ragionata e' None e tutto resta come prima.
+        genera_ragionata = (answer_prompt | self.llm_ragionamento
+                            if getattr(self, "llm_ragionamento", None) is not None else None)
+
+        def genera(x: dict, ragiona: bool, suffisso: str = ""):
+            """(risposta, informazioni sul ragionamento). Con il ragionamento acceso il suo testo resta fuori dalla
+            risposta (langchain-ollama lo mette in additional_kwargs) e se ne registrano lunghezza, motivo di fine
+            e tempo: «length» vuol dire che il tetto di token e' finito prima della risposta.
+            Senza ragionamento la risposta passa da genera_misurata (07/10/2026: TTFT, TPOT e token nel log)."""
+            if not ragiona:
+                return genera_misurata(x, suffisso), {"usato": False}
+            t0 = time.perf_counter()
+            msg = genera_ragionata.invoke(x)
+            ragionamento = (msg.additional_kwargs or {}).get("reasoning_content") or ""
+            info = {"usato": True, "caratteri": len(ragionamento),
+                    "fine": (msg.response_metadata or {}).get("done_reason"),
+                    "secondi": round(time.perf_counter() - t0, 1)}
+            logger.info(f"[RAGIONAMENTO] {info}")
+            # con il ragionamento niente streaming: solo il tempo totale, come prima
+            logger.info(f"[TIMING] Generazione risposta{suffisso}: {time.perf_counter() - t0:.2f}s")
+            return msg.content, info
 
         def genera_con_riparazione(x: dict) -> dict:
-            t0 = time.perf_counter()
-            risposta = genera_una.invoke(x)
-            logger.info(f"[TIMING] Generazione risposta: {time.perf_counter() - t0:.2f}s")
+            ragiona = genera_ragionata is not None and classifica(x["question"])[0] in RAGIONAMENTO_TIPI
+            risposta, info = genera(x, ragiona)
+            x = {**x, "ragionamento": info}
             innescata = RIPARAZIONE_INNESCO == "sempre" or _e_rifiuto(risposta)
             if not (ENABLE_RIPARAZIONE and innescata):
                 return {**x, "answer": risposta}
@@ -1746,9 +1925,7 @@ class DiemRAG:
                 logger.info("[RIPARAZIONE] nessun contesto nuovo: tengo la prima risposta")
                 return {**x, "answer": risposta, "riparazione": "nessun_contesto_nuovo"}
 
-            t0 = time.perf_counter()
-            seconda = genera_una.invoke({**x, "context": ampio["context"]})
-            logger.info(f"[TIMING] Generazione risposta (riparazione): {time.perf_counter() - t0:.2f}s")
+            seconda, _ = genera({**x, "context": ampio["context"]}, ragiona, suffisso=" (riparazione)")
 
             if _e_rifiuto(seconda):
                 logger.info("[RIPARAZIONE] anche il secondo tentativo e' un rifiuto: tengo il primo")
@@ -1762,7 +1939,9 @@ class DiemRAG:
                     return {**x, "answer": risposta, "riparazione": "scartata_non_ancorata"}
                 logger.info("[RIPARAZIONE] seconda risposta ancorata al %.0f%%: la adotto" % (quota * 100))
 
-            return {**x, "answer": seconda, "sources": ampio["docs"], "riparazione": "adottata"}
+            # "context" aggiornato: la risposta adottata e' stata generata sul contesto ampio
+            return {**x, "answer": seconda, "sources": ampio["docs"], "context": ampio["context"],
+                    "riparazione": "adottata"}
 
         genera_chain = RunnableBranch(
             (
@@ -1876,7 +2055,9 @@ class DiemRAG:
         # La catena normale, cioe' tutto cio' che segue il percorso persona quando questo non
         # risponde da solo: riscrittura, router, recupero e generazione. Identica a prima.
         catena_normale = (
-            RunnablePassthrough.assign(optimized_question=RunnableLambda(rewrite_if_history))
+            RunnablePassthrough.assign(optimized_question=RunnableLambda(
+                lambda x: x["optimized_question"] if x.get("optimized_question") is not None
+                else rewrite_if_history(x)))
             | RunnablePassthrough.assign(routing_map=_timed("Router", router_chain))
             | RunnablePassthrough.assign(
                 selected_collections=lambda x: select_collections(
@@ -1892,7 +2073,7 @@ class DiemRAG:
             dopo_persona = (
                 RunnablePassthrough.assign(
                     struttura=RunnableLambda(
-                        lambda x: None if x.get("persona") else self._cerca_struttura(x["question"]))
+                        lambda x: None if x.get("persona") else self._cerca_struttura(x["optimized_question"]))
                 )
                 | RunnableBranch(
                     (lambda x: bool(x.get("struttura")) and x["struttura"]["veloce"], struttura_chain),
@@ -1910,7 +2091,9 @@ class DiemRAG:
                 (lambda x: "CONVENEVOLI" in x["domain_status"].upper(), greeting_chain),
                 (
                     RunnablePassthrough.assign(
-                        persona=RunnableLambda(lambda x: self._cerca_persona(x["question"]))
+                        optimized_question=RunnableLambda(rewrite_if_history)
+                    ) | RunnablePassthrough.assign(
+                        persona=RunnableLambda(lambda x: self._cerca_persona(x["optimized_question"]))
                     )
                     | RunnableBranch(
                         (lambda x: bool(x.get("persona")) and x["persona"]["veloce"], persona_chain),
@@ -1968,6 +2151,27 @@ class DiemRAG:
         Raises:
             ValueError: If the input tensor vector is None or empty.
         """
+        risultato = self.retrieve_and_generate_con_contesto(user_input, session_id)
+        return risultato[0], risultato[1]
+
+    def retrieve_and_generate_con_contesto(self, user_input: str, session_id: str) -> Tuple[str, List[Dict[str, Any]], str, str]:
+        """Come retrieve_and_generate, ma restituisce anche il CONTESTO esatto passato al modello
+        per generare la risposta (stringa vuota se la domanda non e' arrivata alla generazione:
+        saluti, fuori dominio, retrieval vuoto) e la RISPOSTA GREZZA, cioe' quella scritta dal
+        modello prima della verifica dei nomi (uguale alla risposta finale se la verifica e' spenta
+        o non ha sostituito nulla).
+
+        Aggiunto il 05/10/2026 per stimare offline il potenziale del Prompt Lookup Decoding
+        (stima_pld.py): il PLD copia sequenze di token dal prompt, quindi serve il testo che il
+        modello ha visto davvero, e va confrontato con il testo che il modello ha generato davvero
+        (la grezza: le sostituzioni della verifica dei nomi avvengono dopo la generazione). Le
+        "fonti" non bastano: contengono il chunk figlio (page_content), mentre il prompt riceve il
+        genitore (parent_content), le pagine espanse e l'eventuale scheda dell'anagrafe.
+        retrieve_and_generate resta invariato per tutti i chiamanti esistenti (main.py, script di
+        test). Restituisce i valori come variabili locali, quindi funziona anche con piu' utenti in
+        parallelo (a differenza di self.ultimo_risultato, che viene sovrascritto dall'ultima
+        richiesta finita).
+        """
         if not user_input or not user_input.strip():
             raise ValueError("[ERROR] The input logical payload cannot be empty.")
             
@@ -1979,6 +2183,7 @@ class DiemRAG:
             config={"configurable": {"session_id": session_id}}
         )
         self.ultimo_risultato = result   # per le misure: risposta grezza, sostituzioni, contesto
+        contesto = result.get("context") or ""
         
         answer = result.get('answer', "Mi dispiace, non sono riuscito a generare una risposta. Riprova.")
         raw_sources = result.get('sources', [])
@@ -1994,7 +2199,7 @@ class DiemRAG:
             }
             formatted_sources.append(source_data)
             
-        return answer, formatted_sources
+        return answer, formatted_sources, contesto, result.get("answer_grezza", answer)
 
 
 # Local test execution block

@@ -13,6 +13,7 @@ class OrchestratorConfig:
     keep_alive: str = "2h"  # the model loaded stays in memory between the requests
     rag_timeout: float = 900.0  # seconds for a RAG server to answer (first start: download of its models)
     model_timeout: float = 600.0  # seconds to load a model in Ollama
+    vllm_timeout: float = 1200.0  # seconds for vLLM to serve its model (first start: compilation, minutes)
     # pair loaded at the start of the orchestrator: "<llm>" and/or "<rag>" as in POST /load (empty: none)
     default_llm: str = ""
     default_rag: str = ""

@@ -1,4 +1,4 @@
-# Copied unchanged from versione_finale/verifica_nomi.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa).
+# Copied unchanged from test_baseline/verifica_nomi.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa), the module of the final configuration (doc/resoconto_attivita_5.pdf, test_baseline/sistema.sh).
 # -*- coding: utf-8 -*-
 """Verifica dei nomi dopo la generazione (02/10/2026).
 

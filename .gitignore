@@ -18,3 +18,4 @@ rag_knowledge_base/
 # models of Ollama (tens of GB) and the Hugging Face cache of the RAG servers (BGE-M3, reranker)
 models/ollama/
 models/rag/
+models/vllm/

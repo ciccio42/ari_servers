@@ -1,4 +1,4 @@
-# Copied unchanged from versione_finale/modalita_elenco.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa).
+# Copied unchanged from modalita_elenco.py of the RAG repository high-level-unisa (ari_servers: rag/high_level_unisa), the module of the final configuration (doc/resoconto_attivita_5.pdf, test_baseline/sistema.sh).
 # -*- coding: utf-8 -*-
 """Modalita' elenco (30/09/2026): riconoscere le domande di elenco di entita' e scrivere le ricerche
 orientate alla FONTE. Nessuna dipendenza dalla pipeline, che lo usa quando ENABLE_LIST_MODE e' acceso.

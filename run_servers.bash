@@ -6,7 +6,8 @@
 # configuration for all of them.
 #
 # Usage: bash run_servers.bash [-c <servers.yaml>] <start|stop|restart|status|logs|build> [server ...]
-#   servers: whisper, ollama, llm, tts, rag (all the RAGs of rag_servers) or rag_<name>, rasa, orchestrator
+#   servers: whisper, ollama, llm, tts, rag (all the RAGs of rag_servers) or rag_<name>, rasa, orchestrator, vllm and
+#            vllm_reranker (engine and reranker of high_level_unisa: started by the orchestrator, here for status, logs, stop)
 #   start    starts the servers not running yet and waits until they answer (default: all but the RAGs, which the
 #            orchestrator loads one at a time with their model)
 #   stop     stops them
@@ -71,7 +72,7 @@ done
 ALL=(whisper ollama llm tts rasa orchestrator)   # the RAGs: loaded by the orchestrator
 if [ ${#SERVERS[@]} -eq 0 ]; then
     SERVERS=("${ALL[@]}")
-    [ "$COMMAND" = stop ] && SERVERS=(orchestrator rasa "${RAG_SERVERS[@]}" tts llm ollama whisper)   # reverse order
+    [ "$COMMAND" = stop ] && SERVERS=(orchestrator rasa "${RAG_SERVERS[@]}" vllm_reranker vllm tts llm ollama whisper)   # reverse order
 fi
 
 run() {  # run <server> <command> [args]: the run.bash of the server
@@ -83,18 +84,20 @@ run() {  # run <server> <command> [args]: the run.bash of the server
         ollama)  bash ollama/docker/run.bash "${@:2}" ;;
         rag_*)   bash rag/docker/run.bash "$2" "${1#rag_}" "${@:3}" ;;
         orchestrator) bash orchestrator/docker/run.bash "${@:2}" ;;
+        vllm)    bash vllm/docker/run.bash "$2" engine "${@:3}" ;;
+        vllm_reranker) bash vllm/docker/run.bash "$2" reranker "${@:3}" ;;
         *) echo "unknown server $1: whisper, ollama, llm, tts, rag, rag_<name>, rasa, orchestrator" >&2; return 1 ;;
     esac
 }
 
 container() {
     case "$1" in whisper) echo whisper_server ;; llm) echo llm_server ;; tts) echo tts_server ;; rasa) echo rasa_server ;;
-        ollama) echo ollama_server ;; rag_*) echo "$1" ;; orchestrator) echo orchestrator_server ;; esac
+        ollama) echo ollama_server ;; rag_*) echo "$1" ;; orchestrator) echo orchestrator_server ;; vllm) echo vllm_server ;; vllm_reranker) echo vllm_reranker ;; esac
 }
 
 image() {
     case "$1" in whisper) echo "ari_whisper_server:$BOARD" ;; llm) echo ari_llm_server ;; tts) echo ari_tts_server ;; rasa) echo ari_rasa_server ;;
-        ollama) echo "${OLLAMA_IMAGE:-ollama/ollama:0.40.16}" ;; rag_*) echo ari_rag_server ;; orchestrator) echo ari_orchestrator ;; esac
+        ollama) echo "${OLLAMA_IMAGE:-ollama/ollama:0.40.16}" ;; rag_*) echo ari_rag_server ;; orchestrator) echo ari_orchestrator ;; vllm|vllm_reranker) echo vllm/vllm-openai:v0.31.0 ;; esac
 }
 
 ready() {  # the server answers; for rasa also every bot behind the proxy
@@ -140,12 +143,12 @@ start_one() {
     # first start of Whisper: download and export of the model (minutes); the bots of Rasa: about a minute; first start
     # of a RAG: download of the embedding model and of the reranker (minutes)
     case "$1" in whisper) wait_ready whisper 900 ;; llm) wait_ready llm 120 ;; tts) wait_ready tts 60 ;; rasa) wait_ready rasa 180 ;;
-        ollama) wait_ready ollama 60 ;; rag_*) wait_ready "$1" 900 ;; orchestrator) wait_ready orchestrator 30 ;; esac
+        ollama) wait_ready ollama 60 ;; rag_*) wait_ready "$1" 900 ;; orchestrator) wait_ready orchestrator 30 ;; vllm) wait_ready vllm 1200 ;; vllm_reranker) wait_ready vllm_reranker 300 ;; esac
 }
 
 echo "Configuration: $ARI_SERVERS_CONFIG, ${RASA_ENV_FILE:-config/rasa.env}, config/secrets.env"
 for server in "${SERVERS[@]}"; do
-    case "$server" in whisper|ollama|llm|tts|rasa|rag_*|orchestrator) ;; *) echo "unknown server $server" >&2; usage ;; esac
+    case "$server" in whisper|ollama|llm|tts|rasa|rag_*|orchestrator|vllm|vllm_reranker) ;; *) echo "unknown server $server" >&2; usage ;; esac
 done
 case "$COMMAND" in
     start)
@@ -161,7 +164,7 @@ case "$COMMAND" in
         done
         ;;
     restart)
-        [ $# -eq 0 ] && STOP=(orchestrator rasa "${RAG_SERVERS[@]}" tts llm ollama whisper) || STOP=("${SERVERS[@]}")
+        [ $# -eq 0 ] && STOP=(orchestrator rasa "${RAG_SERVERS[@]}" vllm_reranker vllm tts llm ollama whisper) || STOP=("${SERVERS[@]}")
         bash "$0" -c "$ARI_SERVERS_CONFIG" stop "${STOP[@]}" > /dev/null
         exec bash "$0" -c "$ARI_SERVERS_CONFIG" start "${SERVERS[@]}"
         ;;
@@ -182,7 +185,7 @@ case "$COMMAND" in
         built_rag=0
         for server in "${SERVERS[@]}"; do
             case "$server" in
-                ollama) continue ;;  # the image of Ollama is downloaded by start
+                ollama|vllm|vllm_reranker) continue ;;  # the images of Ollama and vLLM are downloaded (docker pull, start)
                 rag_*) [ $built_rag -eq 1 ] && continue; built_rag=1; echo "== rag (ari_rag_server)" ;;
                 *) echo "== $server" ;;
             esac
