@@ -14,3 +14,7 @@ config/secrets.env
 # Piper voices (60 MB each), copied from ari_control/ros2_ws/src/ari_tts_action_server/models
 models/piper/*.onnx
 *csv
+rag_knowledge_base/
+# models of Ollama (tens of GB) and the Hugging Face cache of the RAG servers (BGE-M3, reranker)
+models/ollama/
+models/rag/

@@ -15,10 +15,11 @@ PepperDemo; a local model is another implementation of the same abstract class.
 | `llm_server/backends/base.py` | `ChatBackend`: the **abstract class** (`load`, `generate`, `describe`), `Reply`, `BackendError`, the message format |
 | `llm_server/backends/openai_chat.py` | `ChatGPTBackend` (`openai`): the class ChatGpt of the actions, the **reference implementation**. Text and images with Chat Completions, RAG with the Responses API and file_search, new attempt after server errors |
 | `llm_server/backends/transformers_local.py` | `TransformersBackend` (`transformers`): local model on the GPU. TODO: port `chatmodel.py` of PepperDemo |
+| `llm_server/backends/ollama.py` | `OllamaBackend` (`ollama`): a model of Ollama (`ollama/docker/run.bash`), native API with `num_ctx`; the generator of the RAG servers |
 | `llm_server/backends/echo.py` | `EchoBackend` (`echo`): answers with the request, for the tests without key or GPU |
 | `llm_server/backends/__init__.py` | `BACKENDS`: the registry, `llm.backend` picks one |
 | `llm_server/conversation.py` | history of every conversation (window of `history_length` messages) |
-| `llm_server/rag.py` | `Retriever` of the server for the backends without native RAG. TODO: port `rag.py` of PepperDemo |
+| `llm_server/rag.py` | `RagServers`: client of the RAG servers ([rag/](../rag/README.md)); `Retriever` of the server for the backends without native RAG. TODO: port `rag.py` of PepperDemo |
 | `llm_server/server.py`, `config.py` | HTTP server, `LLMConfig` |
 | `prompts/ari_system.txt` | default system prompt: the `PROMPT_SYSTEM` of ChatGpt |
 | `docker/` | image `ari_llm_server` (base `ari_whisper_server:spark`, plus `openai`), `entrypoint.bash`, `run.bash` |
@@ -39,7 +40,7 @@ The backend is stateless: the server keeps the history, adds the system prompt a
 |---|---|
 | `GET /health` | `{"status": "ok", "service": "llm_server", "backend", "model", "native_rag", "vision", "rag", "loaded", "conversations"}` |
 | `POST /image` | body: the image as bytes (`Content-Type` `image/webp`, `image/jpeg` or `image/png`), optional header `X-Image-Id` (32 hex characters, the id chosen by the client). Kept in memory 600 s. Reply `{"image_id", "bytes", "mime", "receive_s", "total_s"}`. ARI uploads here the camera frame of the questions about the scene, in parallel to the slots of Rasa; `image_slot` holds `image_id:<id>` and the action passes `image_id` to `/chat` |
-| `POST /chat` with history | `{"conversation_id", "message"}`; optional `image_id` (of `POST /image`) or `image_base64` (JPEG or WebP), `system` (default: `llm.system_prompt_file`), `rag` (default: `llm.rag`), `temperature`, `max_new_tokens` |
+| `POST /chat` with history | `{"conversation_id", "message"}`; optional `image_id` (of `POST /image`) or `image_base64` (JPEG or WebP), `system` (default: `llm.system_prompt_file`), `rag` (default: `llm.rag`; the name of a RAG server, e.g. `"department_office"`: see below), `temperature`, `max_new_tokens` |
 | `POST /chat` one-shot | `{"messages": [{"role", "content"}...]}` or `{"prompt", "system"}`: no history |
 | reply | `{"text", "model", "served_model", "rag", "chunks", "conversation_id", "history", "queue_s", "rag_s", "generate_s", "total_s"}` |
 | `POST /reset` | `{"conversation_id"}`: forgets its history |
@@ -57,6 +58,8 @@ PepperDemo all the users shared one). The history is in memory: a restart of the
 | Where | What |
 |---|---|
 | `config/servers.yaml`, section `llm` | `backend` (`openai`, `transformers`, `echo`), `model` (`gpt-4o`), `temperature`, `timeout`, `system_prompt_file`, `max_char`, `history_length`, **`rag`** (default of the requests), the retriever of the local backends |
+| `config/servers.yaml`, `llm.rag_servers`, `llm.rag_timeout` | the RAG servers (`<name>=<url>, ...`) and the seconds of their retrieval |
+| `config/servers.yaml`, section `ollama` | backend `ollama`: `url`, `num_ctx`, `keep_alive`, `think` (a RAG server can give its own) |
 | `config/servers.yaml`, section `openai` | parameters of ChatGPT: `vector_store_id` and the file_search settings of the RAG, `reasoning_effort`, `rag_model`, `max_retries`... |
 | `config/secrets.env` (not versioned) | `OPENAI_API_KEY=sk-...` |
 | environment | `LLM_<FIELD>` and `OPENAI_<FIELD>` override the YAML file, e.g. `LLM_RAG=true`, `LLM_BACKEND=echo` |
@@ -66,6 +69,20 @@ OpenAI vector store before answering (Responses API, file_search); with `false` 
 The social action of Rasa asks for the default of the server; the questions about the scene never use it, as in
 PepperDemo. The behaviour trees of ARI (`LLMNode` of `ari_control`, with `LLM_RAG_RUNNING=True`) call `/chat` directly:
 `"rag": true` for the open requests, the camera frame and `"rag": false` for the questions about the scene.
+
+## RAG servers
+`"rag": "<name>"` (a name of `llm.rag_servers`, e.g. `department_office=http://localhost:8030`) asks the RAG server
+`<name>` for the context of the question (`POST /retrieve`, see [rag/README.md](../rag/README.md)), then answers with
+the system prompt and the **model of that RAG** (its `generator`: e.g. backend `ollama`, `qwen3.6:35b-a3b-q8_0`), not
+with `llm.backend`. The backend of a RAG is created at its first request and kept. The history of the conversation
+holds the questions, not the documents. The reply has also `rag_info` (filters, calls of the registers, sources);
+`rag_s` is the time of the RAG server, its queue included. `"rag": true/false` work as before.
+
+```bash
+curl -X POST -H 'Content-Type: application/json' localhost:8010/chat \
+  -d '{"conversation_id": "test", "message": "chi era presente nella seduta del 29/09/2025?", "rag": "department_office"}'
+```
+The RAG server takes the execution lock during the retrieval, this server during the generation, after it.
 
 ## Run with Docker (Spark)
 From `ari_servers`:

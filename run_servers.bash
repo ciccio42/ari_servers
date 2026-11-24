@@ -1,15 +1,19 @@
 #!/bin/bash
 # Starts, stops and checks the servers of the DGX Spark (architecture: ari_demo_arch.png), in Docker:
-# Whisper (speech to text), LLM (+RAG) (answers), TTS (Piper, audio of the answers) and RASA (dialogue). Each one runs with its own run.bash; this script
-# keeps the order (the RASA server asks the LLM server) and one configuration for all of them.
+# Whisper (speech to text), Ollama (local models of the RAGs), LLM (+RAG) (answers), TTS (Piper, audio of the answers),
+# the RAG servers (rag_<name>, retrieval of rag/<name>) and RASA (dialogue). Each one runs with its own run.bash; this
+# script keeps the order (the RASA server asks the LLM server, the LLM server the RAG servers and Ollama) and one
+# configuration for all of them.
 #
-# Usage: bash run_servers.bash [-c <servers.yaml>] <start|stop|restart|status|logs|build> [whisper|llm|tts|rasa ...]
-#   start    starts the servers not running yet and waits until they answer (default: all four)
+# Usage: bash run_servers.bash [-c <servers.yaml>] <start|stop|restart|status|logs|build> [server ...]
+#   servers: whisper, ollama, llm, tts, rag (all the RAGs of rag_servers) or rag_<name>, rasa
+#   start    starts the servers not running yet and waits until they answer (default: all)
 #   stop     stops them
 #   restart  stop + start: needed after a change of the configuration
 #   status   container state and GET /health of every server
-#   logs     follows the log of one server: logs <whisper|llm|tts|rasa>
-#   build    builds the images (once; the Whisper image first, the LLM and TTS images are built on it)
+#   logs     follows the log of one server: logs <server>
+#   build    builds the images (once; the Whisper image first, the LLM and TTS images are built on it; RAG: one
+#            image with a conda environment per RAG; Ollama: the image is downloaded by start)
 #
 # Configuration (paths relative to ari_servers):
 #   config/servers.yaml   ports, models, RAG on/off, OpenAI parameters, execution lock of all the servers.
@@ -22,7 +26,7 @@
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "$ROOT_DIR" || exit 1
 
-usage() { sed -n 6,13p "$0"; exit 1; }
+usage() { sed -n 8,17p "$0"; exit 1; }
 
 if [ "$1" = -c ] || [ "$1" = --config ]; then
     [ -n "$2" ] || usage
@@ -31,9 +35,6 @@ if [ "$1" = -c ] || [ "$1" = --config ]; then
 fi
 COMMAND=$1
 [ -n "$COMMAND" ] && shift || usage
-SERVERS=("$@")
-[ ${#SERVERS[@]} -eq 0 ] && SERVERS=(whisper llm tts rasa)
-[ "$COMMAND" = stop ] && [ $# -eq 0 ] && SERVERS=(rasa tts llm whisper)   # reverse order
 
 # the configuration file: inside ari_servers, so the containers see it in /workspace with the same relative path
 CONFIG=${ARI_SERVERS_CONFIG:-config/servers.yaml}
@@ -53,11 +54,24 @@ print(f"WHISPER_PORT_CFG={(c.get('whisper') or {}).get('port', 8000)}")
 print(f"LLM_PORT_CFG={(c.get('llm') or {}).get('port', 8010)}")
 print(f"TTS_PORT_CFG={(c.get('tts') or {}).get('port', 8020)}")
 print("RASA_PORTS_CFG='" + " ".join(r.split("=")[0].strip() for r in routes.split(",") if r.strip()) + "'")
+print("RAG_SERVERS_CFG='" + " ".join(f"rag_{n}" for n in (c.get("rag_servers") or [])) + "'")
 PY
 )" || { echo "$ARI_SERVERS_CONFIG: cannot read it" >&2; exit 1; }
 export WHISPER_PORT=${WHISPER_PORT:-$WHISPER_PORT_CFG} LLM_PORT=${LLM_PORT:-$LLM_PORT_CFG} TTS_PORT=${TTS_PORT:-$TTS_PORT_CFG}
 export RASA_PORTS=${RASA_PORTS:-$RASA_PORTS_CFG}
 BOARD=${BOARD:-spark}
+read -r -a RAG_SERVERS <<< "$RAG_SERVERS_CFG"
+
+# the servers of the command line, "rag" for all the RAGs; default all, in the order of the dependencies
+SERVERS=()
+for server in "$@"; do
+    [ "$server" = rag ] && SERVERS+=("${RAG_SERVERS[@]}") || SERVERS+=("$server")
+done
+ALL=(whisper ollama llm tts "${RAG_SERVERS[@]}" rasa)
+if [ ${#SERVERS[@]} -eq 0 ]; then
+    SERVERS=("${ALL[@]}")
+    [ "$COMMAND" = stop ] && SERVERS=(rasa "${RAG_SERVERS[@]}" tts llm ollama whisper)   # reverse order
+fi
 
 run() {  # run <server> <command> [args]: the run.bash of the server
     case "$1" in
@@ -65,16 +79,20 @@ run() {  # run <server> <command> [args]: the run.bash of the server
         llm)     bash llm/docker/run.bash "${@:2}" ;;
         tts)     bash tts/docker/run.bash "${@:2}" ;;
         rasa)    bash rasa/docker/run.bash "${@:2}" ;;
-        *) echo "unknown server $1: whisper, llm, tts, rasa" >&2; return 1 ;;
+        ollama)  bash ollama/docker/run.bash "${@:2}" ;;
+        rag_*)   bash rag/docker/run.bash "$2" "${1#rag_}" "${@:3}" ;;
+        *) echo "unknown server $1: whisper, ollama, llm, tts, rag, rag_<name>, rasa" >&2; return 1 ;;
     esac
 }
 
 container() {
-    case "$1" in whisper) echo whisper_server ;; llm) echo llm_server ;; tts) echo tts_server ;; rasa) echo rasa_server ;; esac
+    case "$1" in whisper) echo whisper_server ;; llm) echo llm_server ;; tts) echo tts_server ;; rasa) echo rasa_server ;;
+        ollama) echo ollama_server ;; rag_*) echo "$1" ;; esac
 }
 
 image() {
-    case "$1" in whisper) echo "ari_whisper_server:$BOARD" ;; llm) echo ari_llm_server ;; tts) echo ari_tts_server ;; rasa) echo ari_rasa_server ;; esac
+    case "$1" in whisper) echo "ari_whisper_server:$BOARD" ;; llm) echo ari_llm_server ;; tts) echo ari_tts_server ;; rasa) echo ari_rasa_server ;;
+        ollama) echo "${OLLAMA_IMAGE:-ollama/ollama:0.40.16}" ;; rag_*) echo ari_rag_server ;; esac
 }
 
 ready() {  # the server answers; for rasa also every bot behind the proxy
@@ -117,11 +135,16 @@ start_one() {
         docker rm "$name" > /dev/null  # stopped: start it again with the current configuration
     fi
     run "$1" start > /dev/null || return 1
-    # first start of Whisper: download and export of the model (minutes); the bots of Rasa: about a minute
-    case "$1" in whisper) wait_ready whisper 900 ;; llm) wait_ready llm 120 ;; tts) wait_ready tts 60 ;; rasa) wait_ready rasa 180 ;; esac
+    # first start of Whisper: download and export of the model (minutes); the bots of Rasa: about a minute; first start
+    # of a RAG: download of the embedding model and of the reranker (minutes)
+    case "$1" in whisper) wait_ready whisper 900 ;; llm) wait_ready llm 120 ;; tts) wait_ready tts 60 ;; rasa) wait_ready rasa 180 ;;
+        ollama) wait_ready ollama 60 ;; rag_*) wait_ready "$1" 900 ;; esac
 }
 
 echo "Configuration: $ARI_SERVERS_CONFIG, ${RASA_ENV_FILE:-config/rasa.env}, config/secrets.env"
+for server in "${SERVERS[@]}"; do
+    case "$server" in whisper|ollama|llm|tts|rasa|rag_*) ;; *) echo "unknown server $server" >&2; usage ;; esac
+done
 case "$COMMAND" in
     start)
         for server in "${SERVERS[@]}"; do
@@ -136,7 +159,7 @@ case "$COMMAND" in
         done
         ;;
     restart)
-        [ $# -eq 0 ] && STOP=(rasa tts llm whisper) || STOP=("${SERVERS[@]}")
+        [ $# -eq 0 ] && STOP=(rasa "${RAG_SERVERS[@]}" tts llm ollama whisper) || STOP=("${SERVERS[@]}")
         bash "$0" -c "$ARI_SERVERS_CONFIG" stop "${STOP[@]}" > /dev/null
         exec bash "$0" -c "$ARI_SERVERS_CONFIG" start "${SERVERS[@]}"
         ;;
@@ -150,12 +173,17 @@ case "$COMMAND" in
         exit $failed
         ;;
     logs)
-        [ $# -eq 1 ] || { echo "logs needs one server: whisper, llm, tts or rasa" >&2; exit 1; }
-        exec docker logs -f "$(container "$1")"
+        [ ${#SERVERS[@]} -eq 1 ] || { echo "logs needs one server: whisper, ollama, llm, tts, rag_<name> or rasa" >&2; exit 1; }
+        exec docker logs -f "$(container "${SERVERS[0]}")"
         ;;
     build)
+        built_rag=0
         for server in "${SERVERS[@]}"; do
-            echo "== $server"
+            case "$server" in
+                ollama) continue ;;  # the image of Ollama is downloaded by start
+                rag_*) [ $built_rag -eq 1 ] && continue; built_rag=1; echo "== rag (ari_rag_server)" ;;
+                *) echo "== $server" ;;
+            esac
             run "$server" build || exit 1
         done
         ;;

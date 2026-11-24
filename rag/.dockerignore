@@ -1,0 +1,4 @@
+# build context of rag/docker/Dockerfile: only the conda environments and the entrypoint (the code is mounted)
+*
+!*/environment.yml
+!docker/entrypoint.bash

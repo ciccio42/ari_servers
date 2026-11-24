@@ -28,6 +28,10 @@ class LLMConfig:
     embedding_model: str = "google/embeddinggemma-300m"  # defaults of rag.py of PepperDemo
     reranker_model: str = "BAAI/bge-reranker-v2-m3"
     top_k: int = 4
+    # RAG servers (rag/<name>, see ari_servers/rag.py): "<name>=<url>, ...". A request with "rag": "<name>" asks
+    # that server for the context and answers with its system prompt and its model (e.g. Ollama with qwen3.6)
+    rag_servers: str = "department_office=http://localhost:8030"
+    rag_timeout: float = 120.0  # seconds for the retrieval of a RAG server (its queue included)
     max_body_mb: int = 16  # the requests can carry an image (base64)
 
 

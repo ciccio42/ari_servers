@@ -1,0 +1,19 @@
+# Conda environment of the department_office RAG (rag_department_office), created in the image ari_rag_server by
+# rag/docker/Dockerfile. Only the retrieval: Qdrant (local mode), BGE-M3 and the reranker with FlagEmbedding.
+# The generation is done by the LLM server (Ollama backend). Versions: the ones of rag_unisa (requirements_new.txt),
+# torch for CUDA 13 as the Whisper image (GB10 of the Spark).
+name: rag_department_office
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu130
+      - torch==2.11.0
+      - transformers==4.57.6
+      - FlagEmbedding==1.4.2
+      - qdrant-client==1.19.0
+      - numpy==2.2.6
+      - httpx==0.28.1
+      - pyyaml==6.0.3
