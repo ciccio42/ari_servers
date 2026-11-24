@@ -67,7 +67,8 @@ class DepartmentOfficeRag(Rag):
         if warning:
             log.warning("generation model: %s", warning)
 
-    def retrieve(self, question: str) -> Retrieval:
+    def retrieve(self, question: str, history=None) -> Retrieval:
+        # one question at a time, as rag_unisa: the history of the conversation is used by the generation only
         register = self.query_registers(question)
         fonti, filtri = self.cerca(question, register)
         info = {"filters": filtri.descrizione(), "registers": register.domanda_corrisposta if register else "",

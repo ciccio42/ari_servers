@@ -62,8 +62,14 @@ class RagServers:
     def names(self) -> List[str]:
         return sorted(self.urls)
 
-    def retrieve(self, name: str, question: str) -> dict:
-        request = urllib.request.Request(f"{self.urls[name]}/retrieve", data=json.dumps({"question": question}).encode(),
+    def retrieve(self, name: str, question: str, history: List[dict] = None) -> dict:
+        return self._post(name, "/retrieve", {"question": question, "history": history or []})
+
+    def postprocess(self, name: str, retrieval_id: str, answer: str) -> dict:
+        return self._post(name, "/postprocess", {"retrieval_id": retrieval_id, "answer": answer})
+
+    def _post(self, name: str, path: str, body: dict) -> dict:
+        request = urllib.request.Request(f"{self.urls[name]}{path}", data=json.dumps(body).encode(),
                                          headers={"Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(request, timeout=self.timeout) as reply:
@@ -71,4 +77,4 @@ class RagServers:
         except urllib.error.HTTPError as e:
             raise RagServerError(f"RAG server {name}: HTTP {e.code}: {e.read().decode(errors='replace')[:300]}")
         except (OSError, ValueError) as e:
-            raise RagServerError(f"RAG server {name} at {self.urls[name]}: {e} (bash rag/docker/run.bash start {name})")
+            raise RagServerError(f"RAG server {name} at {self.urls[name]}: {e} (not loaded: POST /load {{\"rag\": \"{name}\"}} of the orchestrator)")

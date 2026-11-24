@@ -23,16 +23,21 @@ one API: `POST /chat` of the LLM server with `"rag": "<name>"`.
 | RAG | Port | Knowledge base | Model of the answers |
 |---|---|---|---|
 | [department_office](department_office/README.md) | 8030 | resolutions of the Consiglio Didattico di Ingegneria Informatica (Qdrant) | `qwen3.6:35b-a3b-q8_0` (Ollama) |
+| [high_level_unisa](high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (Chroma, registries) | `qwen3.6:35b-a3b` (Ollama) |
 
 ## API of a RAG server
 | | |
 |---|---|
 | `GET /health` | `{"status": "ok", "service": "rag_<name>", "loaded", "generator", "rag", "kb_dir", ...}` |
-| `POST /retrieve` | `{"question"}` → `{"rag", "chunks": [{"text", "source", "score"}], "system", "user", "answer", "drop_patterns", "generator": {"backend", "model", "temperature", "max_new_tokens", "options"}, "queue_s", "retrieve_s", ...}` |
+| `POST /retrieve` | `{"question", "history"}` → `{"rag", "chunks": [{"text", "source", "score"}], "system", "user", "answer", "drop_patterns", "retrieval_id", "generator": {"backend", "model", "temperature", "max_new_tokens", "options"}, "queue_s", "retrieve_s", ...}` |
+| `POST /postprocess` | `{"retrieval_id", "answer"}` → `{"text", ...}`: the answer corrected by the RAG (only when `/retrieve` gave a `retrieval_id`) |
 
 `system` and `user` are the messages of the model (system prompt; context and question); a non-empty `answer` is the
 reply without the model (e.g. nothing retrieved); `drop_patterns` are removed from the answer. The LLM server keeps
-the history of the conversation: the RAG sees only the last question.
+the history of the conversation and gives it to `/retrieve` (`history`: the previous turns), for the RAGs that use it
+(high_level_unisa rewrites the question with it). A RAG that checks the answer of the model returns a
+`retrieval_id`: the LLM server sends the answer to `POST /postprocess` and replies with the corrected text
+(high_level_unisa: the names checked against the context).
 
 The retrieval takes the execution lock of the servers (embedding and reranker on the GPU); the LLM server takes it
 during the generation, after the retrieval: neither waits for the other.

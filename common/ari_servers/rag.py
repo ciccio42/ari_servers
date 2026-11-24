@@ -12,20 +12,25 @@ same time, each on its port. This module is the part they share (standard librar
     Chunk        a passage given to the model (also the format of the chunks in the replies of the LLM server)
     Generator    the model that answers with this RAG: backend of the LLM server, model and options
     Retrieval    what the retrieval of one question found: chunks, system prompt and request for the model
-    Rag          the abstract class of a RAG: load(), retrieve(question), describe()
+    Rag          the abstract class of a RAG: load(), retrieve(question, history), postprocess(answer, state),
+                 describe()
     RagConfig    the fields every RAG configuration has (dataclass, section rag_<name> of servers.yaml)
     RagService   the HTTP server of a RAG
 
 API of every RAG server:
   GET  /health    {"status": "ok", "service": "rag_<name>", "loaded", "generator", **rag.describe()}
-  POST /retrieve  {"question": "..."}: the retrieval, one request at a time among all the servers of the machine
-                  (execution lock). Reply {"rag", "chunks": [{"text", "source", "score"}], "system", "user",
-                  "answer", "drop_patterns", "generator": {"backend", "model", "temperature", "max_new_tokens",
-                  "options"}, "retrieve_s", "queue_s", **info}
+  POST /retrieve  {"question": "...", "history": [{"role": "user"|"assistant", "content"}...] (optional: the
+                  previous turns of the conversation, e.g. to rewrite the question)}: the retrieval, one request at
+                  a time among all the servers of the machine (execution lock). Reply {"rag", "chunks": [{"text",
+                  "source", "score"}], "system", "user", "answer", "drop_patterns", "retrieval_id", "generator":
+                  {"backend", "model", "temperature", "max_new_tokens", "options"}, "retrieve_s", "queue_s", **info}
                     system         system prompt of the answer
                     user           the request for the model: context and question
                     answer         not empty when the RAG answers without the model (e.g. nothing retrieved)
                     drop_patterns  regular expressions removed from the answer of the model
+                    retrieval_id   not empty when the RAG checks the answer of the model: POST /postprocess
+  POST /postprocess {"retrieval_id", "answer"}: the answer corrected by the RAG with what it kept of the retrieval
+                  (e.g. the names checked against the context). Reply {"text", **info}. Kept POSTPROCESS_TTL_S
 Errors: 400 bad request, 501 models not loaded, 500 other failures.
 
 A new RAG:
@@ -35,10 +40,12 @@ A new RAG:
   3. a section rag_<name> in config/servers.yaml, <name> in rag_servers (run_servers.bash starts it) and
      <name>=<url> in llm.rag_servers (the LLM server asks it)
 """
+import threading
 import time
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
-from typing import List
+from typing import List, Optional
 
 from .http import HTTPError, HTTPService
 from .latency_log import mark
@@ -68,6 +75,8 @@ class Retrieval:
     answer: str = ""  # not empty: the answer, without the model
     drop_patterns: List[str] = field(default_factory=list)  # regular expressions removed from the answer
     info: dict = field(default_factory=dict)  # extra fields of the reply (filters, calls of the registers, ...)
+    postprocess: bool = False  # True: the LLM server sends the answer back to POST /postprocess, with `state`
+    state: object = None  # what postprocess() needs of this retrieval (e.g. the context), kept by the server
 
 
 @dataclass
@@ -94,8 +103,13 @@ class Rag(ABC):
         """Opens the index, loads embedding model and reranker: once, at the start of the server."""
 
     @abstractmethod
-    def retrieve(self, question: str) -> Retrieval:
-        """The passages relevant to the question, the system prompt and the request for the model."""
+    def retrieve(self, question: str, history: Optional[List[dict]] = None) -> Retrieval:
+        """The passages relevant to the question, the system prompt and the request for the model.
+        history: the previous turns of the conversation ({"role": "user"|"assistant", "content"}), oldest first."""
+
+    def postprocess(self, answer: str, state) -> tuple:
+        """(corrected answer, extra fields of the reply) for a retrieval with postprocess=True. Default: unchanged."""
+        return answer, {}
 
     def generator(self) -> Generator:
         """The model of the answers. A subclass adds the options of its backend."""
@@ -107,6 +121,10 @@ class Rag(ABC):
         return {"rag": self.name, "kb_dir": self.cfg.kb_dir}
 
 
+POSTPROCESS_TTL_S = 600  # the answer comes back within the generation time
+POSTPROCESS_MAX = 64  # retrievals kept at most (the oldest go first)
+
+
 class RagService(HTTPService):
 
     def __init__(self, rag: Rag, exclusive, load_models: bool = True):
@@ -116,7 +134,21 @@ class RagService(HTTPService):
         if load_models:
             rag.load()
             self.loaded = True
+        self._states = {}  # retrieval_id -> (state, time) for POST /postprocess
+        self._states_lock = threading.Lock()
         self.add_route("POST", "/retrieve", self.retrieve)
+        self.add_route("POST", "/postprocess", self.postprocess)
+
+    def _keep(self, state) -> str:
+        retrieval_id = uuid.uuid4().hex
+        with self._states_lock:
+            now = time.monotonic()
+            for key in [k for k, (_, t) in self._states.items() if now - t > POSTPROCESS_TTL_S]:
+                del self._states[key]
+            while len(self._states) >= POSTPROCESS_MAX:
+                del self._states[min(self._states, key=lambda k: self._states[k][1])]
+            self._states[retrieval_id] = (state, now)
+        return retrieval_id
 
     def health(self) -> dict:
         return {"loaded": self.loaded, "generator": asdict(self.rag.generator()), **self.rag.describe()}
@@ -130,15 +162,37 @@ class RagService(HTTPService):
             raise HTTPError(400, f"question longer than {self.rag.cfg.max_question_chars} characters")
         if not self.loaded:
             raise NotImplementedError("models not loaded (server started with --skip-load)")
-        # embedding, reranker (GPU) and the planner of the RAG: one request at a time among the servers
+        history = data.get("history") or []
+        if not isinstance(history, list) or any(not isinstance(m, dict) for m in history):
+            raise HTTPError(400, "history must be a list of {\"role\", \"content\"}")
+        # embedding, reranker (GPU) and the model calls of the RAG: one request at a time among the servers
         with self.execution.hold() as waited:
             t_start = time.perf_counter()
-            found = self.rag.retrieve(question)
+            found = self.rag.retrieve(question, history)
             t_end = time.perf_counter()
+        retrieval_id = self._keep(found.state) if found.postprocess and not found.answer else ""
         result = {"rag": self.rag.name, "chunks": [asdict(c) for c in found.chunks], "system": found.system,
                   "user": found.user, "answer": found.answer, "drop_patterns": found.drop_patterns,
+                  "retrieval_id": retrieval_id,
                   "generator": asdict(self.rag.generator()), "queue_s": round(waited, 4),
                   "retrieve_s": round(t_end - t_start, 4), **found.info}
         mark(self.name, "retrieve", client=request.client_address[0], chunks=len(found.chunks),
-             context_chars=len(found.user), queue_s=result["queue_s"], retrieve_s=result["retrieve_s"])
+             context_chars=len(found.user), history=len(history), queue_s=result["queue_s"],
+             retrieve_s=result["retrieve_s"])
         return result
+
+    def postprocess(self, request) -> dict:
+        data = request.read_json()
+        retrieval_id, answer = str(data.get("retrieval_id") or ""), data.get("answer")
+        if not isinstance(answer, str):
+            raise HTTPError(400, "give answer")
+        with self._states_lock:
+            kept = self._states.pop(retrieval_id, None)
+        if kept is None:
+            raise HTTPError(400, f"unknown or expired retrieval_id {retrieval_id!r} (kept {POSTPROCESS_TTL_S} s)")
+        t_start = time.perf_counter()
+        text, info = self.rag.postprocess(answer, kept[0])
+        postprocess_s = round(time.perf_counter() - t_start, 4)
+        mark(self.name, "postprocess", client=request.client_address[0], changed=text != answer,
+             postprocess_s=postprocess_s)
+        return {"text": text, "postprocess_s": postprocess_s, **(info or {})}

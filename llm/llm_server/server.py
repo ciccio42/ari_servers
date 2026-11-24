@@ -51,6 +51,10 @@ from .conversation import Conversations
 IMAGE_TTL_S = 600   # an uploaded image is used by the answer that follows within seconds
 IMAGE_MAX = 32      # images kept at most (the oldest go first)
 IMAGE_TYPES = {"image/webp", "image/jpeg", "image/png"}
+# fields of POST /retrieve of the RAG servers used by this server; the others are the extra fields of the RAG
+# (filters, path, rewritten question, sources...): they go to rag_info in the reply
+RAG_REPLY_FIELDS = {"rag", "chunks", "system", "user", "answer", "drop_patterns", "retrieval_id", "generator",
+                    "queue_s", "retrieve_s"}
 
 
 class ImageStore:
@@ -188,8 +192,11 @@ class LLMService(HTTPService):
         rag_server = self._rag_server(data.get("rag"))
         if rag_server is not None:
             return self._chat_rag_server(request, data, rag_server, conversation_id, pending)
+        # "llm": "<backend>:<model>" (e.g. "ollama:qwen3.6:35b-a3b", loaded by the orchestrator): this model instead
+        # of llm.backend/llm.model
+        backend = self._llm_backend(data["llm"]) if data.get("llm") else self.backend
         use_rag = self.cfg.rag if data.get("rag") is None else bool(data["rag"])
-        if use_rag and not self.backend.native_rag and self.retriever is None:
+        if use_rag and not backend.native_rag and self.retriever is None:
             raise HTTPError(400, "RAG disabled in the configuration of the server (llm.rag)")
         if not self.loaded:
             raise NotImplementedError("models not loaded (server started with --skip-load)")
@@ -199,7 +206,7 @@ class LLMService(HTTPService):
         with self.execution.hold() as waited:
             t_rag = time.perf_counter()
             chunks, messages = [], list(pending)
-            if use_rag and not self.backend.native_rag:
+            if use_rag and not backend.native_rag:
                 chunks = self.retriever.retrieve(backends.text_of(pending[-1]), self.cfg.top_k)
                 if chunks:
                     context = "\n\n".join(f"[{c.source}]\n{c.text}" for c in chunks)
@@ -209,11 +216,11 @@ class LLMService(HTTPService):
                 messages = [{"role": "system", "content": system}, *messages]
             t_generate = time.perf_counter()
             try:
-                reply = self.backend.generate(messages, rag=use_rag and self.backend.native_rag,
+                reply = backend.generate(messages, rag=use_rag and backend.native_rag,
                                               temperature=temperature, max_new_tokens=max_new_tokens,
                                               timeout=self.cfg.timeout)
             except backends.BackendError as e:
-                mark("llm_server", "failed", client=request.client_address[0], backend=self.backend.name, error=e)
+                mark("llm_server", "failed", client=request.client_address[0], backend=backend.name, error=e)
                 raise HTTPError(502, str(e))
             t_end = time.perf_counter()
         if conversation_id is not None:
@@ -223,7 +230,7 @@ class LLMService(HTTPService):
                   "rag": use_rag, "chunks": [asdict(c) for c in chunks], "conversation_id": conversation_id,
                   "history": len(pending) - 1, "queue_s": round(waited, 4), "rag_s": round(t_generate - t_rag, 4),
                   "generate_s": round(t_end - t_generate, 4), "total_s": round(t_end - request.t_in, 4)}
-        mark("llm_server", "done", client=request.client_address[0], backend=self.backend.name, model=reply.model,
+        mark("llm_server", "done", client=request.client_address[0], backend=backend.name, model=reply.model,
              rag=use_rag, history=result["history"], words=len(reply.text.split()), queue_s=result["queue_s"],
              rag_s=result["rag_s"], generate_s=result["generate_s"], total_s=result["total_s"])
         return result
@@ -238,6 +245,15 @@ class LLMService(HTTPService):
         if name not in self.rag_servers:
             raise HTTPError(400, f"unknown RAG server {name}: {self.rag_servers.names()} (llm.rag_servers)")
         return name
+
+    def _llm_backend(self, spec: str):
+        """The backend of "llm": "<backend>:<model>" of a request, created once and kept (as the generators of the RAGs)."""
+        name, _, model = str(spec).partition(":")
+        if not model:
+            raise HTTPError(400, f"llm must be <backend>:<model>, e.g. ollama:qwen3.6:35b-a3b (got {spec!r})")
+        if name not in backends.BACKENDS:
+            raise HTTPError(400, f"unknown backend {name}: {sorted(backends.BACKENDS)}")
+        return self._generator_backend({"backend": name, "model": model})
 
     def _generator_backend(self, generator: dict):
         """The backend of the generator declared by a RAG server, created once and kept."""
@@ -261,12 +277,14 @@ class LLMService(HTTPService):
         if not self.loaded:
             raise NotImplementedError("models not loaded (server started with --skip-load)")
         question = backends.text_of(pending[-1]).strip()
+        history = [{"role": m["role"], "content": backends.text_of(m)} for m in pending[:-1]]
         t_rag = time.perf_counter()
         try:
-            found = self.rag_servers.retrieve(name, question)
+            found = self.rag_servers.retrieve(name, question, history)
         except rag.RagServerError as e:
             mark("llm_server", "failed", client=request.client_address[0], rag=name, error=e)
             raise HTTPError(502, str(e))
+        t_retrieved = time.perf_counter()
         generator = found.get("generator") or {}
         backend = self._generator_backend(generator)
         waited = 0.0
@@ -293,6 +311,11 @@ class LLMService(HTTPService):
             for pattern in found.get("drop_patterns") or []:
                 text = re.sub(pattern, "", text)
             text = text.strip()
+            if found.get("retrieval_id"):  # the RAG checks the answer (e.g. the names against its context)
+                try:
+                    text = self.rag_servers.postprocess(name, found["retrieval_id"], text).get("text", text)
+                except rag.RagServerError as e:
+                    self.log.warning("postprocess of %s failed, answer not checked: %s", name, e)
         t_end = time.perf_counter()
         if conversation_id is not None:  # the history keeps the question, not the documents
             self.conversations.commit(conversation_id, pending, text)
@@ -300,9 +323,9 @@ class LLMService(HTTPService):
         result = {"text": text, "model": model, "served_model": served, "rag": name,
                   "chunks": found.get("chunks") or [], "conversation_id": conversation_id,
                   "history": len(pending) - 1, "queue_s": round(waited + found.get("queue_s", 0.0), 4),
-                  "rag_s": round(t_generate - t_rag, 4), "generate_s": round(t_end - t_generate, 4),
+                  "rag_s": round(t_retrieved - t_rag - found.get("queue_s", 0.0), 4), "generate_s": round(t_end - t_generate, 4),
                   "total_s": round(t_end - request.t_in, 4),
-                  "rag_info": {k: found.get(k) for k in ("filters", "registers", "sources") if k in found}}
+                  "rag_info": {k: v for k, v in found.items() if k not in RAG_REPLY_FIELDS}}
         mark("llm_server", "done", client=request.client_address[0], backend=backend.name, model=model, rag=name,
              history=result["history"], words=len(text.split()), queue_s=result["queue_s"], rag_s=result["rag_s"],
              generate_s=result["generate_s"], total_s=result["total_s"])

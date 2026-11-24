@@ -42,6 +42,7 @@ The backend is stateless: the server keeps the history, adds the system prompt a
 | `POST /image` | body: the image as bytes (`Content-Type` `image/webp`, `image/jpeg` or `image/png`), optional header `X-Image-Id` (32 hex characters, the id chosen by the client). Kept in memory 600 s. Reply `{"image_id", "bytes", "mime", "receive_s", "total_s"}`. ARI uploads here the camera frame of the questions about the scene, in parallel to the slots of Rasa; `image_slot` holds `image_id:<id>` and the action passes `image_id` to `/chat` |
 | `POST /chat` with history | `{"conversation_id", "message"}`; optional `image_id` (of `POST /image`) or `image_base64` (JPEG or WebP), `system` (default: `llm.system_prompt_file`), `rag` (default: `llm.rag`; the name of a RAG server, e.g. `"department_office"`: see below), `temperature`, `max_new_tokens` |
 | `POST /chat` one-shot | `{"messages": [{"role", "content"}...]}` or `{"prompt", "system"}`: no history |
+| `"llm"` in `/chat` | `"<backend>:<model>"`, e.g. `"ollama:qwen3.6:35b-a3b"`: this model instead of `llm.backend`/`llm.model` (loaded by the [orchestrator](../orchestrator/README.md)); the backend is created at its first request and kept |
 | reply | `{"text", "model", "served_model", "rag", "chunks", "conversation_id", "history", "queue_s", "rag_s", "generate_s", "total_s"}` |
 | `POST /reset` | `{"conversation_id"}`: forgets its history |
 | errors | `400` bad request, `501` backend not implemented, `502` the backend did not answer (OpenAI unreachable, key refused...), `500` other |

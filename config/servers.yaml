@@ -34,7 +34,7 @@ llm:
   top_k: 4
   # RAG servers (rag/<name>): a request with "rag": "<name>" asks that server for the context and answers with its
   # system prompt and its model (the generator of section rag_<name>, e.g. Ollama with qwen3.6)
-  rag_servers: "department_office=http://localhost:8030"
+  rag_servers: "department_office=http://localhost:8030, high_level_unisa=http://localhost:8031"
 
 # <TTS_PORT>: text to speech (Piper) for the behaviour trees of ARI: POST /synthesize -> WAV. Env TTS_<FIELD>
 tts:
@@ -67,8 +67,18 @@ ollama:
   keep_alive: 2h
   think: false
 
-# RAG servers started by run_servers.bash: one container rag_<name> each (rag/<name>, image ari_rag_server)
-rag_servers: [department_office]
+# RAG servers (rag/<name>, container rag_<name>, image ari_rag_server). They are started by the orchestrator, one at a
+# time with its model; `bash run_servers.bash start rag` starts all of these instead (memory: one qwen3.6 each)
+rag_servers: [department_office, high_level_unisa]
+
+# <ORCHESTRATOR_PORT>: loads on request one pair LLM + RAG at a time (POST /load {"llm", "rag"}), unloading the previous
+# one: RAG containers and models of Ollama. Env ORCHESTRATOR_<FIELD>
+orchestrator:
+  port: 8040
+  keep_alive: 2h                   # the model loaded stays in memory between the requests
+  rag_timeout: 900                 # seconds for a RAG to start (first start: download of its models)
+  default_rag: ""                  # pair loaded at the start of the orchestrator, e.g. high_level_unisa
+  default_llm: ""
 
 # <RAG_PORT>: resolutions of the Consiglio Didattico di Ingegneria Informatica (rag_unisa, M.S. D'Acunto).
 # Only the retrieval: the LLM server generates with generator_backend/generator_model. Env RAG_DEPARTMENT_OFFICE_<FIELD>
@@ -85,6 +95,19 @@ rag_department_office:
   reranker_model: BAAI/bge-reranker-v2-m3
   top_k: 14
   candidates: 40
+
+# <RAG_PORT>: University of Salerno, Ateneo (high-level-unisa, M.S. Grimaldi, optimized by Iannone): people, offices,
+# courses, regulations. Only the retrieval (rewriting and list mode call Ollama); the LLM server generates with
+# generator_backend/generator_model and sends the answer back for the check of the names. Env RAG_HIGH_LEVEL_UNISA_<FIELD>
+rag_high_level_unisa:
+  port: 8031
+  kb_dir: rag_knowledge_base/high_level_unisa    # diem_vectorstore/, anagrafe.json, registro_strutture.json
+  generator_backend: ollama
+  generator_model: qwen3.6:35b-a3b               # the model of the evaluations of high-level-unisa
+  temperature: 0.0
+  max_new_tokens: 4096
+  num_ctx: 32768                                 # the longest prompt measured: 17953 tokens
+  ollama_url: http://localhost:11500
 
 # <RASA_PORT>: dialogue. The clients reach this proxy on the ports of today, one per bot; it forwards to the bot
 # (rasa run --enable-api, internal port) taking the execution lock. Env RASA_<FIELD>

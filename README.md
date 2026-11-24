@@ -12,9 +12,10 @@ HTTP clients and Robot Control (Main-PC) are in `ari_control`.
 | Whisper (speech to text) | [whisper/](whisper/README.md) | 8000 | model as a parameter, tested on the Spark |
 | LLM (+RAG) (answers) | [llm/](llm/README.md) | 8010 | backends: ChatGPT (default of the demo, with the OpenAI RAG), Ollama (the RAGs of `rag/`), echo (tests) |
 | TTS (Piper, audio of the answers) | [tts/](tts/README.md) | 8020 | Piper on the GPU, client: `TtsNode` of the behaviour trees |
-| RAG (retrieval of a knowledge base) | [rag/](rag/README.md) | 8030 (`department_office`), one per RAG | one container and one conda environment per RAG, asked by the LLM server |
-| Ollama (local models of the RAGs) | [ollama/docker/](ollama/docker/run.bash) | 11500 (localhost only) | `qwen3.6:35b-a3b-q8_0`, the generator of `department_office` |
+| RAG (retrieval of a knowledge base) | [rag/](rag/README.md) | 8030 (`department_office`), 8031 (`high_level_unisa`), one per RAG | one container and one conda environment per RAG, asked by the LLM server |
+| Ollama (local models of the RAGs) | [ollama/docker/](ollama/docker/run.bash) | 11500 (localhost only) | `qwen3.6:35b-a3b-q8_0` (`department_office`), `qwen3.6:35b-a3b` (`high_level_unisa`) |
 | RASA (dialogue) | [rasa/](rasa/README.md) | 5002, 5003, 5004 (one per bot) | the 3 bots of PepperDemo and their actions behind the proxy with the lock |
+| Orchestrator (models in memory) | [orchestrator/](orchestrator/README.md) | 8040 | loads on request one pair LLM + RAG at a time (RAG container, model of Ollama), unloading the previous one |
 
 ```
 ari_servers/
@@ -27,6 +28,7 @@ ari_servers/
 ├── rag/                  one folder per RAG: <name>/environment.yml, <name>/<name>_rag/ (server.py, rag.py, config.py,
 │                         utils/); docker/ (image ari_rag_server, one conda environment per RAG)
 ├── ollama/docker/        Ollama in Docker, models in models/ollama
+├── orchestrator/         orchestrator_server/ (package): one pair LLM + RAG in memory at a time; docker/
 ├── rasa/                 bots/ (social, rock_paper_scissor, connect_four), rasa_proxy/ (package), docker/
 ├── rag_knowledge_base/   knowledge bases of the RAGs (not versioned)
 ├── models/  audio_files/  latency_logs/  run/
@@ -34,6 +36,10 @@ ari_servers/
 ```
 
 ## Execution flow
+Before the questions, the client chooses the pair LLM + RAG of the demo with the orchestrator: `POST :8040/load
+{"rag": "high_level_unisa"}` (or `{"llm": "ollama:qwen3.6:35b-a3b"}`, `{"llm": "openai:gpt-4o"}`). It starts that RAG
+and loads its model, stopping the previous pair: one pair at a time in memory ([orchestrator/](orchestrator/README.md)).
+
 ARI (behaviour trees of `ari_control`) sends the audio of the user to Whisper, the text to Rasa or directly to the
 LLM server, and the answer to the TTS server. The answers of the LLM server come from ChatGPT, or from a local RAG
 when the request names it:
@@ -57,7 +63,8 @@ A request to the LLM server with a RAG, step by step:
 
 1. `POST /chat {"conversation_id", "message", "rag": "department_office"}`: the LLM server adds the message to the
    history of the conversation.
-2. It asks the RAG server for the context: `POST /retrieve {"question"}`. The RAG server takes the execution lock,
+2. It asks the RAG server for the context: `POST /retrieve {"question", "history"}` (high_level_unisa rewrites the
+   question with the history; department_office uses only the question). The RAG server takes the execution lock,
    deduces the filters from the question (year, date, type of document), asks the registers when the question is
    about many meetings (the planner calls Ollama with tool calls), searches Qdrant (dense + sparse, reranker), and
    returns the chunks, its system prompt, the request for the model (documents and question) and its generator
@@ -65,6 +72,8 @@ A request to the LLM server with a RAG, step by step:
    itself, without the model.
 3. The LLM server takes the execution lock and generates with the generator of the RAG (backend `ollama`, created at
    the first request of that RAG), with the history of the conversation; it removes the citations of the registers.
+   When the RAG returned a `retrieval_id`, the LLM server sends it the answer (`POST /postprocess`): high_level_unisa
+   corrects the names copied wrong by the model, checking them against the context.
 4. Reply: `{"text", "model", "rag", "chunks", "rag_info": {"filters", "registers", "sources"}, "queue_s", "rag_s",
    "generate_s", "total_s"}`. The history keeps the question and the answer, not the documents.
 
@@ -73,18 +82,21 @@ scene). Measured on the Spark (2026-11-24): 8-21 s per answer of `department_off
 3-11 s); the first request after 2 hours without requests loads qwen3.6 (38 GB, about 55 s).
 
 ## Run all the servers
-[run_servers.bash](run_servers.bash) runs the servers in Docker on the Spark, in order (Whisper, Ollama, LLM, TTS, the
-RAGs of `rag_servers`, RASA: the RASA server asks the LLM server, the LLM server the RAGs and Ollama), and waits until
-each one answers. From `ari_servers`:
+[run_servers.bash](run_servers.bash) runs the servers in Docker on the Spark, in order (Whisper, Ollama, LLM, TTS, RASA,
+orchestrator: the RASA server asks the LLM server, the LLM server the RAGs and Ollama), and waits until each one
+answers. The RAGs are started by the orchestrator, one pair LLM + RAG at a time (`bash run_servers.bash start rag`
+starts all of them, if the memory allows). From `ari_servers`:
 ```bash
 echo 'OPENAI_API_KEY=sk-...' > config/secrets.env && chmod 600 config/secrets.env   # once: key of the LLM server
-bash run_servers.bash build          # once: the images (Whisper, LLM, TTS, RASA, RAG with its conda environments)
-bash run_servers.bash start ollama && bash ollama/docker/run.bash pull   # once: the model of the RAGs (38 GB)
-bash run_servers.bash start          # all the servers; already running ones are left as they are
+bash run_servers.bash build          # once: the images (Whisper, LLM, TTS, RASA, RAG with its conda environments, orchestrator)
+bash run_servers.bash start ollama && bash ollama/docker/run.bash pull \
+    && bash ollama/docker/run.bash pull qwen3.6:35b-a3b   # once: the models of the RAGs (38 + 23 GB)
+bash run_servers.bash start          # all the servers but the RAGs; already running ones are left as they are
+bash orchestrator/docker/run.bash load rag=high_level_unisa   # the pair of the demo: RAG + its model
 bash run_servers.bash status         # container state and /health of every server
 bash run_servers.bash restart        # after a change of the configuration
 bash run_servers.bash stop
-bash run_servers.bash restart llm    # one or more servers: whisper, ollama, llm, tts, rag (all the RAGs) or rag_<name>, rasa
+bash run_servers.bash restart llm    # one or more servers: whisper, ollama, llm, tts, rag (all the RAGs) or rag_<name>, rasa, orchestrator
 bash run_servers.bash logs rag_department_office   # follows the log of one server
 ```
 
@@ -115,6 +127,7 @@ code (`utils/`). Every RAG has its own conda environment (`rag/<name>/environmen
 | RAG | Port | Knowledge base | Generator |
 |---|---|---|---|
 | [department_office](rag/department_office/README.md) | 8030 | resolutions of the Consiglio Didattico di Ingegneria Informatica (rag_unisa, M.S. D'Acunto) | Ollama, `qwen3.6:35b-a3b-q8_0` |
+| [high_level_unisa](rag/high_level_unisa/README.md) | 8031 | University of Salerno, whole Ateneo: bodies, people, offices, regulations (high-level-unisa, M.S. Grimaldi, Iannone) | Ollama, `qwen3.6:35b-a3b` |
 
 ```bash
 bash rag/docker/run.bash test department_office "chi era presente nella seduta del 29/09/2025?"   # only retrieval
@@ -175,6 +188,6 @@ Shared folders (the workspace of every server, mounted as `/workspace` in the co
 
 | Folder | Content | Server |
 |---|---|---|
-| `high_level_unisa` | general questions on UNISA (built by M.S. Grimaldi, optimized code by Iannone), Chroma | to port |
+| `high_level_unisa` | general questions on UNISA (built by M.S. Grimaldi, optimized code by Iannone): `diem_vectorstore/` (Chroma), `anagrafe.json`, `registro_strutture.json`, `posizioni_parent.json` | [rag/high_level_unisa](rag/high_level_unisa/README.md) |
 | `department_office` | department resolutions (built by M.S. D'Acunto): `qdrant/`, `registers.json`, `chunks/` | [rag/department_office](rag/department_office/README.md) |
 | `department` | DIEM department (course Generative AI, local version), Chroma | to port |
